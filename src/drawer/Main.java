@@ -25,7 +25,7 @@ public class Main extends Application {
 
 	@Override
 	public final void start(Stage primaryStage) throws java.io.IOException {
-		Parent root = FXMLLoader.load(getClass().getResource(".fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("pointPlacer.fxml"));
 		primaryStage.setTitle("Path Planner");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
