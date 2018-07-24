@@ -1,20 +1,12 @@
 package drawer;
 
-import calibration.Helper;
 import javafx.application.Application;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.WritableDoubleValue;
-import javafx.beans.value.WritableObjectValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
-	public static final WritableDoubleValue scale = new SimpleDoubleProperty(1);
-	public static final WritableObjectValue<String> unit = new SimpleStringProperty(Helper.PIXELS);
 
 	public Main() {
 	}
