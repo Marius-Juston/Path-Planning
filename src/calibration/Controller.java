@@ -5,19 +5,10 @@ import static calibration.Helper.getImage;
 import static calibration.Helper.getWindow;
 
 import calibration.Helper.Unit;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,7 +16,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -37,11 +27,10 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
-import javax.imageio.ImageIO;
 
 public class Controller implements Initializable {
 
-	public static final String MATCH_PATTERN = "[0-9.]+ [a-zA-Z]+";
+
 	private static final String defaultDistance = "Select 2 Points";
 	private static final FileChooser fileChooser = new FileChooser();
 	private static final FileChooser saver = new FileChooser();
@@ -64,11 +53,11 @@ public class Controller implements Initializable {
 		startLoadLocation = saver.getInitialDirectory();
 	}
 
-	final TextField convertedInfo = new TextField();
+	private final TextField convertedInfo = new TextField();
 	private final SelectionPoint[] scaleSelectionPoints = new SelectionPoint[2];
 	private final Button rescale = new Button("Rescale");
 	private final SelectionLine line = new SelectionLine();
-	boolean firstConversion = true;
+	private boolean firstConversion = true;
 	@FXML
 	private ImageView fieldImage;
 	@FXML
@@ -78,7 +67,6 @@ public class Controller implements Initializable {
 	@FXML
 	private HBox infoPane;
 	private Selection scaleSelection = Selection.NO_SELECTION;
-	private File image;
 
 	public Controller() {
 	}
@@ -127,11 +115,11 @@ public class Controller implements Initializable {
 
 		if (actualDistance != null) {
 
-			Main.scale.set(actualDistance.getValue() / pixelDistance);
-			Main.unit.set(actualDistance.getUnit());
+			Field.SCALE.set(actualDistance.getValue() / pixelDistance);
+			Field.UNIT.set(actualDistance.getUnit());
 
 			addExtraData();
-			convertedInfo.setText(String.format("%.3f %s", actualDistance.getValue(), Main.unit.get()));
+			convertedInfo.setText(String.format("%.3f %s", actualDistance.getValue(), Field.UNIT.get()));
 		}
 	}
 
@@ -146,7 +134,7 @@ public class Controller implements Initializable {
 		}
 	}
 
-	public final void chooseImage(ActionEvent actionEvent) throws java.io.FileNotFoundException {
+	public final void chooseImage(ActionEvent actionEvent) throws IOException {
 		fileChooser.setInitialDirectory(startOpenLocation);
 
 		Window window;
@@ -160,11 +148,17 @@ public class Controller implements Initializable {
 		File image = fileChooser.showOpenDialog(window);
 
 		if (image != null) {
+
 			startOpenLocation = image.getParentFile();
 
-			this.image = image;
-			fieldImage.setImage(getImage(image));
-			distanceViewer.setText(defaultDistance);
+			if (Field.isFieldFile(image)) {
+				load(image);
+
+			} else {
+				Field.imageFile = image;
+				fieldImage.setImage(Field.image = getImage(image));
+				distanceViewer.setText(defaultDistance);
+			}
 		}
 	}
 
@@ -187,24 +181,7 @@ public class Controller implements Initializable {
 			if (saveFile != null) {
 				startSaveLocation = saveFile.getParentFile();
 
-				if (saveFile.exists()) {
-					System.out.println((saveFile.delete() ? "M" : "Did not m") + "anage to delete the file");
-				}
-				if (saveFile.createNewFile()) {
-
-					{
-						String splits = image.getAbsolutePath().substring(image.getAbsolutePath().lastIndexOf('.') + 1);
-						ImageIO.write(ImageIO.read(image), "jpg".equals(splits) ? "jpeg" : "png", saveFile);
-					}
-
-					try (BufferedWriter bufferedWriter = Files
-						.newBufferedWriter(saveFile.toPath(), StandardOpenOption.APPEND)) {
-
-						bufferedWriter.newLine();
-						bufferedWriter.write(String.format("%f %s", Main.scale.get(), Main.unit.get()));
-					}
-				}
-
+				Field.saveData(saveFile);
 			}
 		}
 	}
@@ -217,36 +194,19 @@ public class Controller implements Initializable {
 		if (loadFile != null) {
 			startLoadLocation = loadFile.getParentFile();
 
-			Image image = getImage(loadFile);
-
-			fieldImage.setImage(image);
-
-			try (BufferedReader bufferedReader = new BufferedReader(
-				new InputStreamReader(new FileInputStream(loadFile)))) {
-				AtomicReference<String> lastLine = new AtomicReference<>();
-
-				bufferedReader.lines().forEach(lastLine::set);
-				lastLine.set(lastLine.get().trim());
-
-				if (Pattern.matches(MATCH_PATTERN, lastLine.get())) {
-					String[] data = lastLine.get().split("\\s");
-
-					System.out.println(Arrays.toString(data));
-					Main.scale.set(Double.parseDouble(data[0]));
-					Main.unit.set(data[1]);
-				} else {
-					Main.scale.set(1.0);
-					Main.unit.set(PIXELS);
-				}
-
-				addExtraData();
-				cleanUp();
-			}
+			load(loadFile);
 		}
 	}
 
+	private void load(File loadFile) throws IOException {
+		fieldImage.setImage(Field.loadData(loadFile));
 
-	public enum Selection {
+		addExtraData();
+		cleanUp();
+	}
+
+
+	private enum Selection {
 		NO_SELECTION, ONE_POINT, TWO_POINT
 	}
 
@@ -292,7 +252,7 @@ public class Controller implements Initializable {
 			distanceViewer.setText(String.format("%.4f %s", distance, PIXELS));
 
 			if (!firstConversion) {
-				convertedInfo.setText(String.format("%.3f %s", Main.scale.get() * distance, Main.unit.get()));
+				convertedInfo.setText(String.format("%.3f %s", Field.SCALE.get() * distance, Field.UNIT.get()));
 			}
 
 		}

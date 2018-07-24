@@ -62,7 +62,7 @@ public enum Helper {
 		public final String toString() {
 			return "Unit{" +
 				"value=" + value +
-				", unit='" + unit + '\'' +
+				", UNIT='" + unit + '\'' +
 				'}';
 		}
 	}
