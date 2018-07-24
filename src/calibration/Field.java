@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
@@ -57,7 +56,6 @@ public class Field {
 			if (Pattern.matches(MATCH_PATTERN, lastLine.get())) {
 				String[] data = lastLine.get().split("\\s");
 
-				System.out.println(Arrays.toString(data));
 				Field.SCALE.set(Double.parseDouble(data[0]));
 				Field.UNIT.set(data[1]);
 			} else {
@@ -92,8 +90,6 @@ public class Field {
 	}
 
 	public static boolean isFieldFile(File file) {
-		System.out.println(file.getName());
-
 		if (file.getName().endsWith(SUFFIX)) {
 			Optional<ButtonType> buttonTypeOptional = useFieldValue.showAndWait();
 

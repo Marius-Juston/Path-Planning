@@ -9,7 +9,7 @@ public class PointPlacer implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		System.out.println(location);
+//		System.out.println(location);
 	}
 
 	public void saveData(ActionEvent actionEvent) {

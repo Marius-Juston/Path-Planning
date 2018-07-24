@@ -38,20 +38,15 @@ public class DistanceConverter implements Initializable {
 	public DistanceConverter() {
 	}
 
-	static Unit display(double pixelUnit) {
+	static Unit display(double pixelUnit) throws IOException {
 		info = null;
 		DistanceConverter.pixelUnit = pixelUnit;
 
-		try {
+		Parent root = FXMLLoader.load(DistanceConverter.class.getResource("conversion.fxml"));
 
-			Parent root = FXMLLoader.load(DistanceConverter.class.getResource("conversion.fxml"));
+		primaryStage.setScene(new Scene(root));
 
-			primaryStage.setScene(new Scene(root));
-
-			primaryStage.showAndWait();
-		} catch (IOException e) {
-			System.out.println(e);
-		}
+		primaryStage.showAndWait();
 
 		return info;
 	}
