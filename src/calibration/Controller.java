@@ -71,7 +71,7 @@ public class Controller implements Initializable {
 	public Controller() {
 	}
 
-	private static Unit askActualDistance(double pixelDistance) {
+	private static Unit askActualDistance(double pixelDistance) throws IOException {
 		return DistanceConverter.display(pixelDistance);
 	}
 
@@ -84,7 +84,7 @@ public class Controller implements Initializable {
 		scaleSelection = Selection.NO_SELECTION;
 	}
 
-	public final void selectPoint(MouseEvent mouseEvent) {
+	public final void selectPoint(MouseEvent mouseEvent) throws IOException {
 
 		if (scaleSelection == Selection.NO_SELECTION) {
 			cleanUp();
@@ -109,7 +109,7 @@ public class Controller implements Initializable {
 		}
 	}
 
-	private void setConversion() {
+	private void setConversion() throws IOException {
 		double pixelDistance = line.getLineLength();
 		Unit actualDistance = askActualDistance(pixelDistance);
 
@@ -167,7 +167,13 @@ public class Controller implements Initializable {
 		line.setVisible(false);
 		pointPlacement.getChildren().add(line);
 		convertedInfo.setEditable(false);
-		rescale.setOnAction((actionEvent) -> setConversion());
+		rescale.setOnAction((actionEvent) -> {
+			try {
+				setConversion();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	public final void saveData(ActionEvent actionEvent) throws IOException {
