@@ -14,8 +14,8 @@ public class PositionPoint extends Circle {
 
 		point = new Point(centerX, centerY);
 
-		centerXProperty().bind(point.xProperty());
-		centerYProperty().bind(point.yProperty());
+		centerXProperty().bindBidirectional(point.xProperty());
+		centerYProperty().bindBidirectional(point.yProperty());
 
 		setOnMouseClicked(this::handleMouseClicked);
 		setOnMouseDragged(this::movePoint);

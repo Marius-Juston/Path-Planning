@@ -1,24 +1,13 @@
 package drawer.curves;
 
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
 public class Arrow extends Polygon {
 
-	ObservableList<SimpleDoubleProperty> finalVertices = new SimpleListProperty<>();
 
-	SimpleDoubleProperty baseX = new SimpleDoubleProperty();
-	SimpleDoubleProperty baseY = new SimpleDoubleProperty();
-
-
-	SimpleDoubleProperty dX = new SimpleDoubleProperty();
-	SimpleDoubleProperty dY = new SimpleDoubleProperty();
-
-
-	public Arrow(double x, double y, double dx, double dy, double width, boolean length_includes_head,
+	public Arrow(double x, double y, double dx, double dy,
+		double width, boolean length_includes_head,
 		double head_width, double head_length, String shape, double overhang,
 		boolean head_starts_at_zero, Color fill) {
 		if (head_width == -1) {

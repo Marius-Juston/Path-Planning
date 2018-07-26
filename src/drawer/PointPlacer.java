@@ -3,7 +3,7 @@ package drawer;
 import calibration.Controller;
 import calibration.Field;
 import calibration.Helper;
-import drawer.curves.Arrow;
+import drawer.curves.ObservedArrow;
 import drawer.curves.PositionPoint;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +21,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 
 public class PointPlacer implements Initializable {
 
@@ -81,10 +80,14 @@ public class PointPlacer implements Initializable {
 		PositionPoint positionPoint = new PositionPoint(mouseEvent.getX(), mouseEvent.getY());
 
 //		Arrow arrow = new Arrow(positionPoint.getCenterX(), positionPoint.getCenterY(), .8, 0, 0.195, true, -1, 0.4, "full", 0, false);
-		Arrow arrow = new Arrow(positionPoint.getCenterX(), positionPoint.getCenterY(), 360, 50, false);
+//		Arrow arrow = new Arrow(positionPoint.getCenterX(), positionPoint.getCenterY(), 360, 50, false);
+
+		ObservedArrow arrow = new ObservedArrow(positionPoint, 0, 50, false);
+		arrow.setAngle(90);
+//		arrow.setAngle(90);
+
 		arrow.setFill(Color.BLACK);
 
-		pointPlane.getChildren().add(new Polygon(arrow.getPoints().stream().mapToDouble(value -> value).toArray()));
 		pointPlane.getChildren().addAll(positionPoint, arrow);
 	}
 

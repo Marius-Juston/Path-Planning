@@ -15,9 +15,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<VBox alignment="TOP_CENTER"
-  prefHeight="800.0" prefWidth="1280.0" spacing="5.0" xmlns="http://javafx.com/javafx/8"
-  xmlns:fx="http://javafx.com/fxml/1" fx:controller="drawer.PointPlacer">
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+  alignment="TOP_CENTER" prefHeight="800.0" prefWidth="1280.0" spacing="5.0"
+  xmlns="http://javafx.com/javafx/8" fx:controller="drawer.PointPlacer">
   <children>
     <MenuBar>
       <menus>
@@ -42,13 +42,13 @@
         </Menu>
       </menus>
     </MenuBar>
-    <SplitPane dividerPositions="0.6592356687898089" VBox.vgrow="ALWAYS">
+    <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.6592356687898089">
       <items>
         <ScrollPane prefViewportHeight="158.0" prefViewportWidth="173.0">
           <content>
-            <AnchorPane fx:id="pointPlane" onMouseClicked="#handlePointEvent">
+            <AnchorPane onMouseClicked="#handlePointEvent" fx:id="pointPlane">
               <children>
-                <ImageView fx:id="field" pickOnBounds="true" preserveRatio="true"/>
+                <ImageView pickOnBounds="true" preserveRatio="true" fx:id="field"/>
               </children>
             </AnchorPane>
           </content>
