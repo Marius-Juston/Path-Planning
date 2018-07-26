@@ -11,8 +11,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -39,6 +41,7 @@ public class Controller implements Initializable {
 	private static File startOpenLocation;
 	private static File startSaveLocation;
 
+
 	static {
 		fileChooser.getExtensionFilters().add(new ExtensionFilter("Images", "*.png", "*.jpg", "*.field"));
 		fileChooser.setTitle("Select Field Image");
@@ -57,6 +60,7 @@ public class Controller implements Initializable {
 	private final SelectionPoint[] scaleSelectionPoints = new SelectionPoint[2];
 	private final Button rescale = new Button("Rescale");
 	private final SelectionLine line = new SelectionLine();
+	private final Button moveToPointPlacement = new Button("Place curves");
 	private boolean firstConversion = true;
 	@FXML
 	private ImageView fieldImage;
@@ -73,6 +77,11 @@ public class Controller implements Initializable {
 
 	private static Unit askActualDistance(double pixelDistance) throws IOException {
 		return DistanceConverter.display(pixelDistance);
+	}
+
+	public void gotToCurvePointPlacement(ActionEvent actionEvent) throws IOException {
+		Parent root = FXMLLoader.load(getClass().getResource("../drawer/pointPlacer.fxml"));
+		Helper.setRoot(actionEvent, root);
 	}
 
 	private void cleanUp() {
@@ -129,7 +138,9 @@ public class Controller implements Initializable {
 
 			infoPane.getChildren().add(1, new Text("=>"));
 			infoPane.getChildren().add(2, convertedInfo);
+
 			infoPane.getChildren().add(infoPane.getChildren().size() - 1, rescale);
+			infoPane.getChildren().add(infoPane.getChildren().size() - 1, moveToPointPlacement);
 
 		}
 	}
@@ -174,6 +185,15 @@ public class Controller implements Initializable {
 				e.printStackTrace();
 			}
 		});
+
+		moveToPointPlacement.setOnAction(actionEvent -> {
+			try {
+				gotToCurvePointPlacement(actionEvent);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+		moveToPointPlacement.setDefaultButton(true);
 	}
 
 	public final void saveData(ActionEvent actionEvent) throws IOException {

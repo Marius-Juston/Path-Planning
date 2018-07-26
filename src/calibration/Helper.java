@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.stage.Window;
 
@@ -34,6 +36,10 @@ public enum Helper {
 	public static Image getImage(File file) throws FileNotFoundException {
 		BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
 		return new Image(bufferedInputStream);
+	}
+
+	public static void setRoot(ActionEvent actionEvent, Parent rootToSetTo) {
+		((Button) actionEvent.getSource()).getScene().setRoot(rootToSetTo);
 	}
 
 	public static class Unit {

@@ -1,5 +1,6 @@
 package calibration;
 
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,8 +18,9 @@ public class Main extends Application {
 	}
 
 	@Override
-	public final void start(Stage primaryStage) throws java.io.IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("fieldSelection.fxml"));
+	public final void start(Stage primaryStage) throws IOException {
+
+		Parent root = FXMLLoader.load(Controller.class.getResource("fieldSelection.fxml"));
 		primaryStage.setTitle("Path Planner");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();

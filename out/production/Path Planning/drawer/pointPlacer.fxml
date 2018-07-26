@@ -15,10 +15,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
-  minHeight="-Infinity"
-  minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" spacing="5.0"
-  xmlns="http://javafx.com/javafx/8" fx:controller="drawer.PointPlacer">
+<VBox alignment="TOP_CENTER"
+  prefHeight="800.0" prefWidth="1280.0" spacing="5.0" xmlns="http://javafx.com/javafx/8"
+  xmlns:fx="http://javafx.com/fxml/1" fx:controller="drawer.PointPlacer">
   <children>
     <MenuBar>
       <menus>
@@ -43,21 +42,23 @@
         </Menu>
       </menus>
     </MenuBar>
-    <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.6592356687898089">
+    <SplitPane dividerPositions="0.6592356687898089" VBox.vgrow="ALWAYS">
       <items>
         <ScrollPane prefViewportHeight="158.0" prefViewportWidth="173.0">
           <content>
-            <AnchorPane>
+            <AnchorPane fx:id="pointPlane" onMouseClicked="#handlePointEvent">
               <children>
-                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true"/>
+                <ImageView fx:id="field" pickOnBounds="true" preserveRatio="true"/>
               </children>
             </AnchorPane>
           </content>
         </ScrollPane>
         <TableView prefHeight="200.0" prefWidth="200.0">
           <columns>
-            <TableColumn prefWidth="75.0" text="C1"/>
-            <TableColumn prefWidth="75.0" text="C2"/>
+            <TableColumn prefWidth="75.0" text="Name"/>
+            <TableColumn prefWidth="75.0" text="X"/>
+            <TableColumn prefWidth="75.0" text="Y"/>
+            <TableColumn prefWidth="75.0" text="Angle"/>
           </columns>
           <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
@@ -67,7 +68,7 @@
     </SplitPane>
     <HBox alignment="TOP_CENTER" spacing="5.0">
       <children>
-        <Button mnemonicParsing="false" text="Reselect Field"/>
+        <Button mnemonicParsing="false" onAction="#goBackToFieldSelector" text="Reselect Field"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button defaultButton="true" mnemonicParsing="false" text="Send to Network table"/>
         <Button mnemonicParsing="false" text="Save"/>

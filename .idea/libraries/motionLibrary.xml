@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="motionLibrary">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/motionLibrary" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/motionLibrary" recursive="false" />
+  </library>
+</component>

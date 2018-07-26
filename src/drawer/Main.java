@@ -1,12 +1,16 @@
 package drawer;
 
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+
 public class Main extends Application {
+
+	public static Stage primaryStage;
 
 	public Main() {
 	}
@@ -16,10 +20,14 @@ public class Main extends Application {
 	}
 
 	@Override
-	public final void start(Stage primaryStage) throws java.io.IOException {
+	public final void start(Stage primaryStage) throws IOException {
+		Main.primaryStage = primaryStage;
+
 		Parent root = FXMLLoader.load(getClass().getResource("pointPlacer.fxml"));
+
 		primaryStage.setTitle("Path Planner");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
+
 	}
 }
