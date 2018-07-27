@@ -34,6 +34,8 @@ public class PointAngleCombo extends PositionPoint {
 			movePoint(event);
 			beingDragged = true;
 		});
+
+		getStyleClass().add("position-point");
 	}
 
 	public ObservedDirectionalArrow getObservedDirectionalArrow() {

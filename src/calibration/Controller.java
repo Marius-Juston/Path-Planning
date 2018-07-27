@@ -82,6 +82,7 @@ public class Controller implements Initializable {
 	public void gotToCurvePointPlacement(ActionEvent actionEvent) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("../drawer/pointPlacer.fxml"));
 		Helper.setRoot(actionEvent, root);
+		root.getScene().getStylesheets().add("./drawer/circles.css");
 	}
 
 	private void cleanUp() {

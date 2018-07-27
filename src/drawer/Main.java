@@ -27,6 +27,7 @@ public class Main extends Application {
 
 		primaryStage.setTitle("Path Planner");
 		primaryStage.setScene(new Scene(root));
+		primaryStage.getScene().getStylesheets().add("./drawer/circles.css");
 		primaryStage.show();
 
 	}
