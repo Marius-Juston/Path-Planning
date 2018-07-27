@@ -3,8 +3,7 @@ package drawer;
 import calibration.Controller;
 import calibration.Field;
 import calibration.Helper;
-import drawer.curves.ObservedArrow;
-import drawer.curves.PositionPoint;
+import drawer.curves.PointAngleCombo;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,7 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 
 public class PointPlacer implements Initializable {
 
@@ -76,20 +75,29 @@ public class PointPlacer implements Initializable {
 
 	}
 
+
 	public void addPoint(MouseEvent mouseEvent) {
 
-		PositionPoint positionPoint = new PositionPoint(mouseEvent.getX(), mouseEvent.getY());
+//		PositionPoint positionPoint = new PositionPoint(mouseEvent.getX(), mouseEvent.getY());
 
 //		Arrow arrow = new Arrow(positionPoint.getCenterX(), positionPoint.getCenterY(), .8, 0, 0.195, true, -1, 0.4, "full", 0, false);
 //		Arrow arrow = new Arrow(positionPoint.getCenterX(), positionPoint.getCenterY(), 360, 50, false);
 
-		ObservedArrow arrow = new ObservedArrow(positionPoint, 0, 50, false);
-		arrow.setAngle(90);
-//		arrow.setAngle(90);
+//		ObservedDirectionalArrow arrow = new ObservedDirectionalArrow(positionPoint, 0, 50, false);
 
-		arrow.setFill(Color.BLACK);
+//		arrow.setFill(Color.BLACK);
 
-		pointPlane.getChildren().addAll(positionPoint, arrow);
+//		pointPlane.getChildren().addAll(positionPoint, arrow);
+
+		if (!(mouseEvent.getPickResult().getIntersectedNode() instanceof Shape)) {
+			PointAngleCombo pointAngleCombo = new PointAngleCombo(mouseEvent.getX(), mouseEvent.getY());
+			showPoint(pointAngleCombo);
+		}
+	}
+
+	public void showPoint(PointAngleCombo pointAngleCombo) {
+		pointPlane.getChildren()
+			.addAll(pointAngleCombo.getArrowRadius(), pointAngleCombo.getObservedDirectionalArrow(), pointAngleCombo);
 	}
 
 	public void goBackToFieldSelector(ActionEvent actionEvent) throws IOException {

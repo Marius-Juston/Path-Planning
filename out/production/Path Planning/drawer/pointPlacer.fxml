@@ -46,7 +46,7 @@
       <items>
         <ScrollPane prefViewportHeight="158.0" prefViewportWidth="173.0">
           <content>
-            <AnchorPane onMouseClicked="#handlePointEvent" fx:id="pointPlane">
+            <AnchorPane onMousePressed="#handlePointEvent" fx:id="pointPlane">
               <children>
                 <ImageView pickOnBounds="true" preserveRatio="true" fx:id="field"/>
               </children>
