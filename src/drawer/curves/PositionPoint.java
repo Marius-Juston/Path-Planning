@@ -12,6 +12,7 @@ public class PositionPoint extends Circle {
 		super(centerX, centerY, 4, Color.BLUE);
 
 		setOnMouseDragged(this::movePoint);
+
 	}
 
 

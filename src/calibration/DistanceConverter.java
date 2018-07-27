@@ -45,7 +45,6 @@ public class DistanceConverter implements Initializable {
 		Parent root = FXMLLoader.load(DistanceConverter.class.getResource("conversion.fxml"));
 
 		primaryStage.setScene(new Scene(root));
-
 		primaryStage.showAndWait();
 
 		return info;

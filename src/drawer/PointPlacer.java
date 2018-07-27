@@ -3,6 +3,7 @@ package drawer;
 import calibration.Controller;
 import calibration.Field;
 import calibration.Helper;
+import drawer.context.PathTitledTab;
 import drawer.curves.PointAngleGroup;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Accordion;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -26,24 +28,32 @@ public class PointPlacer implements Initializable {
 	public ImageView field;
 	@FXML
 	public AnchorPane pointPlane;
+	public Accordion titledPaneAccordion;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
 		if (Field.image == null) {
 			try {
-				Image defaultImage = Helper.getImage(new File("./src/FRC 2018 Field Drawings.png"));
+				File imageFile = new File("./src/FRC 2018 Field Drawings.png");
+				Image defaultImage = Helper.getImage(imageFile);
 				field.setImage(defaultImage);
+				Field.image = field.getImage();
+				Field.imageFile = imageFile;
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
 		} else {
 			field.setImage(Field.image);
 		}
+
+		PathTitledTab pathTitledTab = new PathTitledTab();
+		titledPaneAccordion.setExpandedPane(pathTitledTab);
+		titledPaneAccordion.getPanes().add(pathTitledTab);
+		pointPlane.getChildren().add(pathTitledTab.getKeyPoints());
 	}
 
 	public void saveData(ActionEvent actionEvent) {
-
 	}
 
 	public void loadData(ActionEvent actionEvent) {
@@ -78,23 +88,17 @@ public class PointPlacer implements Initializable {
 
 	public void addPoint(MouseEvent mouseEvent) {
 
-//		PositionPoint positionPoint = new PositionPoint(mouseEvent.getX(), mouseEvent.getY());
-
-//		Arrow arrow = new Arrow(positionPoint.getCenterX(), positionPoint.getCenterY(), .8, 0, 0.195, true, -1, 0.4, "full", 0, false);
-//		Arrow arrow = new Arrow(positionPoint.getCenterX(), positionPoint.getCenterY(), 360, 50, false);
-
-//		ObservedDirectionalArrow arrow = new ObservedDirectionalArrow(positionPoint, 0, 50, false);
-
-//		arrow.setFill(Color.BLACK);
-
-//		pointPlane.getChildren().addAll(positionPoint, arrow);
-
 		if (!(mouseEvent.getPickResult().getIntersectedNode() instanceof Shape)) {
 			PointAngleGroup pointAngleCombo = new PointAngleGroup(mouseEvent.getX(), mouseEvent.getY());
 
 			pointPlane.getChildren().add(pointAngleCombo);
 
+			getExpandedPane().getKeyPoints().add(pointAngleCombo);
 		}
+	}
+
+	private PathTitledTab getExpandedPane() {
+		return (PathTitledTab) titledPaneAccordion.getExpandedPane();
 	}
 
 	public void goBackToFieldSelector(ActionEvent actionEvent) throws IOException {
