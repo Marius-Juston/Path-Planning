@@ -1,6 +1,8 @@
 package drawer.curves;
 
+import calibration.Helper;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -13,10 +15,16 @@ public class ObservedArrow extends Polygon {
 	private final SimpleDoubleProperty angle; //In radians
 	private final double length;
 
+	private double dx;
+	private double dy;
+
 	public ObservedArrow(PositionPoint xy, double dx, double dy,
 		double width, boolean length_includes_head,
 		double head_width, double head_length, String shape, double overhang,
 		boolean head_starts_at_zero, Color fill) {
+
+		this.dx = dx;
+		this.dy = dy;
 
 		if (head_width == -1) {
 			head_width = 3 * width;
@@ -37,74 +45,30 @@ public class ObservedArrow extends Polygon {
 			x = new SimpleDoubleProperty(xy.getCenterX());
 			y = new SimpleDoubleProperty(xy.getCenterY());
 			angle = new SimpleDoubleProperty(xy.getPoint().getAngle());
-			{
-				xy.centerXProperty().bindBidirectional(x);
 
-				xy.centerXProperty().addListener((observable, oldValue, newValue) -> {
-					for (int i = 0; i < getPoints().size(); i += 2) {
-						getPoints().set(i, (getPoints().get(i) - oldValue.doubleValue()) + newValue.doubleValue());
-					}
-				});
-			}
-			{
-				xy.centerYProperty().bindBidirectional(y);
+			xy.centerXProperty().bindBidirectional(x);
 
-				xy.centerYProperty().addListener((observable, oldValue, newValue) -> {
-					for (int i = 1; i < getPoints().size(); i += 2) {
-						getPoints().set(i, (getPoints().get(i) - oldValue.doubleValue()) + newValue.doubleValue());
-					}
-				});
-			}
-			{
-				xy.getPoint().angleProperty().bindBidirectional(angle);
-				angle.addListener((observable, oldValue, newValue) -> {
-					double rotation = oldValue.doubleValue() - newValue.doubleValue();
+			xy.centerXProperty().addListener((observable, oldValue, newValue) -> {
+				followPoint(oldValue, newValue, true);
+//
+//				for (int i = 0; i < getPoints().size(); i += 2) {
+//					getPoints().set(i, (getPoints().get(i) - oldValue.doubleValue()) + newValue.doubleValue());
+//				}
+			});
 
-					double[][] points = new double[8][2];
+			xy.centerYProperty().bindBidirectional(y);
 
-					for (int i = 0; i < getPoints().size(); i++) {
-						int row = i / points[0].length;
-						int column = i - (row * points[0].length);
+			xy.centerYProperty().addListener((observable, oldValue, newValue) -> {
+				followPoint(oldValue, newValue, false);
 
-						points[row][column] = getPoints().get(i) + ((column == 0) ? -x.get() - dx : -y.get() + dy);
-					}
+//				for (int i = 1; i < getPoints().size(); i += 2) {
+//					getPoints().set(i, (getPoints().get(i) - oldValue.doubleValue()) + newValue.doubleValue());
+//				}
+			});
 
-					System.out.println("Hello");
-					display(points);
+			xy.getPoint().angleProperty().bindBidirectional(angle);
+			angle.addListener(this::rotateArrow);
 
-					double[][] rotatedVertices = new double[8][2];
-					double[][] rotationMatrix = {{StrictMath.cos(rotation), -StrictMath.sin(rotation)},
-						{StrictMath.sin(rotation), StrictMath.cos(rotation)}};
-
-					for (int i = 0; i < points.length; i++) {
-						for (int z = 0; z < rotationMatrix[0].length; z++) {
-							double sum = 0;
-							for (int j = 0; j < rotationMatrix.length; j++) {
-								sum += (points[i][j] * rotationMatrix[z][j]);
-							}
-
-							rotatedVertices[i][z] = sum;
-						}
-					}
-
-					double newDx = StrictMath.cos(newValue.doubleValue()) * length;
-					double newDy = StrictMath.sin(newValue.doubleValue()) * length;
-
-					for (int i = 0; i < rotatedVertices.length; i++) {
-
-						rotatedVertices[i][0] += (xy.getCenterX() + newDx);
-						rotatedVertices[i][1] += (xy.getCenterY() - newDy)/*Due to graphics reason - instead of +*/;
-					}
-
-					getPoints().clear();
-
-					for (double[] vert : rotatedVertices) {
-						for (double aVert : vert) {
-							getPoints().add(aVert);
-						}
-					}
-				});
-			}
 		}
 
 //		double vertices[][];
@@ -185,36 +149,93 @@ public class ObservedArrow extends Polygon {
 			sx = 1;
 		}
 		double[][] M = new double[][]{{cx, sx}, {-sx, cx}};
-		double[][] vertices = new double[coords.length][2];
+//		double[][] vertices = new double[coords.length][2];
 
 //		Does the dot product of coords and M
-		for (int i = 0; i < coords.length; i++) {
-			for (int z = 0; z < M[0].length; z++) {
-				double sum = 0;
-				for (int j = 0; j < M.length; j++) {
-					sum += (coords[i][j] * M[z][j]);
-				}
+		double[][] vertices = Helper.dotProduct(coords, M);
 
-				vertices[i][z] = sum;
-			}
-		}
+//		for (int i = 0; i < coords.length; i++) {
+//			for (int z = 0; z < M[0].length; z++) {
+//				double sum = 0;
+//				for (int j = 0; j < M.length; j++) {
+//					sum += (coords[i][j] * M[z][j]);
+//				}
+//
+//				vertices[i][z] = sum;
+//			}
+//		}
 
-		display(vertices);
+		translate(vertices, xy.getCenterX(), xy.getCenterY(), dx, dy);
+//
+//		for (int i = 0; i < vertices.length; i++) {
+//
+//			vertices[i][0] += (xy.getCenterX() + dx);
+//			vertices[i][1] += (xy.getCenterY() - dy)/*Due to graphics reason - instead of +*/;
+//		}
 
-		for (int i = 0; i < vertices.length; i++) {
-
-			vertices[i][0] += (xy.getCenterX() + dx);
-			vertices[i][1] += (xy.getCenterY() - dy)/*Due to graphics reason - instead of +*/;
-		}
-
-		for (double[] vert : vertices) {
-			for (double aVert : vert) {
-				getPoints().add(aVert);
-			}
-		}
+		setArrowPoints(vertices);
 
 		setFill(fill);
 		setOnMouseDragged(this::movePoint);
+	}
+
+	public ObservedArrow(PositionPoint positionPoint, double angle, double length, boolean isRadians, Color fill) {
+		this(positionPoint, StrictMath.cos((isRadians ? angle : (angle = StrictMath.toRadians(angle)))) * length,
+			StrictMath.sin(angle) * length, 4, true, -1, 6, "full", 0, false, fill);
+	}
+
+	public ObservedArrow(PositionPoint positionPoint, double angle, double length, boolean isRadians) {
+		this(positionPoint, angle, length, isRadians, Color.RED);
+	}
+
+	public void followPoint(Number oldValue, Number newValue, boolean isX) {
+		for (int i = isX ? 0 : 1; i < getPoints().size(); i += 2) {
+			getPoints().set(i, (getPoints().get(i) - oldValue.doubleValue()) + newValue.doubleValue());
+		}
+	}
+
+	private void rotateArrow(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+		double rotation = oldValue.doubleValue() - newValue.doubleValue();
+
+		double[][] points = new double[8][2];
+
+		for (int i = 0; i < getPoints().size(); i++) {
+			int row = i / points[0].length;
+			int column = i - (row * points[0].length);
+
+//						Gets the points translated so that 0,0 is the origin
+			points[row][column] = getPoints().get(i) + ((column == 0) ? -x.get() - dx : -y.get() + dy);
+		}
+
+//					double[][] rotatedVertices = new double[8][2];
+		double[][] rotationMatrix = {{StrictMath.cos(rotation), -StrictMath.sin(rotation)},
+			{StrictMath.sin(rotation), StrictMath.cos(rotation)}};
+
+		double[][] rotatedVertices = Helper.dotProduct(points, rotationMatrix);
+//					for (int i = 0; i < points.length; i++) {
+//						for (int z = 0; z < rotationMatrix[0].length; z++) {
+//							double sum = 0;
+//							for (int j = 0; j < rotationMatrix.length; j++) {
+//								sum += (points[i][j] * rotationMatrix[z][j]);
+//							}
+//
+//							rotatedVertices[i][z] = sum;
+//						}
+//					}
+
+//					Need to recalculate the dx and dys because of the new angle
+		dx = StrictMath.cos(newValue.doubleValue()) * length;
+		dy = StrictMath.sin(newValue.doubleValue()) * length;
+
+		translate(rotatedVertices, x.get(), y.get(), dx, dy);
+//
+//					for (int i = 0; i < rotatedVertices.length; i++) {
+//
+//						rotatedVertices[i][0] += (xy.getCenterX() + newDx);
+//						rotatedVertices[i][1] += (xy.getCenterY() - newDy)/*Due to graphics reason - instead of +*/;
+//					}
+
+		setArrowPoints(rotatedVertices);
 	}
 
 //	public ObservedArrow(double x, double y, double dx, double dy) {
@@ -225,13 +246,21 @@ public class ObservedArrow extends Polygon {
 //		this(x, y, dx, dy, 4, true, -1, 6, "full", 0, false, fill);
 //	}
 
-	public ObservedArrow(PositionPoint positionPoint, double angle, double length, boolean isRadians, Color fill) {
-		this(positionPoint, StrictMath.cos((isRadians ? angle : (angle = StrictMath.toRadians(angle)))) * length,
-			StrictMath.sin(angle) * length, 4, true, -1, 6, "full", 0, false, fill);
+	public void translate(double[][] vertices, double x, double y, double dx, double dy) {
+		for (int i = 0; i < vertices.length; i++) {
+			vertices[i][0] += (x + dx);
+			vertices[i][1] += (y - dy)/*Due to graphics reason - instead of +*/;
+		}
 	}
 
-	public ObservedArrow(PositionPoint positionPoint, double angle, double length, boolean isRadians) {
-		this(positionPoint, angle, length, isRadians, Color.RED);
+	public void setArrowPoints(double[][] vertices) {
+		getPoints().clear();
+
+		for (double[] vert : vertices) {
+			for (double aVert : vert) {
+				getPoints().add(aVert);
+			}
+		}
 	}
 
 	public void movePoint(MouseEvent mouseEvent) {
@@ -248,12 +277,4 @@ public class ObservedArrow extends Polygon {
 		this.angle.set(StrictMath.toRadians(angle));
 	}
 
-	public void display(double[][] array) {
-		for (double[] doubles : array) {
-			for (double v : doubles) {
-				System.out.print(v + " ");
-			}
-			System.out.println();
-		}
-	}
 }

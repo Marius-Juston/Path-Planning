@@ -77,6 +77,7 @@ public class PointPlacer implements Initializable {
 	}
 
 	public void addPoint(MouseEvent mouseEvent) {
+
 		PositionPoint positionPoint = new PositionPoint(mouseEvent.getX(), mouseEvent.getY());
 
 //		Arrow arrow = new Arrow(positionPoint.getCenterX(), positionPoint.getCenterY(), .8, 0, 0.195, true, -1, 0.4, "full", 0, false);

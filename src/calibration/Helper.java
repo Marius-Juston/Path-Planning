@@ -32,7 +32,6 @@ public enum Helper {
 		return ((Node) event.getSource()).getScene().getWindow();
 	}
 
-
 	public static Image getImage(File file) throws FileNotFoundException {
 		BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
 		return new Image(bufferedInputStream);
@@ -40,6 +39,28 @@ public enum Helper {
 
 	public static void setRoot(ActionEvent actionEvent, Parent rootToSetTo) {
 		((Button) actionEvent.getSource()).getScene().setRoot(rootToSetTo);
+	}
+
+	public static double[][] dotProduct(double[][] matrixA, double[][] matrixB) {
+		double[][] matrix = new double[matrixA.length][matrixB[0].length];
+
+		if (matrixA[0].length != matrixB.length) {
+			throw new IllegalArgumentException(
+				"Matrix A number of columns and matrix B number of rows need to be the same");
+		}
+
+		for (int i = 0; i < matrixA.length; i++) {
+			for (int z = 0; z < matrixB[0].length; z++) {
+				double sum = 0;
+				for (int j = 0; j < matrixB.length; j++) {
+					sum += (matrixA[i][j] * matrixB[z][j]);
+				}
+
+				matrix[i][z] = sum;
+			}
+		}
+
+		return matrix;
 	}
 
 	public static class Unit {
