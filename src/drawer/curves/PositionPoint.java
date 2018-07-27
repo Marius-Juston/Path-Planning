@@ -17,15 +17,9 @@ public class PositionPoint extends Circle {
 		centerXProperty().bindBidirectional(point.xProperty());
 		centerYProperty().bindBidirectional(point.yProperty());
 
-		setOnMouseClicked(this::handleMouseClicked);
 		setOnMouseDragged(this::movePoint);
 	}
 
-	private void handleMouseClicked(MouseEvent mouseEvent) {
-		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-
-		}
-	}
 
 	public void movePoint(MouseEvent mouseEvent) {
 		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
