@@ -8,7 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
-public class ObservedArrow extends Polygon {
+public class ObservedDirectionalArrow extends Polygon {
 
 	private final SimpleDoubleProperty x;
 	private final SimpleDoubleProperty y;
@@ -18,7 +18,7 @@ public class ObservedArrow extends Polygon {
 	private double dx;
 	private double dy;
 
-	public ObservedArrow(PositionPoint xy, double dx, double dy,
+	public ObservedDirectionalArrow(PositionPoint xy, double dx, double dy,
 		double width, boolean length_includes_head,
 		double head_width, double head_length, String shape, double overhang,
 		boolean head_starts_at_zero, Color fill) {
@@ -179,12 +179,13 @@ public class ObservedArrow extends Polygon {
 		setOnMouseDragged(this::movePoint);
 	}
 
-	public ObservedArrow(PositionPoint positionPoint, double angle, double length, boolean isRadians, Color fill) {
+	public ObservedDirectionalArrow(PositionPoint positionPoint, double angle, double length, boolean isRadians,
+		Color fill) {
 		this(positionPoint, StrictMath.cos((isRadians ? angle : (angle = StrictMath.toRadians(angle)))) * length,
 			StrictMath.sin(angle) * length, 4, true, -1, 6, "full", 0, false, fill);
 	}
 
-	public ObservedArrow(PositionPoint positionPoint, double angle, double length, boolean isRadians) {
+	public ObservedDirectionalArrow(PositionPoint positionPoint, double angle, double length, boolean isRadians) {
 		this(positionPoint, angle, length, isRadians, Color.RED);
 	}
 
@@ -264,9 +265,21 @@ public class ObservedArrow extends Polygon {
 	}
 
 	public void movePoint(MouseEvent mouseEvent) {
+
 		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-			x.set(mouseEvent.getX());
-			y.set(mouseEvent.getY());
+//			x.set(mouseEvent.getX());
+//			y.set(mouseEvent.getY());
+
+//			setAngle(Math.atan2(mouseEvent.getX() , mouseEvent.getY() ));
+
+			double x = mouseEvent.getX() - this.x.get();
+			double y = -(mouseEvent.getY() - this.y.get());
+
+			double angle = Math.atan2(y, x);
+
+			setAngle(angle);
+		} else {
+
 		}
 	}
 
@@ -274,7 +287,7 @@ public class ObservedArrow extends Polygon {
 	 * Angles in degrees
 	 */
 	public void setAngle(double angle) {
-		this.angle.set(StrictMath.toRadians(angle));
+		this.angle.set(angle);
 	}
 
 }
