@@ -44,7 +44,7 @@ public class ObservedDirectionalArrow extends Polygon {
 		{
 			x = new SimpleDoubleProperty(xy.getCenterX());
 			y = new SimpleDoubleProperty(xy.getCenterY());
-			angle = new SimpleDoubleProperty(xy.getPoint().getAngle());
+			angle = new SimpleDoubleProperty(0);
 
 			xy.centerXProperty().bindBidirectional(x);
 
@@ -66,7 +66,6 @@ public class ObservedDirectionalArrow extends Polygon {
 //				}
 			});
 
-			xy.getPoint().angleProperty().bindBidirectional(angle);
 			angle.addListener(this::rotateArrow);
 
 		}
@@ -283,11 +282,18 @@ public class ObservedDirectionalArrow extends Polygon {
 		}
 	}
 
+	public double getAngle() {
+		return angle.get();
+	}
+
 	/**
-	 * Angles in degrees
+	 * Angles in radians
 	 */
 	public void setAngle(double angle) {
 		this.angle.set(angle);
 	}
 
+	public SimpleDoubleProperty angleProperty() {
+		return angle;
+	}
 }

@@ -7,15 +7,9 @@ import javafx.scene.shape.Circle;
 
 public class PositionPoint extends Circle {
 
-	private final Point point;
 
 	public PositionPoint(double centerX, double centerY) {
 		super(centerX, centerY, 4, Color.BLUE);
-
-		point = new Point(centerX, centerY);
-
-		centerXProperty().bindBidirectional(point.xProperty());
-		centerYProperty().bindBidirectional(point.yProperty());
 
 		setOnMouseDragged(this::movePoint);
 	}
@@ -23,12 +17,9 @@ public class PositionPoint extends Circle {
 
 	public void movePoint(MouseEvent mouseEvent) {
 		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-			point.xProperty().set(mouseEvent.getX());
-			point.yProperty().set(mouseEvent.getY());
+			setCenterX(mouseEvent.getX());
+			setCenterY(mouseEvent.getY());
 		}
 	}
 
-	public Point getPoint() {
-		return point;
-	}
 }

@@ -3,7 +3,7 @@ package drawer;
 import calibration.Controller;
 import calibration.Field;
 import calibration.Helper;
-import drawer.curves.PointAngleCombo;
+import drawer.curves.PointAngleGroup;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -90,14 +90,11 @@ public class PointPlacer implements Initializable {
 //		pointPlane.getChildren().addAll(positionPoint, arrow);
 
 		if (!(mouseEvent.getPickResult().getIntersectedNode() instanceof Shape)) {
-			PointAngleCombo pointAngleCombo = new PointAngleCombo(mouseEvent.getX(), mouseEvent.getY());
-			showPoint(pointAngleCombo);
-		}
-	}
+			PointAngleGroup pointAngleCombo = new PointAngleGroup(mouseEvent.getX(), mouseEvent.getY());
 
-	public void showPoint(PointAngleCombo pointAngleCombo) {
-		pointPlane.getChildren()
-			.addAll(pointAngleCombo.getArrowRadius(), pointAngleCombo.getObservedDirectionalArrow(), pointAngleCombo);
+			pointPlane.getChildren().add(pointAngleCombo);
+
+		}
 	}
 
 	public void goBackToFieldSelector(ActionEvent actionEvent) throws IOException {
