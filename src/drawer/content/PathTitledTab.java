@@ -1,4 +1,4 @@
-package drawer.context;
+package drawer.content;
 
 import javafx.scene.control.TitledPane;
 

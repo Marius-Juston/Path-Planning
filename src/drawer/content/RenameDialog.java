@@ -1,4 +1,4 @@
-package drawer.context;
+package drawer.content;
 
 import java.io.IOException;
 import javafx.event.ActionEvent;
