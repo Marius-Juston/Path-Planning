@@ -24,7 +24,6 @@ public class Main extends Application {
 		Main.primaryStage = primaryStage;
 
 		Parent root = FXMLLoader.load(getClass().getResource("pointPlacer.fxml"));
-
 		primaryStage.setTitle("Path Planner");
 		primaryStage.setScene(new Scene(root));
 		primaryStage.getScene().getStylesheets().add("./drawer/circles.css");

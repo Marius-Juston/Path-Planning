@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="javafx" build-on-make="true" name="Field Calibration">
+  <artifact type="javafx" name="Field Calibration">
     <output-path>$PROJECT_DIR$/out/artifacts/Field_Calibration</output-path>
     <properties id="javafx-properties">
       <options>
