@@ -1,10 +1,14 @@
 package drawer.curves;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -16,7 +20,7 @@ public class PointAngleGroup extends Group {
 
 	private static int index = 0;
 	private final SimpleStringProperty name;
-	public boolean selected;
+	public SimpleBooleanProperty selected;
 	private boolean beingDragged;
 	private ObservedDirectionalArrow observedDirectionalArrow;
 	private Circle arrowRadius;
@@ -57,7 +61,32 @@ public class PointAngleGroup extends Group {
 
 		positionPoint.getStyleClass().add("position-point");
 
+		selected = new SimpleBooleanProperty(false);
+		selected.addListener((observable, oldValue, newValue) -> {
+			if (newValue) {
+				enable();
+			} else {
+				disable();
+			}
+		});
+
 		getChildren().addAll(arrowRadius, observedDirectionalArrow, positionPoint);
+	}
+
+	public static List<Pose> mapToPoses(ObservableList<? extends PointAngleGroup> points) {
+		return points.stream().map(PointAngleGroup::getPose).collect(Collectors.toList());
+	}
+
+	public boolean isSelected() {
+		return selected.get();
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected.set(selected);
+	}
+
+	public SimpleBooleanProperty selectedProperty() {
+		return selected;
 	}
 
 	public ObservedDirectionalArrow getObservedDirectionalArrow() {
@@ -80,7 +109,6 @@ public class PointAngleGroup extends Group {
 		return positionPoint.centerXProperty();
 	}
 
-
 	public DoubleProperty centerYProperty() {
 		return positionPoint.centerYProperty();
 	}
@@ -88,7 +116,6 @@ public class PointAngleGroup extends Group {
 	public SimpleStringProperty nameProperty() {
 		return name;
 	}
-
 
 	private void setAngle(double value) {
 		observedDirectionalArrow.angleProperty().set(Math.toRadians(value));
@@ -106,17 +133,11 @@ public class PointAngleGroup extends Group {
 		return positionPoint;
 	}
 
-	private void handleMouseClicked(MouseEvent mouseEvent) {
+	public void handleMouseClicked(MouseEvent mouseEvent) {
 
 		if (!beingDragged) {
 			if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-				if (!selected) {
-					selected = true;
-					enable();
-				} else {
-					selected = false;
-					disable();
-				}
+				selected.set(!selected.get());
 			}
 		}
 
@@ -138,6 +159,10 @@ public class PointAngleGroup extends Group {
 	}
 
 	public Pose getPose() {
-		return new Pose(positionPoint.getCenterX(), positionPoint.getCenterY(), observedDirectionalArrow.getAngle());
+		return new Pose(positionPoint.getCenterX(), positionPoint.getCenterY(), -observedDirectionalArrow.getAngle());
+	}
+
+	public SimpleDoubleProperty angleProperty() {
+		return observedDirectionalArrow.angleProperty();
 	}
 }
