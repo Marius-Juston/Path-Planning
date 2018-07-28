@@ -2,7 +2,6 @@ package drawer.context;
 
 import calibration.Field;
 import drawer.curves.PointAngleGroup;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -14,12 +13,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.NumberStringConverter;
 
+// Copied from my CurveDrawer class from my POE-Project Repository
 public class PathTable extends TableView<PointAngleGroup> {
 
 	/**
 	 * Initializes a TableView that observers the defining points of a path
 	 *
-	 * @param points points of the path to observe
+	 * @param pathGroup points of the path to observe
 	 */
 	public PathTable(PathGroup pathGroup) {
 		/////////////////////// CONTEXT MENU INITIALIZATION    //////////////////////////
@@ -30,7 +30,13 @@ public class PathTable extends TableView<PointAngleGroup> {
 		MenuItem removePoint = new MenuItem("Remove Points");
 		removePoint.setOnAction(event -> pathGroup.removeAll(getSelectionModel().getSelectedItems()));
 
-		pathTableContextMenu.getItems().addAll(addPoint, removePoint);
+		MenuItem showPointsDetails = new MenuItem("Show Points Details");
+		showPointsDetails.setOnAction(event -> pathGroup.showAllPointDetails(getSelectionModel().getSelectedItems()));
+
+		MenuItem hidePointsDetails = new MenuItem("Hide Points Details");
+		hidePointsDetails.setOnAction(event -> pathGroup.hideAllPointDetails(getSelectionModel().getSelectedItems()));
+
+		pathTableContextMenu.getItems().addAll(addPoint, removePoint, showPointsDetails, hidePointsDetails);
 		setContextMenu(pathTableContextMenu);
 		///////////////////////////////////////////////////////////////////////////////////
 
