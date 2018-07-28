@@ -5,6 +5,7 @@ import static calibration.Helper.getImage;
 import static calibration.Helper.getWindow;
 
 import calibration.Helper.Unit;
+import drawer.PointPlacer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -79,10 +80,13 @@ public class Controller implements Initializable {
 		return DistanceConverter.display(pixelDistance);
 	}
 
+	public static Parent getRoot() throws IOException {
+		return FXMLLoader.load(Controller.class.getResource("fieldSelection.fxml"));
+	}
+
 	public void gotToCurvePointPlacement(ActionEvent actionEvent) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("../drawer/pointPlacer.fxml"));
+		Parent root = PointPlacer.getRoot();
 		Helper.setRoot(actionEvent, root);
-		root.getScene().getStylesheets().add("./drawer/circles.css");
 	}
 
 	private void cleanUp() {

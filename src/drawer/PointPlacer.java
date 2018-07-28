@@ -40,6 +40,14 @@ public class PointPlacer implements Initializable {
 	public SplitPane splitPane;
 	private boolean isFirstPoint = true;
 
+	public static Parent getRoot() throws IOException {
+		Parent root = FXMLLoader.load(PointPlacer.class.getResource("pointPlacer.fxml"));
+
+		root.getStylesheets().add(PointPlacer.class.getResource("circles.css").toExternalForm());
+		return root;
+	}
+
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
@@ -169,7 +177,7 @@ public class PointPlacer implements Initializable {
 
 	public void goBackToFieldSelector(ActionEvent actionEvent) throws IOException {
 
-		Parent root = FXMLLoader.load(Controller.class.getResource("../calibration/fieldSelection.fxml"));
+		Parent root = Controller.getRoot();
 		Helper.setRoot(actionEvent, root);
 	}
 
