@@ -6,17 +6,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import org.waltonrobotics.controller.Pose;
 
-public class PositionPoint extends Circle {
+public class PathPoint extends Circle {
 
 
-	public PositionPoint(double centerX, double centerY) {
-		super(centerX, centerY, 4, Color.BLUE);
+	public PathPoint(double centerX, double centerY) {
+		super(centerX, centerY, 2, Color.RED);
 
 		setOnMouseDragged(this::movePoint);
 
 	}
 
-	public PositionPoint(Pose pose) {
+	public PathPoint(Pose pose) {
 		this(pose.getX(), pose.getY());
 	}
 
