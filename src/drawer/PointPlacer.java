@@ -176,4 +176,12 @@ public class PointPlacer implements Initializable {
 	public void newPath(ActionEvent actionEvent) {
 		createAndSetupPathTitledTab();
 	}
+
+	public void tooglePointTable(ActionEvent actionEvent) {
+		if (splitPane.getItems().contains(titledPaneAccordion)) {
+			splitPane.getItems().remove(titledPaneAccordion);
+		} else {
+			splitPane.getItems().add(titledPaneAccordion);
+		}
+	}
 }
