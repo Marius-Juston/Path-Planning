@@ -32,6 +32,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Shape;
 
 public class PointPlacer implements Initializable {
+	/*
+	TODO make origin point
+	TODO make the TitledPane Content a VBOx with a HBOX (with two fields start and end scale) and then the table view
+	TODO when creating a a new table be able to choose existing or create a new origin point
+	TODO add a measuring tool in the edit menu Ctrl+M as shortcut (generalize it so that the calibration code can also use it)
+	TODO make clipping so that when a point a close to another point it joins together to make a point turn
+	TODO make clipping so that when a point is close to being in the same line as another it joins or you can select two points of the table view and it will find the closest point (intersecting perpendicular lines) and reposition itself there
+	TODO make the send to SmartDashboard functionality work
+	TODO make a receive from SmartDashboard functionality
+	TODO do a save button
+	*/
 
 	public ImageView field;
 	@FXML
