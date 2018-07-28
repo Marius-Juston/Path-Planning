@@ -1,12 +1,12 @@
-package drawer.context;
+package drawer.content;
 
 import drawer.curves.PointAngleGroup;
-import drawer.paths.DrawnPath;
-import drawer.paths.DrawnPointTurn;
-import drawer.paths.DrawnSpline;
+import drawer.draw.DrawnPath;
+import drawer.draw.PathType;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.control.ContextMenu;
@@ -19,14 +19,52 @@ public class PathGroup extends Group {
 		param -> new Observable[]{param.centerXProperty(),
 			param.centerYProperty(), param.angleProperty()});
 
-	private DrawnPath splinePathGroup = new DrawnSpline();
+	private DrawnPath drawer = new DrawnPath(PathType.SPLINE);
 
 	public PathGroup() {
 
 		keyPoints.addListener(
-			(ListChangeListener<? super PointAngleGroup>) c -> splinePathGroup.clearCreateAndAddPoints(c.getList()));
+			(ListChangeListener<? super PointAngleGroup>) c -> {
+				if (c.getList().size() == 2) {
+					if (isStraightLine(c)) {
+						drawer.setPathType(PathType.STRAIGHT_LINE);
+					} else if (isPointTurn(c)) {
+						drawer.setPathType(PathType.POINT_TURN);
+					} else {
+						drawer.setPathType(PathType.SPLINE);
+					}
+				} else {
+					drawer.setPathType(PathType.SPLINE);
+				}
 
-		getChildren().add(splinePathGroup);
+				drawer.clearCreateAndAddPoints(c.getList());
+			});
+
+		getChildren().add(drawer);
+	}
+
+	private boolean isPointTurn(Change<? extends PointAngleGroup> c) {
+
+		ObservableList<? extends PointAngleGroup> list = c.getList();
+		PointAngleGroup p1 = list.get(0);
+		PointAngleGroup p2 = list.get(1);
+
+		return p1.getPositionPoint().equalsPosition(p2.getPositionPoint());
+	}
+
+	private boolean isStraightLine(Change<? extends PointAngleGroup> c) {
+
+		ObservableList<? extends PointAngleGroup> list = c.getList();
+		PointAngleGroup p1 = list.get(0);
+		PointAngleGroup p2 = list.get(1);
+
+		boolean sameAngle = p1.getDegrees() == p2.getDegrees();
+
+		double angleBetweenPoints = StrictMath
+			.atan2(p2.getPositionPoint().getCenterY() - p1.getPositionPoint().getCenterY(),
+				p2.getPositionPoint().getCenterX() - p1.getPositionPoint().getCenterX());
+
+		return (sameAngle && angleBetweenPoints == p1.getObservedDirectionalArrow().getAngle());
 	}
 
 	public ObservableList<PointAngleGroup> getKeyPoints() {
@@ -41,8 +79,7 @@ public class PathGroup extends Group {
 
 			if (getKeyPoints().size() == 1) {
 
-				splinePathGroup = new DrawnPointTurn();
-				getChildren().set(0, splinePathGroup);
+				drawer.setPathType(PathType.POINT_TURN);
 
 				add(new PointAngleGroup(pointAngleCombo.centerXProperty().get(),
 					pointAngleCombo.centerYProperty().get()));
@@ -55,8 +92,8 @@ public class PathGroup extends Group {
 //
 //			if (getKeyPoints().size() == 1) {
 //
-//				splinePathGroup = new DrawnStrightLine();
-//				getChildren().set(0, splinePathGroup);
+//				drawer = new DrawnStrightLine();
+//				getChildren().set(0, drawer);
 //
 //				add(new PointAngleGroup(pointAngleCombo.centerXProperty().get(),
 //					pointAngleCombo.centerYProperty().get()));
