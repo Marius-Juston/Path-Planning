@@ -14,8 +14,8 @@
     <root id="root">
       <element id="archive" name="FieldCalibration.jar">
         <element id="module-output" name="Path Planning" />
-        <element id="library" level="project" name="motionLibrary" />
       </element>
+      <element id="library" level="project" name="motionLibrary" />
     </root>
   </artifact>
 </component>
