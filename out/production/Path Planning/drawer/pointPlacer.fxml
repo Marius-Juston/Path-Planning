@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -38,9 +37,18 @@
             </MenuItem>
           </items>
         </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#newPath" text="New Path">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+              </accelerator>
+            </MenuItem>
+          </items>
+        </Menu>
       </menus>
     </MenuBar>
-    <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.5">
+    <SplitPane VBox.vgrow="ALWAYS" fx:id="splitPane">
       <items>
         <ScrollPane prefViewportHeight="158.0" prefViewportWidth="173.0">
           <content>
@@ -51,7 +59,6 @@
             </AnchorPane>
           </content>
         </ScrollPane>
-        <Accordion fx:id="titledPaneAccordion"/>
       </items>
     </SplitPane>
     <HBox alignment="TOP_CENTER" spacing="5.0">
