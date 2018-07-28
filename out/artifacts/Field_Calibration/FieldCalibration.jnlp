@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp xmlns:jfx="http://javafx.com" href="FieldCalibration.jnlp" spec="1.0">
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="FieldCalibration.jnlp">
   <information>
     <title>Walton Robotics Path Planner</title>
     <vendor>Marius Juston</vendor>
@@ -7,9 +7,9 @@
     <offline-allowed/>
   </information>
   <resources>
-    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6+"/>
-    <jar download="eager" href="FieldCalibration.jar" size="111497"/>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="FieldCalibration.jar" size="111633" download="eager" />
   </resources>
-  <jfx:javafx-desc height="400" main-class="calibration.Main" name="Field Calibration" width="600"/>
+  <jfx:javafx-desc  width="600" height="400" main-class="calibration.Main"  name="Field Calibration" />
   <update check="background"/>
 </jnlp>
