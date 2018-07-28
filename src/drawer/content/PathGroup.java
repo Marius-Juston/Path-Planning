@@ -23,24 +23,29 @@ public class PathGroup extends Group {
 
 	public PathGroup() {
 
-		keyPoints.addListener(
-			(ListChangeListener<? super PointAngleGroup>) c -> {
-				if (c.getList().size() == 2) {
-					if (isStraightLine(c)) {
-						drawer.setPathType(PathType.STRAIGHT_LINE);
-					} else if (isPointTurn(c)) {
-						drawer.setPathType(PathType.POINT_TURN);
-					} else {
-						drawer.setPathType(PathType.SPLINE);
-					}
-				} else {
-					drawer.setPathType(PathType.SPLINE);
-				}
-
-				drawer.clearCreateAndAddPoints(c.getList());
-			});
+		keyPoints.addListener((ListChangeListener<? super PointAngleGroup>) this::reDrawContent);
 
 		getChildren().add(drawer);
+	}
+
+	private void updateDrawingType(Change<? extends PointAngleGroup> c) {
+		if (c.getList().size() == 2) {
+			if (isStraightLine(c)) {
+				drawer.setPathType(PathType.STRAIGHT_LINE);
+			} else if (isPointTurn(c)) {
+				drawer.setPathType(PathType.POINT_TURN);
+			} else {
+				drawer.setPathType(PathType.SPLINE);
+			}
+		} else {
+			drawer.setPathType(PathType.SPLINE);
+		}
+	}
+
+	private void reDrawContent(Change<? extends PointAngleGroup> c) {
+		updateDrawingType(c);
+		drawer.draw(c);
+
 	}
 
 	private boolean isPointTurn(Change<? extends PointAngleGroup> c) {

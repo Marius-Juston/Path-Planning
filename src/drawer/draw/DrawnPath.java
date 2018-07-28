@@ -3,6 +3,7 @@ package drawer.draw;
 import drawer.curves.PointAngleGroup;
 import java.util.List;
 import java.util.stream.Collectors;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import org.waltonrobotics.controller.PathData;
@@ -43,5 +44,9 @@ public class DrawnPath extends Group {
 
 	public void clearCreateAndAddPoints(ObservableList<? extends PointAngleGroup> list) {
 		pathType.clearCreateAndAddPoints(this, list);
+	}
+
+	public void draw(Change<? extends PointAngleGroup> c) {
+		clearCreateAndAddPoints(c.getList());
 	}
 }
