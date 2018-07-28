@@ -3,19 +3,27 @@ package drawer;
 import calibration.Controller;
 import calibration.Field;
 import calibration.Helper;
+import drawer.context.PathTable;
 import drawer.context.PathTitledTab;
+import drawer.context.RenameDialog;
 import drawer.curves.PointAngleGroup;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -29,6 +37,8 @@ public class PointPlacer implements Initializable {
 	@FXML
 	public AnchorPane pointPlane;
 	public Accordion titledPaneAccordion;
+	public SplitPane splitPane;
+	private boolean isFirstPoint = true;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -47,10 +57,17 @@ public class PointPlacer implements Initializable {
 			field.setImage(Field.image);
 		}
 
-		PathTitledTab pathTitledTab = new PathTitledTab();
-		titledPaneAccordion.setExpandedPane(pathTitledTab);
-		titledPaneAccordion.getPanes().add(pathTitledTab);
-		pointPlane.getChildren().add(pathTitledTab.getKeyPoints());
+		titledPaneAccordion = new Accordion();
+		titledPaneAccordion.expandedPaneProperty().addListener((property, oldPane, newPane) -> {
+			if (oldPane != null) {
+				oldPane.setCollapsible(true);
+			}
+			if (newPane != null) {
+//				newPane.setCollapsible(false);
+
+				Platform.runLater(() -> newPane.setCollapsible(false));
+			}
+		});
 	}
 
 	public void saveData(ActionEvent actionEvent) {
@@ -85,7 +102,6 @@ public class PointPlacer implements Initializable {
 
 	}
 
-
 	public void addPoint(MouseEvent mouseEvent) {
 
 		if (!(mouseEvent.getPickResult().getIntersectedNode() instanceof Shape)) {
@@ -93,8 +109,58 @@ public class PointPlacer implements Initializable {
 
 			pointPlane.getChildren().add(pointAngleCombo);
 
+			if (isFirstPoint) {
+				isFirstPoint = false;
+
+				splitPane.getItems().add(titledPaneAccordion);
+
+				createAndSetupPathTitledTab();
+
+			}
 			getExpandedPane().getKeyPoints().add(pointAngleCombo);
 		}
+	}
+
+	public void createAndSetupPathTitledTab() {
+
+		PathTitledTab pathTitledTab = new PathTitledTab();
+
+		{
+			MenuItem rename = new MenuItem("Rename");
+			rename.setOnAction(event -> {
+				try {
+					pathTitledTab.setText(RenameDialog.display(pathTitledTab.getText()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+
+			MenuItem delete = new MenuItem("Delete");
+			delete.setOnAction(event -> {
+				ObservableList<TitledPane> panes = titledPaneAccordion.getPanes();
+
+				if (panes.size() > 1) {
+
+					if (titledPaneAccordion.getExpandedPane().equals(pathTitledTab)) {
+						titledPaneAccordion.setExpandedPane(panes.get(panes.size() - 1));
+					}
+
+					pointPlane.getChildren().remove(pathTitledTab.getKeyPoints());
+					panes.remove(pathTitledTab);
+				} else {
+//					pathTitledTab.clear();
+				}
+			});
+
+			ContextMenu contextMenu = new ContextMenu(rename, delete);
+			pathTitledTab.setContextMenu(contextMenu);
+
+			pathTitledTab.setContent(new PathTable(pathTitledTab.keyPoints));
+		}
+
+		titledPaneAccordion.getPanes().add(pathTitledTab);
+		pointPlane.getChildren().add(pathTitledTab.getKeyPoints());
+		titledPaneAccordion.setExpandedPane(pathTitledTab);
 	}
 
 	private PathTitledTab getExpandedPane() {
@@ -105,5 +171,9 @@ public class PointPlacer implements Initializable {
 
 		Parent root = FXMLLoader.load(Controller.class.getResource("../calibration/fieldSelection.fxml"));
 		Helper.setRoot(actionEvent, root);
+	}
+
+	public void newPath(ActionEvent actionEvent) {
+		createAndSetupPathTitledTab();
 	}
 }
