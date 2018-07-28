@@ -7,6 +7,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import org.waltonrobotics.controller.Pose;
 
 public class ObservedDirectionalArrow extends Polygon {
 
@@ -18,13 +19,14 @@ public class ObservedDirectionalArrow extends Polygon {
 	private double dx;
 	private double dy;
 
-	public ObservedDirectionalArrow(PositionPoint xy, double dx, double dy,
+	public ObservedDirectionalArrow(PositionPoint xy, double angle, double length, boolean isRadians,
 		double width, boolean length_includes_head,
 		double head_width, double head_length, String shape, double overhang,
 		boolean head_starts_at_zero, Color fill) {
 
-		this.dx = dx;
-		this.dy = dy;
+		dx = StrictMath.cos((isRadians ? angle : (angle = StrictMath.toRadians(angle)))) * length;
+		dy = StrictMath.sin(angle) * length;
+		this.length = length;
 
 		if (head_width == -1) {
 			head_width = 3 * width;
@@ -44,7 +46,7 @@ public class ObservedDirectionalArrow extends Polygon {
 		{
 			x = new SimpleDoubleProperty(xy.getCenterX());
 			y = new SimpleDoubleProperty(xy.getCenterY());
-			angle = new SimpleDoubleProperty(0);
+			this.angle = new SimpleDoubleProperty(angle);
 
 			xy.centerXProperty().bindBidirectional(x);
 
@@ -66,7 +68,7 @@ public class ObservedDirectionalArrow extends Polygon {
 //				}
 			});
 
-			angle.addListener(this::rotateArrow);
+			this.angle.addListener(this::rotateArrow);
 
 		}
 
@@ -180,12 +182,15 @@ public class ObservedDirectionalArrow extends Polygon {
 
 	public ObservedDirectionalArrow(PositionPoint positionPoint, double angle, double length, boolean isRadians,
 		Color fill) {
-		this(positionPoint, StrictMath.cos((isRadians ? angle : (angle = StrictMath.toRadians(angle)))) * length,
-			StrictMath.sin(angle) * length, 4, true, -1, 6, "full", 0, false, fill);
+		this(positionPoint, angle, length, isRadians, 4, true, -1, 6, "full", 0, false, fill);
 	}
 
 	public ObservedDirectionalArrow(PositionPoint positionPoint, double angle, double length, boolean isRadians) {
 		this(positionPoint, angle, length, isRadians, Color.RED);
+	}
+
+	public ObservedDirectionalArrow(Pose centerPose, double length, Color color) {
+		this(new PositionPoint(centerPose), -centerPose.getAngle(), length, true, color);
 	}
 
 	public void followPoint(Number oldValue, Number newValue, boolean isX) {
