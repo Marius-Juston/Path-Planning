@@ -26,6 +26,8 @@ public class PathGroup extends Group {
 		keyPoints.addListener((ListChangeListener<? super PointAngleGroup>) this::reDrawContent);
 
 		originPoint.getPositionPoint().setFill(Color.GREEN);
+		originPoint.setName("Origin");
+
 		getChildren().addAll(originPoint, drawer);
 	}
 

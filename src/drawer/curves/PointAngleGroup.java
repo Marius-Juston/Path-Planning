@@ -8,20 +8,24 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
+import javafx.scene.text.Text;
 import org.waltonrobotics.controller.Pose;
 
 public class PointAngleGroup extends Group {
 
-	private static int index = 0;
-	private final SimpleStringProperty name;
+	private static int index = -2;
+	//	private final SimpleStringProperty name;
 	public SimpleBooleanProperty selected;
+	Text name = new Text();
 	private boolean beingDragged;
 	private ObservedDirectionalArrow observedDirectionalArrow;
 	private Circle arrowRadius;
@@ -31,11 +35,13 @@ public class PointAngleGroup extends Group {
 	private SimpleDoubleProperty translatedX = new SimpleDoubleProperty(1.0);
 	private SimpleDoubleProperty translatedY = new SimpleDoubleProperty(1.0);
 
-
 	public PointAngleGroup(double centerX, double centerY) {
 		positionPoint = new PositionPoint(centerX, centerY);
 
-		this.name = new SimpleStringProperty(String.format("Point %d", index++));
+		name.setText(String.format("Point %d", index++));
+		name.textOriginProperty().setValue(VPos.CENTER);
+		name.xProperty().bind(positionPoint.centerXProperty().subtract(15));
+		name.yProperty().bind(positionPoint.centerYProperty().subtract(15));
 
 		double length = 50;
 
@@ -68,7 +74,7 @@ public class PointAngleGroup extends Group {
 			}
 		});
 
-		getChildren().addAll(arrowRadius, observedDirectionalArrow, positionPoint);
+		getChildren().addAll(name, arrowRadius, observedDirectionalArrow, positionPoint);
 	}
 
 	public static List<Pose> mapToPoses(ObservableList<? extends PointAngleGroup> points) {
@@ -112,11 +118,11 @@ public class PointAngleGroup extends Group {
 	}
 
 	public String getName() {
-		return name.get();
+		return name.getText();
 	}
 
 	public void setName(String name) {
-		this.name.set(name);
+		this.name.setText(name);
 	}
 
 	public DoubleProperty centerXProperty() {
@@ -127,8 +133,8 @@ public class PointAngleGroup extends Group {
 		return positionPoint.centerYProperty();
 	}
 
-	public SimpleStringProperty nameProperty() {
-		return name;
+	public StringProperty nameProperty() {
+		return name.textProperty();
 	}
 
 	private void setAngle(double value) {
