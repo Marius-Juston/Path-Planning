@@ -51,24 +51,41 @@ public class PathTable extends TableView<PointAngleGroup> {
 				.setName(cellEditEvent.getNewValue()));
 
 		//Adds column to observe the scaled X property of points
-		initializeNumberColumn("X", "centerX",
-			cellEditEvent -> cellEditEvent.getTableView().getItems().get(
-				cellEditEvent.getTablePosition().getRow())
-				.getPositionPoint().setCenterX(cellEditEvent.getNewValue().doubleValue() * Field.SCALE.get())
+		initializeNumberColumn("X", "translatedX",
+			cellEditEvent -> {
+				PointAngleGroup pointAngleGroup = cellEditEvent.getTableView().getItems().get(
+					cellEditEvent.getTablePosition().getRow());
+
+				pointAngleGroup.getPositionPoint().setCenterX((
+					cellEditEvent.getNewValue().doubleValue()) / Field.SCALE.get() + pointAngleGroup.getOriginPoint()
+					.getPositionPoint()
+					.getCenterX());
+			}
 		);
 
 		//Adds column to observe the scaled Y property of points
-		initializeNumberColumn("Y", "centerY",
-			cellEditEvent -> cellEditEvent.getTableView().getItems().get(
-				cellEditEvent.getTablePosition().getRow())
-				.getPositionPoint().setCenterY(cellEditEvent.getNewValue().doubleValue() * Field.SCALE.get()));
+		initializeNumberColumn("Y", "translatedY",
+			cellEditEvent -> {
+				PointAngleGroup pointAngleGroup = cellEditEvent.getTableView().getItems().get(
+					cellEditEvent.getTablePosition().getRow());
+
+				pointAngleGroup.getPositionPoint().setCenterY((
+					cellEditEvent.getNewValue().doubleValue()) / Field.SCALE.get() + pointAngleGroup.getOriginPoint()
+					.getPositionPoint()
+					.getCenterY());
+			});
 
 		//Adds column to observe the scaled Y property of points
 		initializeNumberColumn("Angle", "degrees",
-			cellEditEvent -> cellEditEvent.getTableView().getItems().get(
-				cellEditEvent.getTablePosition().getRow())
-				.getObservedDirectionalArrow().angleProperty()
-				.set(Math.toRadians(cellEditEvent.getNewValue().doubleValue())));
+			cellEditEvent -> {
+				PointAngleGroup pointAngleGroup = cellEditEvent.getTableView().getItems().get(
+					cellEditEvent.getTablePosition().getRow());
+
+				pointAngleGroup
+					.getObservedDirectionalArrow().angleProperty()
+					.set(Math.toRadians(cellEditEvent.getNewValue().doubleValue()) + pointAngleGroup.getOriginPoint()
+						.getObservedDirectionalArrow().getAngle());
+			});
 
 		setItems(pathGroup.getKeyPoints());
 	}

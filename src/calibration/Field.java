@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.WritableDoubleValue;
 import javafx.beans.value.WritableObjectValue;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -26,7 +25,7 @@ import javax.imageio.ImageIO;
 
 public class Field {
 
-	public static final WritableDoubleValue SCALE = new SimpleDoubleProperty(1);
+	public static final SimpleDoubleProperty SCALE = new SimpleDoubleProperty(1);
 	public static final WritableObjectValue<String> UNIT = new SimpleStringProperty(Helper.PIXELS);
 	public static final String SUFFIX = ".field";
 	//	public static BufferedImage bufferedImage;

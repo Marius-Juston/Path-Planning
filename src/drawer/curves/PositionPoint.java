@@ -14,6 +14,7 @@ public class PositionPoint extends Circle {
 
 		setOnMouseDragged(this::movePoint);
 
+
 	}
 
 	public PositionPoint(Pose pose) {

@@ -12,20 +12,27 @@ import javafx.scene.Group;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
+import javafx.scene.paint.Color;
 
 public class PathGroup extends Group {
 
 	private final ObservableList<PointAngleGroup> keyPoints = FXCollections.observableArrayList(
 		param -> new Observable[]{param.centerXProperty(),
 			param.centerYProperty(), param.angleProperty()});
-
+	public PointAngleGroup originPoint = new PointAngleGroup(0, 0);
 	private DrawnPath drawer = new DrawnPath(PathType.SPLINE);
 
 	public PathGroup() {
-
 		keyPoints.addListener((ListChangeListener<? super PointAngleGroup>) this::reDrawContent);
 
-		getChildren().add(drawer);
+		originPoint.getPositionPoint().setFill(Color.GREEN);
+		getChildren().addAll(originPoint, drawer);
+	}
+
+	public void setOriginPoint(PointAngleGroup newOriginPoint) {
+		this.originPoint.angleProperty().set(newOriginPoint.angleProperty().get());
+		this.originPoint.centerXProperty().set(newOriginPoint.centerXProperty().get());
+		this.originPoint.centerYProperty().set(newOriginPoint.centerYProperty().get());
 	}
 
 	private void updateDrawingType(Change<? extends PointAngleGroup> c) {
@@ -78,18 +85,17 @@ public class PathGroup extends Group {
 
 
 	public void add(PointAngleGroup pointAngleCombo) {
+		pointAngleCombo.setOrigin(originPoint);
 
 		MenuItem pointTurnCreation = new MenuItem("Create point turn");
 		pointTurnCreation.setOnAction(event -> {
 
 			if (getKeyPoints().size() == 1) {
-
 				drawer.setPathType(PathType.POINT_TURN);
 
 				add(new PointAngleGroup(pointAngleCombo.centerXProperty().get(),
 					pointAngleCombo.centerYProperty().get()));
 			}
-
 		});
 
 //		MenuItem straightLineCreation = new MenuItem("Create straightLine");

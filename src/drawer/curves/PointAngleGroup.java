@@ -1,5 +1,6 @@
 package drawer.curves;
 
+import calibration.Field;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.beans.binding.Bindings;
@@ -25,9 +26,10 @@ public class PointAngleGroup extends Group {
 	private ObservedDirectionalArrow observedDirectionalArrow;
 	private Circle arrowRadius;
 	private PositionPoint positionPoint;
-
-	private DoubleBinding angleDegrees;
+	private PointAngleGroup originPoint;
 	private SimpleDoubleProperty degrees = new SimpleDoubleProperty();
+	private SimpleDoubleProperty translatedX = new SimpleDoubleProperty(1.0);
+	private SimpleDoubleProperty translatedY = new SimpleDoubleProperty(1.0);
 
 
 	public PointAngleGroup(double centerX, double centerY) {
@@ -40,10 +42,6 @@ public class PointAngleGroup extends Group {
 		observedDirectionalArrow = new ObservedDirectionalArrow(positionPoint, 0, length, false, Color.RED);
 		observedDirectionalArrow.setVisible(false);
 		observedDirectionalArrow.setDisable(true);
-
-		angleDegrees = Bindings.createDoubleBinding(() -> StrictMath.toDegrees(observedDirectionalArrow.getAngle()),
-			observedDirectionalArrow.angleProperty());
-		degrees.bind(angleDegrees);
 
 		arrowRadius = new Circle(length, Color.TRANSPARENT);
 		arrowRadius.setStroke(Color.GREEN);
@@ -75,6 +73,22 @@ public class PointAngleGroup extends Group {
 
 	public static List<Pose> mapToPoses(ObservableList<? extends PointAngleGroup> points) {
 		return points.stream().map(PointAngleGroup::getPose).collect(Collectors.toList());
+	}
+
+	public PointAngleGroup getOriginPoint() {
+		return originPoint;
+	}
+
+	public double getTranslatedX() {
+		return translatedX.get();
+	}
+
+	public void setTranslatedX(double translatedX) {
+		this.translatedX.set(translatedX);
+	}
+
+	public SimpleDoubleProperty translatedXProperty() {
+		return translatedX;
 	}
 
 	public boolean isSelected() {
@@ -162,7 +176,45 @@ public class PointAngleGroup extends Group {
 		return new Pose(positionPoint.getCenterX(), positionPoint.getCenterY(), -observedDirectionalArrow.getAngle());
 	}
 
+	public double getTranslatedY() {
+		return translatedY.get();
+	}
+
+	public void setTranslatedY(double translatedY) {
+		this.translatedY.set(translatedY);
+	}
+
+	public SimpleDoubleProperty translatedYProperty() {
+		return translatedY;
+	}
+
 	public SimpleDoubleProperty angleProperty() {
 		return observedDirectionalArrow.angleProperty();
+	}
+
+	public void setOrigin(PointAngleGroup originPoint) {
+//TODO make setting the origin better
+		this.originPoint = originPoint;
+
+		translatedX
+			.bind(positionPoint.centerXProperty().subtract(originPoint.centerXProperty()).multiply(Field.SCALE));
+		translatedY
+			.bind(positionPoint.centerYProperty().subtract(originPoint.centerYProperty()).multiply(Field.SCALE));
+
+		DoubleBinding angleDegrees = Bindings
+			.createDoubleBinding(() -> boundDegrees(StrictMath
+					.toDegrees(observedDirectionalArrow.getAngle() - originPoint.getObservedDirectionalArrow().getAngle())),
+				observedDirectionalArrow.angleProperty(), originPoint.getObservedDirectionalArrow().angleProperty());
+
+		degrees.bind(angleDegrees);
+	}
+
+	public double boundDegrees(double degrees) {
+		if (degrees > 180) {
+			return -360 + degrees;
+		} else if (degrees < -180) {
+			return 360 + degrees;
+		}
+		return degrees;
 	}
 }

@@ -50,6 +50,7 @@ public class PointPlacer implements Initializable {
 	public Accordion titledPaneAccordion;
 	public SplitPane splitPane;
 	private boolean isFirstPoint = true;
+	private PointsAdded pointNumber = PointsAdded.FIRST_POINT;
 
 	public static Parent getRoot() throws IOException {
 		Parent root = FXMLLoader.load(PointPlacer.class.getResource("pointPlacer.fxml"));
@@ -57,7 +58,6 @@ public class PointPlacer implements Initializable {
 		root.getStylesheets().add(PointPlacer.class.getResource("circles.css").toExternalForm());
 		return root;
 	}
-
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -126,21 +126,25 @@ public class PointPlacer implements Initializable {
 		if (!(mouseEvent.getPickResult().getIntersectedNode() instanceof Shape)) {
 			PointAngleGroup pointAngleCombo = new PointAngleGroup(mouseEvent.getX(), mouseEvent.getY());
 
-			pointPlane.getChildren().add(pointAngleCombo);
+			if (pointNumber == PointsAdded.FIRST_POINT) {
+				pointNumber = PointsAdded.SECOND_POINT;
 
-			if (isFirstPoint) {
-				isFirstPoint = false;
+				PathTitledTab pathTitledTab = createAndSetupPathTitledTab();
+				pathTitledTab.getKeyPoints().setOriginPoint(pointAngleCombo);
+			} else {
+				if (pointNumber == PointsAdded.SECOND_POINT) {
+					pointNumber = PointsAdded.MORE;
+					splitPane.getItems().add(titledPaneAccordion);
+				}
 
-				splitPane.getItems().add(titledPaneAccordion);
-
-				createAndSetupPathTitledTab();
-
+				pointPlane.getChildren().add(pointAngleCombo);
+				getExpandedPane().getKeyPoints().add(pointAngleCombo);
 			}
-			getExpandedPane().getKeyPoints().add(pointAngleCombo);
+
 		}
 	}
 
-	public void createAndSetupPathTitledTab() {
+	public PathTitledTab createAndSetupPathTitledTab() {
 
 		PathTitledTab pathTitledTab = new PathTitledTab();
 
@@ -180,6 +184,7 @@ public class PointPlacer implements Initializable {
 		titledPaneAccordion.getPanes().add(pathTitledTab);
 		pointPlane.getChildren().add(pathTitledTab.getKeyPoints());
 		titledPaneAccordion.setExpandedPane(pathTitledTab);
+		return pathTitledTab;
 	}
 
 	private PathTitledTab getExpandedPane() {
@@ -202,5 +207,9 @@ public class PointPlacer implements Initializable {
 		} else {
 			splitPane.getItems().add(titledPaneAccordion);
 		}
+	}
+
+	public enum PointsAdded {
+		FIRST_POINT, SECOND_POINT, MORE;
 	}
 }
