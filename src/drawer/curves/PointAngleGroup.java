@@ -21,7 +21,7 @@ import org.waltonrobotics.controller.Pose;
 
 public class PointAngleGroup extends Group {
 
-	private static int index = 0;
+	private static int index = -3; //FIXME make it so that origin points are a different class
 	//	private final SimpleStringProperty name;
 	public SimpleBooleanProperty selected;
 	Text name = new Text();

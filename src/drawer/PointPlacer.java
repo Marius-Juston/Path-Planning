@@ -157,12 +157,13 @@ public class PointPlacer implements Initializable {
 				PathTitledTab pointsPathTitledTab = createAndSetupPathTitledTab();
 				pointsPathTitledTab.getKeyPoints().setOriginPoint(pointAngleCombo);
 
+//				TODO clean this up
 				PathTitledTab originsPathTitledTab = createPathTitledTab();
 				originsPathTitledTab.getKeyPoints().add(pointsPathTitledTab.getKeyPoints().getOriginPoint());
 				originsPathTitledTab.setCollapsible(false);
 				pointPlane.getChildren().add(pointsPathTitledTab.getKeyPoints().getOriginPoint());
 				originsPathTitledTab.setText("Origin points");
-				
+
 				originsPathTitledTab.getContextMenu().getItems().remove(1);
 				((PathTable) originsPathTitledTab.getContent()).getContextMenu().getItems().remove(0, 2);
 
