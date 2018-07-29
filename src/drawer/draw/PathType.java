@@ -32,13 +32,14 @@ public enum PathType {
 				group.setPath(new Spline(4, 2, 0, 0, false, poses));
 //			poses = extractPositionData(getPath().getPathData());
 
+				if (group.isShowVelocities()) {
 //			List<PathPoint> pathPoints = poses.stream().map(PathPoint::new).collect(Collectors.toList());
-				double maxLength = 45;
-				double everyPercent = 0.05;
+					double maxLength = 45;
+					double everyPercent = 0.05;
 
-				int every = (int) (group.getPath().getPathData().size() * everyPercent);
+					int every = (int) (group.getPath().getPathData().size() * everyPercent);
 
-				final int[] index = {0};
+					final int[] index = {0};
 //			List<Node> pathPoints = getPath().getPathData().stream().map(pathData -> {
 //				if (index[0]++ % every == 0) {
 //					double centerVelocity =
@@ -52,24 +53,32 @@ public enum PathType {
 //				}
 //			}).collect(Collectors.toList());
 
-				List<PathPoint> pathPoints = new ArrayList<>();
-				List<ObservedDirectionalArrow> observedDirectionalArrows = new ArrayList<>();
+					List<PathPoint> pathPoints = new ArrayList<>();
+					List<ObservedDirectionalArrow> observedDirectionalArrows = new ArrayList<>();
 
-				group.getPath().getPathData().forEach(pathData -> {
-					if (index[0]++ % every == 0) {
-						double centerVelocity =
-							(pathData.getLeftState().getVelocity() + pathData.getRightState().getVelocity()) / 2.0;
+					group.getPath().getPathData().forEach(pathData -> {
+						if (index[0]++ % every == 0) {
+							double centerVelocity =
+								(pathData.getLeftState().getVelocity() + pathData.getRightState().getVelocity()) / 2.0;
 
-						observedDirectionalArrows.add(new ObservedDirectionalArrow(pathData.getCenterPose(),
-							(centerVelocity / group.getPath().getVCruise()) * maxLength,
-							Color.ORANGE));
-					} else {
-						pathPoints.add(new PathPoint(pathData.getCenterPose()));
-					}
-				});
+							observedDirectionalArrows.add(new ObservedDirectionalArrow(pathData.getCenterPose(),
+								(centerVelocity / group.getPath().getVCruise()) * maxLength,
+								Color.ORANGE));
+						} else {
+							pathPoints.add(new PathPoint(pathData.getCenterPose()));
+						}
+					});
 
-				group.getChildren().addAll(pathPoints);
-				group.getChildren().addAll(observedDirectionalArrows);
+					group.getChildren().addAll(pathPoints);
+					group.getChildren().addAll(observedDirectionalArrows);
+				} else {
+
+					List<PathPoint> pathPoints = DrawnPath.extractPositionData(group.getPath().getPathData()).stream()
+						.map(PathPoint::new)
+						.collect(Collectors.toList());
+
+					group.getChildren().addAll(pathPoints);
+				}
 			}
 		}
 	}, POINT_TURN {

@@ -15,6 +15,7 @@ public class DrawnPath extends Group {
 
 	public Path path;
 	private PathType pathType;
+	private boolean showVelocities = false;
 
 	public DrawnPath(PathType pathType) {
 
@@ -23,6 +24,14 @@ public class DrawnPath extends Group {
 
 	public static List<Pose> extractPositionData(List<PathData> pathDataList) {
 		return pathDataList.stream().map(PathData::getCenterPose).collect(Collectors.toList());
+	}
+
+	public boolean isShowVelocities() {
+		return showVelocities;
+	}
+
+	public void setShowVelocities(boolean showVelocities) {
+		this.showVelocities = showVelocities;
 	}
 
 	public PathType getPathType() {
