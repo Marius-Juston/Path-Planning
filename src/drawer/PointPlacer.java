@@ -33,7 +33,14 @@ import javafx.scene.shape.Shape;
 
 public class PointPlacer implements Initializable {
 	/*
-	TODO make origin point
+	TODO be able to place shapes that define the field borders when a path intersects or the robot width intersects
+		- have two types of shapes:
+		    - WARNING - in orange (Ex: goes over bumpy thing)
+		    - ERROR - in red (Ex: goes through a wall)
+		- use Polygon.intersect()
+
+
+	TODO show name of point when showing details
 	TODO make the TitledPane Content a VBOx with a HBOX (with two fields start and end scale) and then the table view
 	TODO when creating a a new table be able to choose existing or create a new origin point
 	TODO add a measuring tool in the edit menu Ctrl+M as shortcut (generalize it so that the calibration code can also use it)
@@ -42,6 +49,8 @@ public class PointPlacer implements Initializable {
 	TODO make the send to SmartDashboard functionality work
 	TODO make a receive from SmartDashboard functionality
 	TODO do a save button
+
+	TODO make origin point - Partially finished needs improvements
 	*/
 
 	public ImageView field;
@@ -87,6 +96,19 @@ public class PointPlacer implements Initializable {
 				Platform.runLater(() -> newPane.setCollapsible(false));
 			}
 		});
+
+//		TODO uncomment this to see Polygon.intersect example
+//		Rectangle rectangle = new Rectangle(200, 200, 50, 50);
+//		rectangle.setFill(Color.BLUE);
+//
+//		Line line = new Line(200, 190, 270, 260);
+//		line.setStrokeWidth(5);
+//		line.setStroke(Color.RED);
+//
+//		Path shape = (Path) Polygon.intersect(rectangle, line);
+//		shape.setFill(Color.GREEN);
+//
+//		pointPlane.getChildren().addAll(rectangle, line, shape);
 	}
 
 	public void saveData(ActionEvent actionEvent) {
