@@ -25,16 +25,21 @@ public class PathGroup extends Group {
 	public PathGroup() {
 		keyPoints.addListener((ListChangeListener<? super PointAngleGroup>) this::reDrawContent);
 
-		originPoint.getPositionPoint().setFill(Color.GREEN);
-		originPoint.setName("Origin");
-
 		getChildren().addAll(originPoint, drawer);
 	}
 
+	public PointAngleGroup getOriginPoint() {
+		return originPoint;
+	}
+
 	public void setOriginPoint(PointAngleGroup newOriginPoint) {
-		this.originPoint.angleProperty().set(newOriginPoint.angleProperty().get());
-		this.originPoint.centerXProperty().set(newOriginPoint.centerXProperty().get());
-		this.originPoint.centerYProperty().set(newOriginPoint.centerYProperty().get());
+		this.originPoint.angleProperty().bindBidirectional(newOriginPoint.angleProperty());
+		this.originPoint.nameProperty().bindBidirectional(newOriginPoint.nameProperty());
+		this.originPoint.centerXProperty().bindBidirectional(newOriginPoint.centerXProperty());
+		this.originPoint.centerYProperty().bindBidirectional(newOriginPoint.centerYProperty());
+
+		originPoint.getPositionPoint().setFill(Color.GREEN);
+		originPoint.setName("Origin");
 	}
 
 	private void updateDrawingType(Change<? extends PointAngleGroup> c) {

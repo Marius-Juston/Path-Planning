@@ -40,9 +40,9 @@ public class PointPlacer implements Initializable {
 		- use Polygon.intersect()
 
 
-	TODO show name of point when showing details
-	TODO make the TitledPane Content a VBOx with a HBOX (with two fields start and end scale) and then the table view
 	TODO when creating a a new table be able to choose existing or create a new origin point
+
+	TODO make the TitledPane Content a VBOx with a HBOX (with two fields start and end scale) and then the table view
 	TODO add a measuring tool in the edit menu Ctrl+M as shortcut (generalize it so that the calibration code can also use it)
 	TODO make clipping so that when a point a close to another point it joins together to make a point turn
 	TODO make clipping so that when a point is close to being in the same line as another it joins or you can select two points of the table view and it will find the closest point (intersecting perpendicular lines) and reposition itself there
@@ -51,6 +51,8 @@ public class PointPlacer implements Initializable {
 	TODO do a save button
 
 	TODO make origin point - Partially finished needs improvements
+
+	TODO show name of point when showing details - DONE
 	*/
 
 	public ImageView field;
@@ -58,6 +60,7 @@ public class PointPlacer implements Initializable {
 	public AnchorPane pointPlane;
 	public Accordion titledPaneAccordion;
 	public SplitPane splitPane;
+	Accordion originsPaneAccordion = new Accordion();
 	private boolean isFirstPoint = true;
 	private PointsAdded pointNumber = PointsAdded.FIRST_POINT;
 
@@ -151,8 +154,19 @@ public class PointPlacer implements Initializable {
 			if (pointNumber == PointsAdded.FIRST_POINT) {
 				pointNumber = PointsAdded.SECOND_POINT;
 
-				PathTitledTab pathTitledTab = createAndSetupPathTitledTab();
-				pathTitledTab.getKeyPoints().setOriginPoint(pointAngleCombo);
+				PathTitledTab pointsPathTitledTab = createAndSetupPathTitledTab();
+				pointsPathTitledTab.getKeyPoints().setOriginPoint(pointAngleCombo);
+
+				PathTitledTab originsPathTitledTab = createPathTitledTab();
+				originsPathTitledTab.getKeyPoints().add(pointsPathTitledTab.getKeyPoints().getOriginPoint());
+				originsPathTitledTab.setCollapsible(false);
+				pointPlane.getChildren().add(pointsPathTitledTab.getKeyPoints().getOriginPoint());
+				originsPathTitledTab.setText("Origin points");
+
+				originsPaneAccordion.getPanes().add(originsPathTitledTab);
+				originsPaneAccordion.setExpandedPane(originsPathTitledTab);
+
+				splitPane.getItems().add(0, originsPaneAccordion);
 			} else {
 				if (pointNumber == PointsAdded.SECOND_POINT) {
 					pointNumber = PointsAdded.MORE;
@@ -166,7 +180,7 @@ public class PointPlacer implements Initializable {
 		}
 	}
 
-	public PathTitledTab createAndSetupPathTitledTab() {
+	private PathTitledTab createPathTitledTab() {
 
 		PathTitledTab pathTitledTab = new PathTitledTab();
 
@@ -202,6 +216,12 @@ public class PointPlacer implements Initializable {
 
 			pathTitledTab.setContent(new PathTable(pathTitledTab.keyPoints));
 		}
+		return pathTitledTab;
+	}
+
+	public PathTitledTab createAndSetupPathTitledTab() {
+
+		PathTitledTab pathTitledTab = createPathTitledTab();
 
 		titledPaneAccordion.getPanes().add(pathTitledTab);
 		pointPlane.getChildren().add(pathTitledTab.getKeyPoints());
@@ -223,11 +243,19 @@ public class PointPlacer implements Initializable {
 		createAndSetupPathTitledTab();
 	}
 
-	public void tooglePointTable(ActionEvent actionEvent) {
+	public void togglePointTable(ActionEvent actionEvent) {
 		if (splitPane.getItems().contains(titledPaneAccordion)) {
 			splitPane.getItems().remove(titledPaneAccordion);
 		} else {
 			splitPane.getItems().add(titledPaneAccordion);
+		}
+	}
+
+	public void toggleOriginsTable(ActionEvent actionEvent) {
+		if (splitPane.getItems().contains(originsPaneAccordion)) {
+			splitPane.getItems().remove(originsPaneAccordion);
+		} else {
+			splitPane.getItems().add(0, originsPaneAccordion);
 		}
 	}
 

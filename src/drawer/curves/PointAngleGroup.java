@@ -16,13 +16,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import org.waltonrobotics.controller.Pose;
 
 public class PointAngleGroup extends Group {
 
-	private static int index = -2;
+	private static int index = 0;
 	//	private final SimpleStringProperty name;
 	public SimpleBooleanProperty selected;
 	Text name = new Text();

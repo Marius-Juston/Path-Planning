@@ -42,9 +42,14 @@
           <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
         </accelerator>
       </MenuItem>
-      <MenuItem mnemonicParsing="false" onAction="#tooglePointTable" text="Toogle Point Table">
+      <MenuItem mnemonicParsing="false" onAction="#togglePointTable" text="Toggle Point Table">
         <accelerator>
           <KeyCodeCombination alt="UP" code="H" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+        </accelerator>
+      </MenuItem>
+      <MenuItem mnemonicParsing="false" onAction="#toggleOriginsTable" text="Toggle Origins Table">
+        <accelerator>
+          <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
         </accelerator>
       </MenuItem>
     </Menu>
