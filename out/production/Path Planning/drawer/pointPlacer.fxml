@@ -57,9 +57,7 @@
   <SplitPane VBox.vgrow="ALWAYS" fx:id="splitPane">
     <ScrollPane prefViewportHeight="158.0" prefViewportWidth="173.0">
       <AnchorPane onMousePressed="#handlePointEvent" fx:id="pointPlane">
-        <children>
-          <ImageView pickOnBounds="true" preserveRatio="true" fx:id="field"/>
-        </children>
+        <ImageView pickOnBounds="true" preserveRatio="true" fx:id="field"/>
       </AnchorPane>
     </ScrollPane>
   </SplitPane>

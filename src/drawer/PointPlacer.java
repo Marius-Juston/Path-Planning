@@ -162,6 +162,9 @@ public class PointPlacer implements Initializable {
 				originsPathTitledTab.setCollapsible(false);
 				pointPlane.getChildren().add(pointsPathTitledTab.getKeyPoints().getOriginPoint());
 				originsPathTitledTab.setText("Origin points");
+				
+				originsPathTitledTab.getContextMenu().getItems().remove(1);
+				((PathTable) originsPathTitledTab.getContent()).getContextMenu().getItems().remove(0, 2);
 
 				originsPaneAccordion.getPanes().add(originsPathTitledTab);
 				originsPaneAccordion.setExpandedPane(originsPathTitledTab);
@@ -176,7 +179,6 @@ public class PointPlacer implements Initializable {
 				pointPlane.getChildren().add(pointAngleCombo);
 				getExpandedPane().getKeyPoints().add(pointAngleCombo);
 			}
-
 		}
 	}
 
