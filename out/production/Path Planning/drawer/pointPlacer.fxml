@@ -42,9 +42,14 @@
           <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
         </accelerator>
       </MenuItem>
-      <MenuItem mnemonicParsing="false" onAction="#tooglePointTable" text="Toogle Point Table">
+      <MenuItem mnemonicParsing="false" onAction="#togglePointTable" text="Toggle Point Table">
         <accelerator>
           <KeyCodeCombination alt="UP" code="H" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+        </accelerator>
+      </MenuItem>
+      <MenuItem mnemonicParsing="false" onAction="#toggleOriginsTable" text="Toggle Origins Table">
+        <accelerator>
+          <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
         </accelerator>
       </MenuItem>
     </Menu>
@@ -52,7 +57,9 @@
   <SplitPane VBox.vgrow="ALWAYS" fx:id="splitPane">
     <ScrollPane prefViewportHeight="158.0" prefViewportWidth="173.0">
       <AnchorPane onMousePressed="#handlePointEvent" fx:id="pointPlane">
-        <ImageView pickOnBounds="true" preserveRatio="true" fx:id="field"/>
+        <children>
+          <ImageView pickOnBounds="true" preserveRatio="true" fx:id="field"/>
+        </children>
       </AnchorPane>
     </ScrollPane>
   </SplitPane>
