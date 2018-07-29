@@ -76,7 +76,7 @@ public class PathGroup extends Group {
 			.atan2(p2.getPositionPoint().getCenterY() - p1.getPositionPoint().getCenterY(),
 				p2.getPositionPoint().getCenterX() - p1.getPositionPoint().getCenterX());
 
-		return (sameAngle && angleBetweenPoints == p1.getObservedDirectionalArrow().getAngle());
+		return (sameAngle && -angleBetweenPoints == p1.getObservedDirectionalArrow().getAngle());
 	}
 
 	public ObservableList<PointAngleGroup> getKeyPoints() {
