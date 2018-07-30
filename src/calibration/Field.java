@@ -12,6 +12,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
@@ -40,6 +42,8 @@ public enum Field {
 		useFieldValue
 			.setContentText("This file already has field information inside of it do you wish to load it?");
 	}
+
+	private final List<Obstacle> fieldObstacles = new ArrayList<>();
 
 	public static Image loadData(File loadFile) throws IOException, java.io.FileNotFoundException {
 		Image image = getImage(loadFile);
@@ -98,5 +102,9 @@ public enum Field {
 		}
 
 		return false;
+	}
+
+	public List<Obstacle> getFieldObstacles() {
+		return fieldObstacles;
 	}
 }
