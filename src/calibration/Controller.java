@@ -57,12 +57,12 @@ public class Controller implements Initializable {
 		startLoadLocation = saver.getInitialDirectory();
 	}
 
-	private final TextField convertedInfo = new TextField();
+	final TextField convertedInfo = new TextField();
 	private final SelectionPoint[] scaleSelectionPoints = new SelectionPoint[2];
 	private final Button rescale = new Button("Rescale");
 	private final SelectionLine line = new SelectionLine();
 	private final Button moveToPointPlacement = new Button("Place curves");
-	private boolean firstConversion = true;
+	boolean firstConversion = true;
 	@FXML
 	private ImageView fieldImage;
 	@FXML
@@ -73,7 +73,7 @@ public class Controller implements Initializable {
 	private HBox infoPane;
 	private Selection scaleSelection = Selection.NO_SELECTION;
 
-	public Controller() {
+	private Controller() {
 	}
 
 	private static Unit askActualDistance(double pixelDistance) throws IOException {
@@ -84,7 +84,7 @@ public class Controller implements Initializable {
 		return FXMLLoader.load(Controller.class.getResource("fieldSelection.fxml"));
 	}
 
-	public void gotToCurvePointPlacement(ActionEvent actionEvent) throws IOException {
+	private void gotToCurvePointPlacement(ActionEvent actionEvent) throws IOException {
 		Parent root = PointPlacer.getRoot();
 		Helper.setRoot(actionEvent, root);
 	}
@@ -150,7 +150,7 @@ public class Controller implements Initializable {
 		}
 	}
 
-	public final void chooseImage(ActionEvent actionEvent) throws IOException {
+	public final void chooseImage(ActionEvent actionEvent) throws IOException, java.io.FileNotFoundException {
 		fileChooser.setInitialDirectory(startOpenLocation);
 
 		Window window;

@@ -19,7 +19,7 @@ public class ObservedDirectionalArrow extends Polygon {
 	private double dx;
 	private double dy;
 
-	public ObservedDirectionalArrow(PositionPoint xy, double angle, double length, boolean isRadians,
+	private ObservedDirectionalArrow(PositionPoint xy, double angle, double length, boolean isRadians,
 		double width, boolean length_includes_head,
 		double head_width, double head_length, String shape, double overhang,
 		boolean head_starts_at_zero, Color fill) {
@@ -35,13 +35,9 @@ public class ObservedDirectionalArrow extends Polygon {
 			head_length = 1.5 * head_width;
 		}
 
-		double distance = Math.hypot(dx, dy);
+		double distance = StrictMath.hypot(dx, dy);
 
-		if (length_includes_head) {
-			length = distance;
-		} else {
-			length = distance + head_length;
-		}
+		length = length_includes_head ? distance : distance + head_length;
 
 		{
 			x = new SimpleDoubleProperty(xy.getCenterX());
@@ -86,7 +82,11 @@ public class ObservedDirectionalArrow extends Polygon {
 			double hs = overhang;
 			double lw = width;
 //				, hl, hs, lw = head_width, head_length, overhang, width
-			double[][] left_half_arrow = new double[][]{
+			//tip
+			//leftmost
+			//meets stem
+			//bottom left
+			double[][] left_half_arrow = {
 				{0.0, 0.0},                  //tip
 				{-hl, -hw / 2.0},             //leftmost
 				{-hl * (1 - hs), -lw / 2.0},  //meets stem
@@ -108,7 +108,7 @@ public class ObservedDirectionalArrow extends Polygon {
 			}
 
 			//figure out the shape, and complete accordingly
-			if (shape.equals("left")) {
+			if ("left".equals(shape)) {
 				coords = left_half_arrow;
 			} else {
 				double[][] right_half_arrow = new double[left_half_arrow.length][];
@@ -117,30 +117,34 @@ public class ObservedDirectionalArrow extends Polygon {
 					right_half_arrow[i] = new double[]{left_half_arrow[i][0], left_half_arrow[i][1] * -1};
 				}
 
-				if (shape.equals("right")) {
-					coords = right_half_arrow;
-				} else if (shape.equals("full")) {
-					//The half -arrows contain the midpoint of the stem,
-					//which we can omit from the full arrow.Including it
-					//twice caused a problem with xpdf.
-					int size = left_half_arrow.length - 1 + right_half_arrow.length - 1;
+				switch (shape) {
+					case "right":
+						coords = right_half_arrow;
+						break;
+					case "full":
+						//The half -arrows contain the midpoint of the stem,
+						//which we can omit from the full arrow.Including it
+						//twice caused a problem with xpdf.
+						int size = ((left_half_arrow.length - 1) + right_half_arrow.length) - 1;
 
-					coords = new double[size][2];
+						coords = new double[size][2];
 
-					int i = 0;
-					for (; i < left_half_arrow.length - 1; i++) {
-						coords[i] = left_half_arrow[i];
-					}
-					for (int j = right_half_arrow.length - 2; j >= 0; j--, i++) {
-						coords[i] = right_half_arrow[j];
-					}
-				} else {
-					throw new IllegalArgumentException(String.format("Got unknown shape: %s", shape));
+						int i = 0;
+						for (; i < (left_half_arrow.length - 1); i++) {
+							coords[i] = left_half_arrow[i];
+						}
+						for (int j = right_half_arrow.length - 2; j >= 0; j--, i++) {
+							coords[i] = right_half_arrow[j];
+						}
+						break;
+					default:
+						throw new IllegalArgumentException(String.format("Got unknown shape: %s", shape));
 				}
 			}
 		}
 
-		double cx, sx;
+		double cx;
+		double sx;
 		if (distance != 0) {
 			cx = dx / distance;
 			sx = dy / distance;
@@ -149,7 +153,7 @@ public class ObservedDirectionalArrow extends Polygon {
 			cx = 0;
 			sx = 1;
 		}
-		double[][] M = new double[][]{{cx, sx}, {-sx, cx}};
+		double[][] M = {{cx, sx}, {-sx, cx}};
 //		double[][] vertices = new double[coords.length][2];
 
 //		Does the dot product of coords and M
@@ -193,7 +197,7 @@ public class ObservedDirectionalArrow extends Polygon {
 		this(new PositionPoint(centerPose), -centerPose.getAngle(), length, true, color);
 	}
 
-	public void followPoint(Number oldValue, Number newValue, boolean isX) {
+	private void followPoint(Number oldValue, Number newValue, boolean isX) {
 		for (int i = isX ? 0 : 1; i < getPoints().size(); i += 2) {
 			getPoints().set(i, (getPoints().get(i) - oldValue.doubleValue()) + newValue.doubleValue());
 		}
@@ -209,7 +213,7 @@ public class ObservedDirectionalArrow extends Polygon {
 			int column = i - (row * points[0].length);
 
 //						Gets the points translated so that 0,0 is the origin
-			points[row][column] = getPoints().get(i) + ((column == 0) ? -x.get() - dx : -y.get() + dy);
+			points[row][column] = getPoints().get(i) + ((column == 0) ? (-x.get() - dx) : (-y.get() + dy));
 		}
 
 //					double[][] rotatedVertices = new double[8][2];
@@ -251,14 +255,14 @@ public class ObservedDirectionalArrow extends Polygon {
 //		this(x, y, dx, dy, 4, true, -1, 6, "full", 0, false, fill);
 //	}
 
-	public void translate(double[][] vertices, double x, double y, double dx, double dy) {
+	private void translate(double[][] vertices, double x, double y, double dx, double dy) {
 		for (int i = 0; i < vertices.length; i++) {
 			vertices[i][0] += (x + dx);
 			vertices[i][1] += (y - dy)/*Due to graphics reason - instead of +*/;
 		}
 	}
 
-	public void setArrowPoints(double[][] vertices) {
+	private void setArrowPoints(double[][] vertices) {
 		getPoints().clear();
 
 		for (double[] vert : vertices) {
@@ -268,7 +272,7 @@ public class ObservedDirectionalArrow extends Polygon {
 		}
 	}
 
-	public void movePoint(MouseEvent mouseEvent) {
+	private void movePoint(MouseEvent mouseEvent) {
 
 		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 //			x.set(mouseEvent.getX());
@@ -279,7 +283,7 @@ public class ObservedDirectionalArrow extends Polygon {
 			double x = mouseEvent.getX() - this.x.get();
 			double y = -(mouseEvent.getY() - this.y.get());
 
-			double angle = Math.atan2(y, x);
+			double angle = StrictMath.atan2(y, x);
 
 			setAngle(angle);
 		} else {
@@ -294,7 +298,7 @@ public class ObservedDirectionalArrow extends Polygon {
 	/**
 	 * Angles in radians
 	 */
-	public void setAngle(double angle) {
+	private void setAngle(double angle) {
 		this.angle.set(angle);
 	}
 

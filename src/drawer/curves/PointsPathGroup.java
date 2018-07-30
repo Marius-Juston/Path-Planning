@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 
 public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 
-	public OriginPoint originPoint = new OriginPoint(0, 0);
+	private OriginPoint originPoint = new OriginPoint(0, 0);
 	private DrawnPath drawer = new DrawnPath(PathType.SPLINE);
 
 	public PointsPathGroup() {
@@ -22,16 +22,39 @@ public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 		getChildren().addAll(originPoint, drawer);
 	}
 
+	private static boolean isPointTurn(Change<? extends PointAngleGroup> c) {
+
+		ObservableList<? extends PointAngleGroup> list = c.getList();
+		PointAngleGroup p1 = list.get(0);
+		PointAngleGroup p2 = list.get(1);
+
+		return p1.getPositionPoint().equalsPosition(p2.getPositionPoint());
+	}
+
+	private static boolean isStraightLine(Change<? extends PointAngleGroup> c) {
+
+		ObservableList<? extends PointAngleGroup> list = c.getList();
+		PointAngleGroup p1 = list.get(0);
+		PointAngleGroup p2 = list.get(1);
+
+		boolean sameAngle = p1.getDegrees() == p2.getDegrees();
+
+		double angleBetweenPoints = StrictMath
+			.atan2(p2.getPositionPoint().getCenterY() - p1.getPositionPoint().getCenterY(),
+				p2.getPositionPoint().getCenterX() - p1.getPositionPoint().getCenterX());
+
+		return (sameAngle && (-angleBetweenPoints == p1.getObservedDirectionalArrow().getAngle()));
+	}
 
 	public OriginPoint getOriginPoint() {
 		return originPoint;
 	}
 
 	public void setOriginPoint(OriginPoint newOriginPoint) {
-		this.originPoint.angleProperty().bindBidirectional(newOriginPoint.angleProperty());
-		this.originPoint.nameProperty().bindBidirectional(newOriginPoint.nameProperty());
-		this.originPoint.centerXProperty().bindBidirectional(newOriginPoint.centerXProperty());
-		this.originPoint.centerYProperty().bindBidirectional(newOriginPoint.centerYProperty());
+		originPoint.angleProperty().bindBidirectional(newOriginPoint.angleProperty());
+		originPoint.nameProperty().bindBidirectional(newOriginPoint.nameProperty());
+		originPoint.centerXProperty().bindBidirectional(newOriginPoint.centerXProperty());
+		originPoint.centerYProperty().bindBidirectional(newOriginPoint.centerYProperty());
 
 		originPoint.getPositionPoint().setFill(Color.GREEN);
 		originPoint.setName("Origin");
@@ -55,30 +78,6 @@ public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 		updateDrawingType(c);
 		drawer.draw(c);
 
-	}
-
-	private boolean isPointTurn(Change<? extends PointAngleGroup> c) {
-
-		ObservableList<? extends PointAngleGroup> list = c.getList();
-		PointAngleGroup p1 = list.get(0);
-		PointAngleGroup p2 = list.get(1);
-
-		return p1.getPositionPoint().equalsPosition(p2.getPositionPoint());
-	}
-
-	private boolean isStraightLine(Change<? extends PointAngleGroup> c) {
-
-		ObservableList<? extends PointAngleGroup> list = c.getList();
-		PointAngleGroup p1 = list.get(0);
-		PointAngleGroup p2 = list.get(1);
-
-		boolean sameAngle = p1.getDegrees() == p2.getDegrees();
-
-		double angleBetweenPoints = StrictMath
-			.atan2(p2.getPositionPoint().getCenterY() - p1.getPositionPoint().getCenterY(),
-				p2.getPositionPoint().getCenterX() - p1.getPositionPoint().getCenterX());
-
-		return (sameAngle && -angleBetweenPoints == p1.getObservedDirectionalArrow().getAngle());
 	}
 
 	public void add(PointAngleGroup pointAngleCombo) {
@@ -116,10 +115,10 @@ public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 			pointAngleCombo.handleMouseClicked(event);
 
 			if (event.getButton() == MouseButton.SECONDARY) {
-				if (getKeyPoints().size() != 1) {
-					pointTurnCreation.setDisable(true);
-				} else {
+				if (getKeyPoints().size() == 1) {
 					pointTurnCreation.setDisable(false);
+				} else {
+					pointTurnCreation.setDisable(true);
 				}
 //				if (getPointsPathGroup().size() != 2) {
 //					straightLineCreation.setDisable(true);

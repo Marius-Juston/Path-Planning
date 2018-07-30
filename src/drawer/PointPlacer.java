@@ -44,7 +44,7 @@ public class PointPlacer implements Initializable {
 		- use Polygon.intersect()
 
 
-	TODO when creating a a new table be able to choose existing or create a new origin point
+	TODO when creating a new PathTitledTab be able to choose existing or create a new origin point
 
 	TODO make the TitledPane Content a VBOx with a HBOX (with two fields start and end scale) and then the table view
 	TODO add a measuring tool in the edit menu Ctrl+M as shortcut (generalize it so that the calibration code can also use it)
@@ -59,11 +59,13 @@ public class PointPlacer implements Initializable {
 	TODO show name of point when showing details - DONE
 	*/
 
-	private final double originsDividerPosition = 0.15772870662460567;
-	public ImageView field;
+	private static final double originsDividerPosition = 0.15772870662460567;
 	@FXML
-	public AnchorPane pointPlane;
-	public SplitPane splitPane;
+	private ImageView field;
+	@FXML
+	private AnchorPane pointPlane;
+	@FXML
+	private SplitPane splitPane;
 	private Accordion titledPaneAccordion;
 	private Accordion originsPaneAccordion = new Accordion();
 	private PointsAdded pointNumber = PointsAdded.FIRST_POINT;
@@ -150,7 +152,7 @@ public class PointPlacer implements Initializable {
 
 	}
 
-	public void addPoint(MouseEvent mouseEvent) {
+	private void addPoint(MouseEvent mouseEvent) {
 
 		if (!(mouseEvent.getPickResult().getIntersectedNode() instanceof Shape)) {
 
@@ -254,7 +256,7 @@ public class PointPlacer implements Initializable {
 		return pathTitledTab;
 	}
 
-	public PathTitledTab<PointsPathGroup> createAndSetupPathTitledTab() {
+	private PathTitledTab<PointsPathGroup> createAndSetupPathTitledTab() {
 
 		PathTitledTab<PointsPathGroup> pathTitledTab = createPointsPathTitledTab();
 
@@ -306,6 +308,6 @@ public class PointPlacer implements Initializable {
 	}
 
 	public enum PointsAdded {
-		FIRST_POINT, SECOND_POINT, MORE;
+		FIRST_POINT, SECOND_POINT, MORE
 	}
 }

@@ -16,16 +16,16 @@ import javafx.scene.text.Text;
 
 public class PointGroup extends Group {
 
-	//	private final SimpleStringProperty name;
-	public SimpleBooleanProperty selected;
 	Text name = new Text();
+	//	private final SimpleStringProperty name;
+	private SimpleBooleanProperty selected;
 	private boolean beingDragged;
 	private ObservedDirectionalArrow observedDirectionalArrow;
 	private Circle arrowRadius;
 	private PositionPoint positionPoint;
 	private SimpleDoubleProperty degrees = new SimpleDoubleProperty();
 
-	public PointGroup(double centerX, double centerY) {
+	PointGroup(double centerX, double centerY) {
 		positionPoint = new PositionPoint(centerX, centerY);
 
 		name.textOriginProperty().setValue(VPos.CENTER);
@@ -64,14 +64,14 @@ public class PointGroup extends Group {
 		});
 
 		DoubleBinding angleDegrees = Bindings
-			.createDoubleBinding(() -> boundDegrees(StrictMath.toDegrees(getObservedDirectionalArrow().getAngle())),
-				getObservedDirectionalArrow().angleProperty());
+			.createDoubleBinding(() -> boundDegrees(StrictMath.toDegrees(observedDirectionalArrow.getAngle())),
+				observedDirectionalArrow.angleProperty());
 		degreesProperty().bind(angleDegrees);
 
 		getChildren().addAll(name, arrowRadius, observedDirectionalArrow, positionPoint);
 	}
 
-	public double boundDegrees(double degrees) {
+	static double boundDegrees(double degrees) {
 		if (degrees > 180) {
 			return -360 + degrees;
 		} else if (degrees < -180) {
@@ -128,7 +128,7 @@ public class PointGroup extends Group {
 		return degrees.get();
 	}
 
-	public SimpleDoubleProperty degreesProperty() {
+	SimpleDoubleProperty degreesProperty() {
 		return degrees;
 	}
 
@@ -147,14 +147,14 @@ public class PointGroup extends Group {
 		beingDragged = false;
 	}
 
-	public void disable() {
+	private void disable() {
 		observedDirectionalArrow.setVisible(false);
 		observedDirectionalArrow.setDisable(true);
 		arrowRadius.setVisible(false);
 		arrowRadius.setDisable(true);
 	}
 
-	public void enable() {
+	private void enable() {
 		observedDirectionalArrow.setVisible(true);
 		observedDirectionalArrow.setDisable(false);
 		arrowRadius.setVisible(true);

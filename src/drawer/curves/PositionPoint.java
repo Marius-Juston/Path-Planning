@@ -30,6 +30,6 @@ public class PositionPoint extends Circle {
 	}
 
 	public boolean equalsPosition(PositionPoint positionPoint) {
-		return getCenterX() == positionPoint.getCenterX() && getCenterY() == positionPoint.getCenterY();
+		return (getCenterX() == positionPoint.getCenterX()) && (getCenterY() == positionPoint.getCenterY());
 	}
 }

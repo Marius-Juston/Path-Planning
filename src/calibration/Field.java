@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Optional;
@@ -23,13 +24,14 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
 
-public class Field {
+public enum Field {
+	;
 
 	public static final SimpleDoubleProperty SCALE = new SimpleDoubleProperty(1);
-	public static final WritableObjectValue<String> UNIT = new SimpleStringProperty(Helper.PIXELS);
-	public static final String SUFFIX = ".field";
+	public static final WritableObjectValue<String> UNIT = new SimpleStringProperty(PIXELS);
+	private static final String SUFFIX = ".field";
 	//	public static BufferedImage bufferedImage;
-	public static final String MATCH_PATTERN = "[0-9.]+ [a-zA-Z]+";
+	private static final String MATCH_PATTERN = "[0-9.]+ [a-zA-Z]+";
 	private static final Alert useFieldValue = new Alert(AlertType.CONFIRMATION);
 	public static File imageFile;
 	public static Image image;
@@ -39,14 +41,14 @@ public class Field {
 			.setContentText("This file already has field information inside of it do you wish to load it?");
 	}
 
-	public static Image loadData(File loadFile) throws IOException {
+	public static Image loadData(File loadFile) throws IOException, java.io.FileNotFoundException {
 		Image image = getImage(loadFile);
 
-		Field.imageFile = loadFile;
+		imageFile = loadFile;
 		Field.image = image;
 
 		try (BufferedReader bufferedReader = new BufferedReader(
-			new InputStreamReader(new FileInputStream(loadFile)))) {
+			new InputStreamReader(new FileInputStream(loadFile), StandardCharsets.UTF_8))) {
 			AtomicReference<String> lastLine = new AtomicReference<>();
 
 			bufferedReader.lines().forEach(lastLine::set);
@@ -55,11 +57,11 @@ public class Field {
 			if (Pattern.matches(MATCH_PATTERN, lastLine.get())) {
 				String[] data = lastLine.get().split("\\s");
 
-				Field.SCALE.set(Double.parseDouble(data[0]));
-				Field.UNIT.set(data[1]);
+				SCALE.set(Double.parseDouble(data[0]));
+				UNIT.set(data[1]);
 			} else {
-				Field.SCALE.set(1.0);
-				Field.UNIT.set(PIXELS);
+				SCALE.set(1.0);
+				UNIT.set(PIXELS);
 			}
 
 		}
@@ -74,16 +76,16 @@ public class Field {
 		if (saveFile.createNewFile()) {
 
 			{
-				String splits = Field.imageFile.getAbsolutePath()
-					.substring(Field.imageFile.getAbsolutePath().lastIndexOf('.') + 1);
-				ImageIO.write(ImageIO.read(Field.imageFile), "jpg".equals(splits) ? "jpeg" : "png", saveFile);
+				String splits = imageFile.getAbsolutePath()
+					.substring(imageFile.getAbsolutePath().lastIndexOf('.') + 1);
+				ImageIO.write(ImageIO.read(imageFile), "jpg".equals(splits) ? "jpeg" : "png", saveFile);
 			}
 
 			try (BufferedWriter bufferedWriter = Files
 				.newBufferedWriter(saveFile.toPath(), StandardOpenOption.APPEND)) {
 
 				bufferedWriter.newLine();
-				bufferedWriter.write(String.format("%f %s", Field.SCALE.get(), Field.UNIT.get()));
+				bufferedWriter.write(String.format("%f %s", SCALE.get(), UNIT.get()));
 			}
 		}
 	}
@@ -92,7 +94,7 @@ public class Field {
 		if (file.getName().endsWith(SUFFIX)) {
 			Optional<ButtonType> buttonTypeOptional = useFieldValue.showAndWait();
 
-			return buttonTypeOptional.isPresent() && buttonTypeOptional.get() == ButtonType.OK;
+			return buttonTypeOptional.isPresent() && (buttonTypeOptional.get() == ButtonType.OK);
 		}
 
 		return false;

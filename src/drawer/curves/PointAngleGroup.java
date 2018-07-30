@@ -1,12 +1,12 @@
 package drawer.curves;
 
 import calibration.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.collections.ObservableList;
 import org.waltonrobotics.controller.Pose;
 
 public class PointAngleGroup extends PointGroup {
@@ -23,7 +23,7 @@ public class PointAngleGroup extends PointGroup {
 		name.setText(String.format("Point %d", index++));
 	}
 
-	public static List<Pose> mapToPoses(ObservableList<? extends PointAngleGroup> points) {
+	public static List<Pose> mapToPoses(Collection<? extends PointAngleGroup> points) {
 		return points.stream().map(PointAngleGroup::getPose).collect(Collectors.toList());
 	}
 

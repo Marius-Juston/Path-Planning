@@ -11,14 +11,14 @@ import org.waltonrobotics.controller.Pose;
 public class PathPoint extends Circle {
 
 
-	public PathPoint(double centerX, double centerY, Color color) {
+	private PathPoint(double centerX, double centerY, Color color) {
 		super(centerX, centerY, 2, color);
 
 		setOnMouseDragged(this::movePoint);
 
 	}
 
-	public PathPoint(double centerX, double centerY) {
+	private PathPoint(double centerX, double centerY) {
 		super(centerX, centerY, 2, RED);
 
 		setOnMouseDragged(this::movePoint);
@@ -34,7 +34,7 @@ public class PathPoint extends Circle {
 	}
 
 
-	public void movePoint(MouseEvent mouseEvent) {
+	private void movePoint(MouseEvent mouseEvent) {
 		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 			setCenterX(mouseEvent.getX());
 			setCenterY(mouseEvent.getY());

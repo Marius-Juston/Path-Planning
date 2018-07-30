@@ -1,6 +1,7 @@
 package drawer.draw;
 
 import drawer.curves.PointAngleGroup;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.collections.ListChangeListener.Change;
@@ -13,7 +14,7 @@ import org.waltonrobotics.motion.Path;
 //TODO make this an ENUM
 public class DrawnPath extends Group {
 
-	public Path path;
+	private Path path;
 	private PathType pathType;
 	private boolean showVelocities = false;
 
@@ -22,7 +23,7 @@ public class DrawnPath extends Group {
 		this.pathType = pathType;
 	}
 
-	public static List<Pose> extractPositionData(List<PathData> pathDataList) {
+	public static List<Pose> extractPositionData(Collection<PathData> pathDataList) {
 		return pathDataList.stream().map(PathData::getCenterPose).collect(Collectors.toList());
 	}
 
@@ -51,7 +52,7 @@ public class DrawnPath extends Group {
 		this.path = path;
 	}
 
-	public void clearCreateAndAddPoints(ObservableList<? extends PointAngleGroup> list) {
+	private void clearCreateAndAddPoints(ObservableList<? extends PointAngleGroup> list) {
 		pathType.clearCreateAndAddPoints(this, list);
 	}
 

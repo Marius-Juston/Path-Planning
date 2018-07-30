@@ -1,6 +1,7 @@
 package drawer.content;
 
 import drawer.curves.PointGroup;
+import java.util.Collection;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,26 +23,26 @@ public class PathGroup<K extends PointGroup> extends Group {
 		keyPoints.add(pointAngleCombo);
 	}
 
-	public void removeAll(ObservableList<K> selectedItems) {
+	public void removeAll(Collection<K> selectedItems) {
 		getChildren().removeAll(selectedItems);
 		keyPoints.removeAll(selectedItems);
 	}
 
-	public void showAllPointDetails(ObservableList<K> selectedItems) {
+	public void showAllPointDetails(Iterable<K> selectedItems) {
 		for (K pointAngleGroup : selectedItems) {
 			pointAngleGroup.setSelected(true);
 		}
 	}
 
 
-	public void hideAllPointDetails(ObservableList<K> selectedItems) {
+	public void hideAllPointDetails(Iterable<K> selectedItems) {
 		for (K pointAngleGroup : selectedItems) {
 			pointAngleGroup.setSelected(false);
 		}
 	}
 
 	public void clear() {
-		getKeyPoints().clear();
+		keyPoints.clear();
 		getChildren().clear();
 	}
 }

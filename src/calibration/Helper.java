@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.stage.Window;
 
@@ -16,7 +15,7 @@ public enum Helper {
 
 	public static final String PIXELS = "pixels";
 
-	private Helper() {
+	Helper() {
 	}
 
 	public static boolean isDouble(String text) {
@@ -38,7 +37,7 @@ public enum Helper {
 	}
 
 	public static void setRoot(ActionEvent actionEvent, Parent rootToSetTo) {
-		((Button) actionEvent.getSource()).getScene().setRoot(rootToSetTo);
+		((Node) actionEvent.getSource()).getScene().setRoot(rootToSetTo);
 	}
 
 	public static double[][] dotProduct(double[][] matrixA, double[][] matrixB) {

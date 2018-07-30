@@ -5,6 +5,7 @@ import drawer.curves.PathPoint;
 import drawer.curves.PointAngleGroup;
 import drawer.curves.PositionPoint;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
@@ -40,7 +41,7 @@ public enum PathType {
 
 					int every = (int) (group.getPath().getPathData().size() * everyPercent);
 
-					final int[] index = {0};
+					int[] index = {0};
 //			List<Node> pathPoints = getPath().getPathData().stream().map(pathData -> {
 //				if (index[0]++ % every == 0) {
 //					double centerVelocity =
@@ -54,11 +55,11 @@ public enum PathType {
 //				}
 //			}).collect(Collectors.toList());
 
-					List<PathPoint> pathPoints = new ArrayList<>();
-					List<ObservedDirectionalArrow> observedDirectionalArrows = new ArrayList<>();
+					Collection<PathPoint> pathPoints = new ArrayList<>();
+					Collection<ObservedDirectionalArrow> observedDirectionalArrows = new ArrayList<>();
 
 					group.getPath().getPathData().forEach(pathData -> {
-						if (index[0]++ % every == 0) {
+						if ((index[0]++ % every) == 0) {
 							double centerVelocity =
 								(pathData.getLeftState().getVelocity() + pathData.getRightState().getVelocity()) / 2.0;
 
@@ -117,7 +118,7 @@ public enum PathType {
 				List<Pose> poses = DrawnPath.extractPositionData(group.getPath().getPathData());
 				double percentage = 255.0 / poses.size();
 
-				final int[] index = {poses.size()};
+				int[] index = {poses.size()};
 
 				List<ObservedDirectionalArrow> pathPoints = poses.stream()
 					.map(pose -> new ObservedDirectionalArrow(new PositionPoint(pose), -pose.getAngle(), 30, true,
@@ -148,7 +149,7 @@ public enum PathType {
 				List<Pose> poses = DrawnPath.extractPositionData(group.getPath().getPathData());
 				double percentage = 255.0 / poses.size();
 
-				final int[] index = {poses.size()};
+				int[] index = {poses.size()};
 
 				List<PathPoint> pathPoints = poses.stream()
 					.map(pose -> new PathPoint(pose,

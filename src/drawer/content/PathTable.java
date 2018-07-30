@@ -11,14 +11,14 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.NumberStringConverter;
 
 // Copied from my CurveDrawer class from my POE-Project Repository
-public class PathTable<K extends PathGroup, U extends PointGroup> extends TableView<U> {
+class PathTable<K extends PathGroup, U extends PointGroup> extends TableView<U> {
 
 	/**
 	 * Initializes a TableView that observers the defining points of a path
 	 *
 	 * @param pathGroup points of the path to observe
 	 */
-	public PathTable(K pathGroup) {
+	PathTable(K pathGroup) {
 
 		setEditable(true);
 		setColumnResizePolicy(CONSTRAINED_RESIZE_POLICY);

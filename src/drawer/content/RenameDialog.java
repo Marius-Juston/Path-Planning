@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -20,14 +21,14 @@ public class RenameDialog {
 		primaryStage.setTitle("Unit converter");
 	}
 
-	public TextField pathName;
+	private TextField pathName;
 
 	public static String display(String previousName) throws IOException {
 
 		newName = previousName;
 
 		Parent root = FXMLLoader.load(RenameDialog.class.getResource("renameDialog.fxml"));
-		((TextField) root.getChildrenUnmodifiable().get(1)).setText(previousName);
+		((TextInputControl) root.getChildrenUnmodifiable().get(1)).setText(previousName);
 
 		primaryStage.setScene(new Scene(root));
 		primaryStage.showAndWait();
