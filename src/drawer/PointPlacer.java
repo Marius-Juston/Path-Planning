@@ -3,10 +3,14 @@ package drawer;
 import calibration.Controller;
 import calibration.Field;
 import calibration.Helper;
-import drawer.content.PathTable;
+import drawer.content.OriginPathTable;
 import drawer.content.PathTitledTab;
+import drawer.content.PointsPathTable;
 import drawer.content.RenameDialog;
+import drawer.curves.OriginPoint;
+import drawer.curves.OriginsPathGroup;
 import drawer.curves.PointAngleGroup;
+import drawer.curves.PointsPathGroup;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -55,13 +59,13 @@ public class PointPlacer implements Initializable {
 	TODO show name of point when showing details - DONE
 	*/
 
+	private final double originsDividerPosition = 0.15772870662460567;
 	public ImageView field;
 	@FXML
 	public AnchorPane pointPlane;
-	public Accordion titledPaneAccordion;
 	public SplitPane splitPane;
-	Accordion originsPaneAccordion = new Accordion();
-	private boolean isFirstPoint = true;
+	private Accordion titledPaneAccordion;
+	private Accordion originsPaneAccordion = new Accordion();
 	private PointsAdded pointNumber = PointsAdded.FIRST_POINT;
 
 	public static Parent getRoot() throws IOException {
@@ -149,43 +153,70 @@ public class PointPlacer implements Initializable {
 	public void addPoint(MouseEvent mouseEvent) {
 
 		if (!(mouseEvent.getPickResult().getIntersectedNode() instanceof Shape)) {
-			PointAngleGroup pointAngleCombo = new PointAngleGroup(mouseEvent.getX(), mouseEvent.getY());
 
 			if (pointNumber == PointsAdded.FIRST_POINT) {
 				pointNumber = PointsAdded.SECOND_POINT;
 
-				PathTitledTab pointsPathTitledTab = createAndSetupPathTitledTab();
-				pointsPathTitledTab.getKeyPoints().setOriginPoint(pointAngleCombo);
+				PathTitledTab<PointsPathGroup> pointsPathTitledTab = createAndSetupPathTitledTab();
 
-//				TODO clean this up
-				PathTitledTab originsPathTitledTab = createPathTitledTab();
-				originsPathTitledTab.getKeyPoints().add(pointsPathTitledTab.getKeyPoints().getOriginPoint());
+				OriginPoint originPoint = new OriginPoint(mouseEvent.getX(), mouseEvent.getY());
+				pointsPathTitledTab.getPointsPathGroup().setOriginPoint(originPoint);
+//
+//////				TODO clean this up
+				PathTitledTab<OriginsPathGroup> originsPathTitledTab = createOriginsPathTitledTab();
+
+				originPoint = pointsPathTitledTab.getPointsPathGroup().getOriginPoint();
+				originsPathTitledTab.getPointsPathGroup().add(originPoint);
+
 				originsPathTitledTab.setCollapsible(false);
-				pointPlane.getChildren().add(pointsPathTitledTab.getKeyPoints().getOriginPoint());
+				pointPlane.getChildren().add(originPoint);
 				originsPathTitledTab.setText("Origin points");
-
-				originsPathTitledTab.getContextMenu().getItems().remove(1);
-				((PathTable) originsPathTitledTab.getContent()).getContextMenu().getItems().remove(0, 2);
 
 				originsPaneAccordion.getPanes().add(originsPathTitledTab);
 				originsPaneAccordion.setExpandedPane(originsPathTitledTab);
 
 				splitPane.getItems().add(0, originsPaneAccordion);
+				splitPane.getDividers().get(0).setPosition(originsDividerPosition);
 			} else {
+				PointAngleGroup keyPoint = new PointAngleGroup(mouseEvent.getX(), mouseEvent.getY());
+
 				if (pointNumber == PointsAdded.SECOND_POINT) {
 					pointNumber = PointsAdded.MORE;
 					splitPane.getItems().add(titledPaneAccordion);
+					splitPane.getDividers().get(1).setPosition(1 - originsDividerPosition);
 				}
 
-				pointPlane.getChildren().add(pointAngleCombo);
-				getExpandedPane().getKeyPoints().add(pointAngleCombo);
+				pointPlane.getChildren().add(keyPoint);
+				((PointsPathGroup) getExpandedPane().getPointsPathGroup()).add(keyPoint);
 			}
 		}
 	}
 
-	private PathTitledTab createPathTitledTab() {
+	private PathTitledTab<OriginsPathGroup> createOriginsPathTitledTab() {
+		PathTitledTab<OriginsPathGroup> pathTitledTab = new PathTitledTab<>(new OriginsPathGroup());
 
-		PathTitledTab pathTitledTab = new PathTitledTab();
+		{
+			MenuItem rename = new MenuItem("Rename");
+			rename.setOnAction(event -> {
+				try {
+					pathTitledTab.setText(RenameDialog.display(pathTitledTab.getText()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+
+			ContextMenu contextMenu = new ContextMenu(rename);
+			pathTitledTab.setContextMenu(contextMenu);
+
+			pathTitledTab.setContent(new OriginPathTable(pathTitledTab.pointsPathGroup));
+		}
+
+		return pathTitledTab;
+	}
+
+	private PathTitledTab<PointsPathGroup> createPointsPathTitledTab() {
+
+		PathTitledTab<PointsPathGroup> pathTitledTab = new PathTitledTab<>(new PointsPathGroup());
 
 		{
 			MenuItem rename = new MenuItem("Rename");
@@ -207,7 +238,7 @@ public class PointPlacer implements Initializable {
 						titledPaneAccordion.setExpandedPane(panes.get(panes.size() - 1));
 					}
 
-					pointPlane.getChildren().remove(pathTitledTab.getKeyPoints());
+					pointPlane.getChildren().remove(pathTitledTab.getPointsPathGroup());
 					panes.remove(pathTitledTab);
 				} else {
 //					pathTitledTab.clear();
@@ -217,17 +248,17 @@ public class PointPlacer implements Initializable {
 			ContextMenu contextMenu = new ContextMenu(rename, delete);
 			pathTitledTab.setContextMenu(contextMenu);
 
-			pathTitledTab.setContent(new PathTable(pathTitledTab.keyPoints));
+			pathTitledTab.setContent(new PointsPathTable(pathTitledTab.pointsPathGroup));
 		}
 		return pathTitledTab;
 	}
 
-	public PathTitledTab createAndSetupPathTitledTab() {
+	public PathTitledTab<PointsPathGroup> createAndSetupPathTitledTab() {
 
-		PathTitledTab pathTitledTab = createPathTitledTab();
+		PathTitledTab<PointsPathGroup> pathTitledTab = createPointsPathTitledTab();
 
 		titledPaneAccordion.getPanes().add(pathTitledTab);
-		pointPlane.getChildren().add(pathTitledTab.getKeyPoints());
+		pointPlane.getChildren().add(pathTitledTab.getPointsPathGroup());
 		titledPaneAccordion.setExpandedPane(pathTitledTab);
 		return pathTitledTab;
 	}
@@ -252,6 +283,7 @@ public class PointPlacer implements Initializable {
 		} else {
 			splitPane.getItems().add(titledPaneAccordion);
 		}
+		updateDividerPositions();
 	}
 
 	public void toggleOriginsTable(ActionEvent actionEvent) {
@@ -259,6 +291,16 @@ public class PointPlacer implements Initializable {
 			splitPane.getItems().remove(originsPaneAccordion);
 		} else {
 			splitPane.getItems().add(0, originsPaneAccordion);
+		}
+		updateDividerPositions();
+	}
+
+	private void updateDividerPositions() {
+		if (splitPane.getItems().contains(originsPaneAccordion)) {
+			splitPane.getDividers().get(0).setPosition(originsDividerPosition);
+		}
+		if (splitPane.getItems().contains(titledPaneAccordion)) {
+			splitPane.getDividers().get(splitPane.getDividers().size() - 1).setPosition(1 - originsDividerPosition);
 		}
 	}
 

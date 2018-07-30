@@ -2,22 +2,21 @@ package drawer.content;
 
 import javafx.scene.control.TitledPane;
 
-public class PathTitledTab extends TitledPane {
+public class PathTitledTab<K extends PathGroup> extends TitledPane {
 
 	private static int index = 0;
-	public final PathGroup keyPoints = new PathGroup();
+	public final K pointsPathGroup;
 
-	public PathTitledTab() {
+	public PathTitledTab(K pointsPathGroup) {
+		this.pointsPathGroup = pointsPathGroup;
 		setText(String.format("Path %d", index++));
-
-
 	}
 
-	public PathGroup getKeyPoints() {
-		return keyPoints;
+	public K getPointsPathGroup() {
+		return pointsPathGroup;
 	}
 
 	public void clear() {
-		keyPoints.clear();
+		pointsPathGroup.clear();
 	}
 }

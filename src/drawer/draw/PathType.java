@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.CubicCurve;
 import org.waltonrobotics.controller.Pose;
 import org.waltonrobotics.motion.Line;
 import org.waltonrobotics.motion.PointTurn;
@@ -73,11 +74,30 @@ public enum PathType {
 					group.getChildren().addAll(observedDirectionalArrows);
 				} else {
 
-					List<PathPoint> pathPoints = DrawnPath.extractPositionData(group.getPath().getPathData()).stream()
-						.map(PathPoint::new)
-						.collect(Collectors.toList());
+//					List<PathPoint> pathPoints = DrawnPath.extractPositionData(group.getPath().getPathData()).stream()
+//						.map(PathPoint::new)
+//						.collect(Collectors.toList());
+//
+//					group.getChildren().addAll(pathPoints);
+//                  TODO optimize this
+					List<CubicCurve> collect = ((Spline) group.getPath()).getDefiningBezierCurves().stream()
+						.map(pathData -> {
+							Pose p1 = pathData.getKeyPoints().get(0);
+							Pose p2 = pathData.getKeyPoints().get(1);
+							Pose p3 = pathData.getKeyPoints().get(2);
+							Pose p4 = pathData.getKeyPoints().get(3);
 
-					group.getChildren().addAll(pathPoints);
+							CubicCurve cubicCurve = new CubicCurve(p1.getX(), p1.getY(), p2.getX(), p2.getY(),
+								p3.getX(), p3.getY(), p4.getX(), p4.getY());
+							cubicCurve.setFill(Color.TRANSPARENT);
+							cubicCurve.setStroke(Color.RED);
+							cubicCurve.setStrokeWidth(3);
+
+							return cubicCurve;
+						}).collect(Collectors.toList());
+
+					group.getChildren().addAll(collect);
+
 				}
 			}
 		}
@@ -144,6 +164,7 @@ public enum PathType {
 			System.out.println("Straight");
 		}
 	};
+
 
 	public void clearCreateAndAddPoints(DrawnPath group, ObservableList<? extends PointAngleGroup> keyPoints) {
 	}

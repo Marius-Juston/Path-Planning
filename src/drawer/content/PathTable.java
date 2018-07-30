@@ -1,10 +1,7 @@
 package drawer.content;
 
-import calibration.Field;
-import drawer.curves.PointAngleGroup;
+import drawer.curves.PointGroup;
 import javafx.event.EventHandler;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -14,78 +11,18 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.NumberStringConverter;
 
 // Copied from my CurveDrawer class from my POE-Project Repository
-public class PathTable extends TableView<PointAngleGroup> {
+public class PathTable<K extends PathGroup, U extends PointGroup> extends TableView<U> {
 
 	/**
 	 * Initializes a TableView that observers the defining points of a path
 	 *
 	 * @param pathGroup points of the path to observe
 	 */
-	public PathTable(PathGroup pathGroup) {
-		/////////////////////// CONTEXT MENU INITIALIZATION    //////////////////////////
-		ContextMenu pathTableContextMenu = new ContextMenu();
-		MenuItem addPoint = new MenuItem("Add Point");
-		addPoint.setOnAction(event -> pathGroup.add(new PointAngleGroup(0, 0)));
-
-		MenuItem removePoint = new MenuItem("Remove Points");
-		removePoint.setOnAction(event -> pathGroup.removeAll(getSelectionModel().getSelectedItems()));
-
-		MenuItem showPointsDetails = new MenuItem("Show Points Details");
-		showPointsDetails.setOnAction(event -> pathGroup.showAllPointDetails(getSelectionModel().getSelectedItems()));
-
-		MenuItem hidePointsDetails = new MenuItem("Hide Points Details");
-		hidePointsDetails.setOnAction(event -> pathGroup.hideAllPointDetails(getSelectionModel().getSelectedItems()));
-
-		pathTableContextMenu.getItems().addAll(addPoint, removePoint, showPointsDetails, hidePointsDetails);
-		setContextMenu(pathTableContextMenu);
-		///////////////////////////////////////////////////////////////////////////////////
+	public PathTable(K pathGroup) {
 
 		setEditable(true);
 		setColumnResizePolicy(CONSTRAINED_RESIZE_POLICY);
 		getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-		//Adds column to observe the name property of points
-		initializeStringColumn("Name", "name",
-			cellEditEvent -> cellEditEvent.getTableView().getItems().get(
-				cellEditEvent.getTablePosition().getRow())
-				.setName(cellEditEvent.getNewValue()));
-
-		//Adds column to observe the scaled X property of points
-		initializeNumberColumn("X", "translatedX",
-			cellEditEvent -> {
-				PointAngleGroup pointAngleGroup = cellEditEvent.getTableView().getItems().get(
-					cellEditEvent.getTablePosition().getRow());
-
-				pointAngleGroup.getPositionPoint().setCenterX((
-					cellEditEvent.getNewValue().doubleValue()) / Field.SCALE.get() + pointAngleGroup.getOriginPoint()
-					.getPositionPoint()
-					.getCenterX());
-			}
-		);
-
-		//Adds column to observe the scaled Y property of points
-		initializeNumberColumn("Y", "translatedY",
-			cellEditEvent -> {
-				PointAngleGroup pointAngleGroup = cellEditEvent.getTableView().getItems().get(
-					cellEditEvent.getTablePosition().getRow());
-
-				pointAngleGroup.getPositionPoint().setCenterY((
-					cellEditEvent.getNewValue().doubleValue()) / Field.SCALE.get() + pointAngleGroup.getOriginPoint()
-					.getPositionPoint()
-					.getCenterY());
-			});
-
-		//Adds column to observe the scaled Y property of points
-		initializeNumberColumn("Angle", "degrees",
-			cellEditEvent -> {
-				PointAngleGroup pointAngleGroup = cellEditEvent.getTableView().getItems().get(
-					cellEditEvent.getTablePosition().getRow());
-
-				pointAngleGroup
-					.getObservedDirectionalArrow().angleProperty()
-					.set(Math.toRadians(cellEditEvent.getNewValue().doubleValue()) + pointAngleGroup.getOriginPoint()
-						.getObservedDirectionalArrow().getAngle());
-			});
 
 		setItems(pathGroup.getKeyPoints());
 	}
@@ -97,10 +34,10 @@ public class PathTable extends TableView<PointAngleGroup> {
 	 * @param property name of the property the column should be observing
 	 * @param eventHandler event handler that handles when a value from the column is changed
 	 */
-	private void initializeNumberColumn(String columnName, String property,
-		EventHandler<CellEditEvent<PointAngleGroup, Number>> eventHandler) {
+	void initializeNumberColumn(String columnName, String property,
+		EventHandler<CellEditEvent<U, Number>> eventHandler) {
 
-		TableColumn<PointAngleGroup, Number> column = new TableColumn<>();
+		TableColumn<U, Number> column = new TableColumn<>();
 		column.setCellValueFactory(new PropertyValueFactory<>(property));
 		column.setCellFactory(TextFieldTableCell.forTableColumn(new NumberStringConverter()));
 		column.setOnEditCommit(eventHandler);
@@ -117,9 +54,9 @@ public class PathTable extends TableView<PointAngleGroup> {
 	 * @param property name of the property the column should be observing
 	 * @param eventHandler event handler that handles when a value from the column is changed
 	 */
-	private void initializeStringColumn(String columnName, String property,
-		EventHandler<CellEditEvent<PointAngleGroup, String>> eventHandler) {
-		TableColumn<PointAngleGroup, String> column = new TableColumn<>();
+	void initializeStringColumn(String columnName, String property,
+		EventHandler<CellEditEvent<U, String>> eventHandler) {
+		TableColumn<U, String> column = new TableColumn<>();
 		column.setCellValueFactory(new PropertyValueFactory<>(property));
 		column.setCellFactory(TextFieldTableCell.forTableColumn());
 		column.setOnEditCommit(eventHandler);
