@@ -39,7 +39,7 @@
   </MenuBar>
   <ScrollPane VBox.vgrow="ALWAYS" prefViewportHeight="150.0" prefViewportWidth="200.0">
     <AnchorPane fx:id="pointPlacement">
-      <ImageView onMouseClicked="#selectPoint" pickOnBounds="true" preserveRatio="true" fx:id="fieldImage"/>
+      <ImageView onMouseClicked="#handleMouseClicked" pickOnBounds="true" preserveRatio="true" fx:id="fieldImage"/>
     </AnchorPane>
   </ScrollPane>
   <HBox spacing="5.0" fx:id="infoPane">

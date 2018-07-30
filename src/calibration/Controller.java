@@ -26,6 +26,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -73,6 +76,10 @@ public class Controller implements Initializable {
 	private boolean firstConversion = true;
 	private Selection scaleSelection = Selection.NO_SELECTION;
 
+	private boolean calibrating = true;
+	private Polygon polygon = new Polygon();
+	private boolean now = true;
+
 	public Controller() {
 	}
 
@@ -99,7 +106,6 @@ public class Controller implements Initializable {
 		scaleSelection = Selection.NO_SELECTION;
 	}
 
-	@FXML
 	private void selectPoint(MouseEvent mouseEvent) throws IOException {
 
 		if (scaleSelection == Selection.NO_SELECTION) {
@@ -125,6 +131,71 @@ public class Controller implements Initializable {
 		}
 	}
 
+	@FXML
+	private void handleMouseClicked(MouseEvent mouseEvent) throws IOException {
+		if (calibrating) {
+			selectPoint(mouseEvent);
+		} else {
+			outlineField(mouseEvent);
+		}
+	}
+
+	private void outlineField(MouseEvent mouseEvent) {
+//		PositionPoint positionPoint = new PositionPoint(mouseEvent.getX(), mouseEvent.getY());
+
+		polygon.getPoints().addAll(mouseEvent.getX(), mouseEvent.getY());
+
+//		if (polygon.getPoints().size() / 2 >= 8 && now) {
+		if (polygon.getPoints().size() / 2 >= 8 && now) {
+			now = false;
+
+			Rectangle rectangle = new Rectangle(0, 0, Field.image.getWidth(), Field.image.getHeight());
+			rectangle.setFill(Color.color(1, 0, 0, .3));
+
+			Path subtract = (Path) Polygon.subtract(rectangle, polygon);
+			subtract.setFill(ThreatLevel.ERROR.getDisplayColor());
+			subtract.setStroke(ThreatLevel.ERROR.getDisplayColor());
+			subtract.setStrokeWidth(1);
+//			subtract.setTranslateY(-37);
+
+			System.out.println(rectangle.getY());
+			System.out.println(rectangle.getLayoutY());
+			System.out.println(rectangle.getScaleY());
+			System.out.println(rectangle.getTranslateY());
+
+			System.out.println();
+			System.out.println(polygon.getLayoutY());
+			System.out.println(polygon.getScaleY());
+			System.out.println(polygon.getTranslateY());
+
+			System.out.println();
+			System.out.println(subtract.getLayoutY());
+			System.out.println(subtract.getScaleY());
+			System.out.println(subtract.getTranslateY());
+
+			System.out.println();
+			System.out.println(pointPlacement.getLayoutY());
+			System.out.println(pointPlacement.getScaleY());
+			System.out.println(pointPlacement.getTranslateY());
+
+			System.out.println();
+			final double top = pointPlacement.snappedTopInset();
+			final double right = pointPlacement.snappedRightInset();
+			final double bottom = pointPlacement.snappedBottomInset();
+			final double left = pointPlacement.snappedLeftInset();
+
+			System.out.println(top);
+			System.out.println(right);
+			System.out.println(bottom);
+			System.out.println(left);
+
+			polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
+
+			pointPlacement.getChildren().addAll(subtract);
+
+		}
+	}
+
 	private void setConversion() throws IOException {
 		double pixelDistance = line.getLineLength();
 		Unit actualDistance = askActualDistance(pixelDistance);
@@ -145,6 +216,15 @@ public class Controller implements Initializable {
 
 			infoPane.getChildren().add(1, new Text("=>"));
 			infoPane.getChildren().add(2, convertedInfo);
+
+			Button button = new Button("Outline field");
+			button.setOnAction(event -> {
+				calibrating = !calibrating;
+				button.setText(calibrating ? "Outline field" : "Calibrate Field");
+				cleanUp();
+			});
+
+			infoPane.getChildren().add(3, button);
 
 			infoPane.getChildren().add(infoPane.getChildren().size() - 1, rescale);
 			infoPane.getChildren().add(infoPane.getChildren().size() - 1, moveToPointPlacement);
@@ -202,6 +282,11 @@ public class Controller implements Initializable {
 			}
 		});
 		moveToPointPlacement.setDefaultButton(true);
+
+		polygon.setFill(Color.TRANSPARENT);
+		polygon.setStroke(Color.RED);
+		polygon.setStrokeWidth(1);
+		pointPlacement.getChildren().add(polygon);
 	}
 
 	@FXML
