@@ -20,8 +20,6 @@ public class PointAngleGroup extends PointGroup {
 	public PointAngleGroup(double centerX, double centerY) {
 		super(centerX, centerY);
 
-
-
 		name.setText(String.format("Point %d", index++));
 	}
 
@@ -73,7 +71,6 @@ public class PointAngleGroup extends PointGroup {
 		degreesProperty().unbind();
 		degreesProperty().bind(angleDegrees);
 	}
-
 
 
 }

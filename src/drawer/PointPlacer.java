@@ -162,7 +162,7 @@ public class PointPlacer implements Initializable {
 				OriginPoint originPoint = new OriginPoint(mouseEvent.getX(), mouseEvent.getY());
 				pointsPathTitledTab.getPointsPathGroup().setOriginPoint(originPoint);
 //
-//////				TODO clean this up
+//////				TODO clean this up ///////////////////////////////////////////////////////////////
 				PathTitledTab<OriginsPathGroup> originsPathTitledTab = createOriginsPathTitledTab();
 
 				originPoint = pointsPathTitledTab.getPointsPathGroup().getOriginPoint();
@@ -177,6 +177,7 @@ public class PointPlacer implements Initializable {
 
 				splitPane.getItems().add(0, originsPaneAccordion);
 				splitPane.getDividers().get(0).setPosition(originsDividerPosition);
+/////////////////////////////////////////////////////////////////////////////////////////
 			} else {
 				PointAngleGroup keyPoint = new PointAngleGroup(mouseEvent.getX(), mouseEvent.getY());
 

@@ -1,6 +1,5 @@
 package drawer.curves;
 
-import static javafx.scene.paint.Color.GREEN;
 import static javafx.scene.paint.Color.RED;
 
 import javafx.scene.input.MouseButton;
