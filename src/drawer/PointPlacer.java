@@ -163,11 +163,10 @@ public class PointPlacer implements Initializable {
 
 				pointsPathTitledTab = createAndSetupPathTitledTab();
 
-				OriginPoint originPoint = pointsPathTitledTab.getPointsPathGroup().getOriginPoint();
 //				originsPathTitledTab.getPointsPathGroup().add(originPoint);
 
 				originsPathTitledTab.setCollapsible(false);
-				pointPlane.getChildren().add(originPoint);
+//				pointPlane.getChildren().add(originPoint);
 				originsPathTitledTab.setText("Origin points");
 
 				originsPaneAccordion.getPanes().add(originsPathTitledTab);
@@ -185,10 +184,14 @@ public class PointPlacer implements Initializable {
 
 //				PathTitledTab<PointsPathGroup> pointsPathTitledTab = createAndSetupPathTitledTab();
 
-				OriginPoint originPoint = new OriginPoint(mouseEvent.getX(), mouseEvent.getY());
-				pointsPathTitledTab.getPointsPathGroup().setOriginPoint(originPoint);
+				OriginPoint originPoint = pointsPathTitledTab.getPointsPathGroup().getOriginPoint();
+
+				pointsPathTitledTab.getPointsPathGroup().setOriginPoint(mouseEvent.getX(), mouseEvent.getY());
+
 				((PathTitledTab<OriginsPathGroup>) originsPaneAccordion.getExpandedPane()).getPointsPathGroup()
 					.add(originPoint);
+
+				pointPlane.getChildren().add(originPoint);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 			} else {

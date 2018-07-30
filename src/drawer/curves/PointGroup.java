@@ -16,14 +16,15 @@ import javafx.scene.text.Text;
 
 public class PointGroup extends Group {
 
-	Text name = new Text();
+
+	private Text name = new Text();
 	//	private final SimpleStringProperty name;
 	private SimpleBooleanProperty selected;
 	private boolean beingDragged;
 	private ObservedDirectionalArrow observedDirectionalArrow;
 	private Circle arrowRadius;
 	private PositionPoint positionPoint;
-	private SimpleDoubleProperty degrees = new SimpleDoubleProperty();
+	private SimpleDoubleProperty degrees = new SimpleDoubleProperty(1.0);
 
 	PointGroup(double centerX, double centerY) {
 		positionPoint = new PositionPoint(centerX, centerY);
@@ -67,6 +68,9 @@ public class PointGroup extends Group {
 			.createDoubleBinding(() -> boundDegrees(StrictMath.toDegrees(observedDirectionalArrow.getAngle())),
 				observedDirectionalArrow.angleProperty());
 		degreesProperty().bind(angleDegrees);
+
+//		degrees.addListener((observable, oldValue, newValue) -> System.out.println(newValue));
+//		degrees.set(10);
 
 		getChildren().addAll(name, arrowRadius, observedDirectionalArrow, positionPoint);
 	}
@@ -121,11 +125,15 @@ public class PointGroup extends Group {
 	}
 
 	private void setAngle(double value) {
-		observedDirectionalArrow.angleProperty().set(Math.toRadians(value));
+		observedDirectionalArrow.angleProperty().set(value);
 	}
 
 	public double getDegrees() {
 		return degrees.get();
+	}
+
+	private void setDegrees(double value) {
+		observedDirectionalArrow.angleProperty().set(Math.toRadians(value));
 	}
 
 	SimpleDoubleProperty degreesProperty() {

@@ -76,7 +76,5 @@ public class PointsPathTable extends PathTable<PointsPathGroup, PointAngleGroup>
 					.set(Math.toRadians(cellEditEvent.getNewValue().doubleValue()) + pointAngleGroup.getOriginPoint()
 						.getObservedDirectionalArrow().getAngle());
 			});
-
-
 	}
 }

@@ -9,17 +9,18 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
-import javafx.scene.paint.Color;
 
 public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 
-	private OriginPoint originPoint = new OriginPoint(0, 0);
+	private OriginPoint originPoint = new OriginPoint(10, 10);
 	private DrawnPath drawer = new DrawnPath(PathType.SPLINE);
 
 	public PointsPathGroup() {
 		getKeyPoints().addListener((ListChangeListener<? super PointAngleGroup>) this::reDrawContent);
 
-		getChildren().addAll(originPoint, drawer);
+//		originPoint.setVisible(false);
+
+		getChildren().addAll(drawer);
 	}
 
 	private static boolean isPointTurn(Change<? extends PointAngleGroup> c) {
@@ -50,14 +51,11 @@ public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 		return originPoint;
 	}
 
-	public void setOriginPoint(OriginPoint newOriginPoint) {
-		originPoint.angleProperty().bindBidirectional(newOriginPoint.angleProperty());
-		originPoint.nameProperty().bindBidirectional(newOriginPoint.nameProperty());
-		originPoint.centerXProperty().bindBidirectional(newOriginPoint.centerXProperty());
-		originPoint.centerYProperty().bindBidirectional(newOriginPoint.centerYProperty());
+	public void setOriginPoint(double x, double y) {
+		originPoint.centerXProperty().set(x);
+		originPoint.centerYProperty().set(y);
 
-		originPoint.getPositionPoint().setFill(Color.GREEN);
-		originPoint.setName("Origin");
+//		originPoint.setVisible(true);
 	}
 
 	private void updateDrawingType(Change<? extends PointAngleGroup> c) {

@@ -20,7 +20,7 @@ public class PointAngleGroup extends PointGroup {
 	public PointAngleGroup(double centerX, double centerY) {
 		super(centerX, centerY);
 
-		name.setText(String.format("Point %d", index++));
+		setName(String.format("Point %d", index++));
 	}
 
 	public static List<Pose> mapToPoses(Collection<? extends PointAngleGroup> points) {
@@ -72,5 +72,8 @@ public class PointAngleGroup extends PointGroup {
 		degreesProperty().bind(angleDegrees);
 	}
 
-
+	@Override
+	public SimpleDoubleProperty degreesProperty() {
+		return super.degreesProperty();
+	}
 }
