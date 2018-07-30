@@ -106,6 +106,7 @@ public class Controller implements Initializable {
 		scaleSelection = Selection.NO_SELECTION;
 	}
 
+	@FXML
 	private void selectPoint(MouseEvent mouseEvent) throws IOException {
 
 		if (scaleSelection == Selection.NO_SELECTION) {
@@ -132,7 +133,7 @@ public class Controller implements Initializable {
 	}
 
 	@FXML
-	private void handleMouseClicked(MouseEvent mouseEvent) throws IOException {
+	public void handleMouseClicked(MouseEvent mouseEvent) throws IOException {
 		if (calibrating) {
 			selectPoint(mouseEvent);
 		} else {
@@ -140,6 +141,7 @@ public class Controller implements Initializable {
 		}
 	}
 
+	@FXML
 	private void outlineField(MouseEvent mouseEvent) {
 //		PositionPoint positionPoint = new PositionPoint(mouseEvent.getX(), mouseEvent.getY());
 

@@ -18,7 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-class DistanceConverter implements Initializable {
+public class DistanceConverter implements Initializable {
 
 	private static final Alert confirmation = new Alert(AlertType.CONFIRMATION,
 		"Are you sure this is the correct conversion?", ButtonType.YES, ButtonType.NO);
@@ -34,9 +34,6 @@ class DistanceConverter implements Initializable {
 
 	@FXML
 	private TextField pixelDistance;
-
-	private DistanceConverter() {
-	}
 
 	static Unit display(double pixelUnit) throws IOException {
 		info = null;
