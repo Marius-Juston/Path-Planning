@@ -57,23 +57,23 @@ public class Controller implements Initializable {
 		startLoadLocation = saver.getInitialDirectory();
 	}
 
-	final TextField convertedInfo = new TextField();
+	private final TextField convertedInfo = new TextField();
 	private final SelectionPoint[] scaleSelectionPoints = new SelectionPoint[2];
 	private final Button rescale = new Button("Rescale");
 	private final SelectionLine line = new SelectionLine();
 	private final Button moveToPointPlacement = new Button("Place curves");
-	boolean firstConversion = true;
 	@FXML
-	private ImageView fieldImage;
+	public ImageView fieldImage;
 	@FXML
-	private AnchorPane pointPlacement;
+	public AnchorPane pointPlacement;
 	@FXML
-	private TextField distanceViewer;
+	public TextField distanceViewer;
 	@FXML
-	private HBox infoPane;
+	public HBox infoPane;
+	private boolean firstConversion = true;
 	private Selection scaleSelection = Selection.NO_SELECTION;
 
-	private Controller() {
+	public Controller() {
 	}
 
 	private static Unit askActualDistance(double pixelDistance) throws IOException {
@@ -84,6 +84,7 @@ public class Controller implements Initializable {
 		return FXMLLoader.load(Controller.class.getResource("fieldSelection.fxml"));
 	}
 
+	@FXML
 	private void gotToCurvePointPlacement(ActionEvent actionEvent) throws IOException {
 		Parent root = PointPlacer.getRoot();
 		Helper.setRoot(actionEvent, root);
@@ -98,7 +99,8 @@ public class Controller implements Initializable {
 		scaleSelection = Selection.NO_SELECTION;
 	}
 
-	public final void selectPoint(MouseEvent mouseEvent) throws IOException {
+	@FXML
+	private void selectPoint(MouseEvent mouseEvent) throws IOException {
 
 		if (scaleSelection == Selection.NO_SELECTION) {
 			cleanUp();
@@ -150,7 +152,8 @@ public class Controller implements Initializable {
 		}
 	}
 
-	public final void chooseImage(ActionEvent actionEvent) throws IOException, java.io.FileNotFoundException {
+	@FXML
+	private void chooseImage(ActionEvent actionEvent) throws IOException {
 		fileChooser.setInitialDirectory(startOpenLocation);
 
 		Window window;
@@ -201,7 +204,8 @@ public class Controller implements Initializable {
 		moveToPointPlacement.setDefaultButton(true);
 	}
 
-	public final void saveData(ActionEvent actionEvent) throws IOException {
+	@FXML
+	private void saveData(ActionEvent actionEvent) throws IOException {
 		if (fieldImage != null) {
 
 			saver.setInitialDirectory(startSaveLocation);
@@ -217,7 +221,8 @@ public class Controller implements Initializable {
 		}
 	}
 
-	public final void loadData(ActionEvent actionEvent) throws IOException {
+	@FXML
+	private void loadData(ActionEvent actionEvent) throws IOException {
 		loader.setInitialDirectory(startLoadLocation);
 
 		File loadFile = loader.showOpenDialog(((MenuItem) actionEvent.getSource()).getParentPopup().getOwnerWindow());
@@ -237,13 +242,13 @@ public class Controller implements Initializable {
 	}
 
 
-	private enum Selection {
+	public enum Selection {
 		NO_SELECTION, ONE_POINT, TWO_POINT
 	}
 
-	private static class SelectionPoint extends Circle {
+	public static class SelectionPoint extends Circle {
 
-		private final Point2D point2D;
+		final Point2D point2D;
 
 		SelectionPoint(double centerX, double centerY) {
 			super(centerX, centerY, 4, Color.BLUE);
@@ -256,7 +261,7 @@ public class Controller implements Initializable {
 		}
 	}
 
-	private class SelectionLine extends Line {
+	public class SelectionLine extends Line {
 
 		Point2D p1 = new Point2D(0, 0);
 		Point2D p2 = new Point2D(0, 0);
