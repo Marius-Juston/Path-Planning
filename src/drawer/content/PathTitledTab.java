@@ -6,10 +6,19 @@ public class PathTitledTab<K extends PathGroup> extends TitledPane {
 
 	private static int index = 0;
 	public final K pointsPathGroup;
+	private PointsAdded pointNumber = PointsAdded.FIRST_POINT;
 
 	public PathTitledTab(K pointsPathGroup) {
 		this.pointsPathGroup = pointsPathGroup;
 		setText(String.format("Path %d", index++));
+	}
+
+	public PointsAdded getPointNumber() {
+		return pointNumber;
+	}
+
+	public void setPointNumber(PointsAdded pointNumber) {
+		this.pointNumber = pointNumber;
 	}
 
 	public K getPointsPathGroup() {
@@ -18,5 +27,9 @@ public class PathTitledTab<K extends PathGroup> extends TitledPane {
 
 	public void clear() {
 		pointsPathGroup.clear();
+	}
+
+	public enum PointsAdded {
+		FIRST_POINT, SECOND_POINT, MORE
 	}
 }

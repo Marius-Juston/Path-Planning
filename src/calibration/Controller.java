@@ -149,6 +149,7 @@ public class Controller implements Initializable {
 		if (polygon.getPoints().size() / 2 >= 8 && now) {
 			now = false;
 
+//			TODO fix this problem
 			Rectangle rectangle = new Rectangle(0, 0, Field.image.getWidth(), Field.image.getHeight());
 			rectangle.setFill(Color.color(1, 0, 0, .3));
 

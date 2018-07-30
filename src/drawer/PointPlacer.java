@@ -5,6 +5,7 @@ import calibration.Field;
 import calibration.Helper;
 import drawer.content.OriginPathTable;
 import drawer.content.PathTitledTab;
+import drawer.content.PathTitledTab.PointsAdded;
 import drawer.content.PointsPathTable;
 import drawer.content.RenameDialog;
 import drawer.curves.OriginPoint;
@@ -68,7 +69,6 @@ public class PointPlacer implements Initializable {
 	private SplitPane splitPane;
 	private Accordion titledPaneAccordion;
 	private Accordion originsPaneAccordion = new Accordion();
-	private PointsAdded pointNumber = PointsAdded.FIRST_POINT;
 
 	public static Parent getRoot() throws IOException {
 		Parent root = FXMLLoader.load(PointPlacer.class.getResource("pointPlacer.fxml"));
@@ -156,19 +156,15 @@ public class PointPlacer implements Initializable {
 
 		if (!(mouseEvent.getPickResult().getIntersectedNode() instanceof Shape)) {
 
-			if (pointNumber == PointsAdded.FIRST_POINT) {
-				pointNumber = PointsAdded.SECOND_POINT;
-
-				PathTitledTab<PointsPathGroup> pointsPathTitledTab = createAndSetupPathTitledTab();
-
-				OriginPoint originPoint = new OriginPoint(mouseEvent.getX(), mouseEvent.getY());
-				pointsPathTitledTab.getPointsPathGroup().setOriginPoint(originPoint);
-//
+			PathTitledTab<PointsPathGroup> pointsPathTitledTab;
+			if (titledPaneAccordion.getPanes().isEmpty()) {
 //////				TODO clean this up ///////////////////////////////////////////////////////////////
 				PathTitledTab<OriginsPathGroup> originsPathTitledTab = createOriginsPathTitledTab();
 
-				originPoint = pointsPathTitledTab.getPointsPathGroup().getOriginPoint();
-				originsPathTitledTab.getPointsPathGroup().add(originPoint);
+				pointsPathTitledTab = createAndSetupPathTitledTab();
+
+				OriginPoint originPoint = pointsPathTitledTab.getPointsPathGroup().getOriginPoint();
+//				originsPathTitledTab.getPointsPathGroup().add(originPoint);
 
 				originsPathTitledTab.setCollapsible(false);
 				pointPlane.getChildren().add(originPoint);
@@ -179,12 +175,27 @@ public class PointPlacer implements Initializable {
 
 				splitPane.getItems().add(0, originsPaneAccordion);
 				splitPane.getDividers().get(0).setPosition(originsDividerPosition);
+
+			} else {
+				pointsPathTitledTab = (PathTitledTab<PointsPathGroup>) titledPaneAccordion.getExpandedPane();
+			}
+
+			if (pointsPathTitledTab.getPointNumber() == PointsAdded.FIRST_POINT) {
+				pointsPathTitledTab.setPointNumber(PointsAdded.SECOND_POINT);
+
+//				PathTitledTab<PointsPathGroup> pointsPathTitledTab = createAndSetupPathTitledTab();
+
+				OriginPoint originPoint = new OriginPoint(mouseEvent.getX(), mouseEvent.getY());
+				pointsPathTitledTab.getPointsPathGroup().setOriginPoint(originPoint);
+				((PathTitledTab<OriginsPathGroup>) originsPaneAccordion.getExpandedPane()).getPointsPathGroup()
+					.add(originPoint);
+
 /////////////////////////////////////////////////////////////////////////////////////////
 			} else {
 				PointAngleGroup keyPoint = new PointAngleGroup(mouseEvent.getX(), mouseEvent.getY());
 
-				if (pointNumber == PointsAdded.SECOND_POINT) {
-					pointNumber = PointsAdded.MORE;
+				if (pointsPathTitledTab.getPointNumber() == PointsAdded.SECOND_POINT) {
+					pointsPathTitledTab.setPointNumber(PointsAdded.MORE);
 					splitPane.getItems().add(titledPaneAccordion);
 					splitPane.getDividers().get(1).setPosition(1 - originsDividerPosition);
 				}
@@ -192,6 +203,7 @@ public class PointPlacer implements Initializable {
 				pointPlane.getChildren().add(keyPoint);
 				((PointsPathGroup) getExpandedPane().getPointsPathGroup()).add(keyPoint);
 			}
+
 		}
 	}
 
@@ -307,7 +319,5 @@ public class PointPlacer implements Initializable {
 		}
 	}
 
-	public enum PointsAdded {
-		FIRST_POINT, SECOND_POINT, MORE
-	}
+
 }
