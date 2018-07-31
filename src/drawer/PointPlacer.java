@@ -69,7 +69,7 @@ public class PointPlacer implements Initializable {
 	*/
 
 	private static final double originsDividerPosition = 0.15772870662460567;
-	Alert confirmPoint = new Alert(AlertType.CONFIRMATION);
+	private Alert confirmPoint = new Alert(AlertType.CONFIRMATION);
 	@FXML
 	private ImageView field;
 	@FXML
@@ -150,7 +150,6 @@ public class PointPlacer implements Initializable {
 	}
 
 	public void handlePointEvent(MouseEvent mouseEvent) {
-
 		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 			addPoint(mouseEvent);
 		} else if (mouseEvent.getButton() == MouseButton.MIDDLE) {
@@ -176,7 +175,7 @@ public class PointPlacer implements Initializable {
 		Node intersectedNode = mouseEvent.getPickResult().getIntersectedNode();
 
 		boolean isFieldObstacle = Field.getFieldObstacles().stream()
-			.anyMatch(obstacle -> obstacle.getDefiningShape().equals(intersectedNode));
+			.anyMatch(obstacle -> obstacle.getChildren().contains(intersectedNode));
 
 		if (isFieldObstacle) {
 			Optional<ButtonType> buttonType = confirmPoint.showAndWait();
