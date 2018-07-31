@@ -9,11 +9,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 
 public class RecreationFieldSelection implements Initializable {
 
@@ -34,9 +32,9 @@ public class RecreationFieldSelection implements Initializable {
 		polygon.setStroke(Color.RED);
 		polygon.setStrokeWidth(1);
 
-		pointPlacement.getChildren().addAll(new NotificationArrow(150, 150, "Hello is Marius, What is your? I love you is it mutual?"));
+		pointPlacement.getChildren()
+			.addAll(new NotificationArrow(150, 150, "Hello is Marius, What is your? I love you is it mutual?"));
 		pointPlacement.getChildren().addAll(new NotificationArrow(150, 350, "Hello"));
-
 
 		//		pointPlacement.getChildren().add(new PositionPoint(100, 100));
 
