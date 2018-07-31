@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="5.0" xmlns="http://javafx.com/javafx/8"
+  fx:controller="testing.RecreationFieldSelection">
+  <padding>
+    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+  </padding>
+  <MenuBar>
+    <Menu mnemonicParsing="false" text="File">
+      <MenuItem mnemonicParsing="false" text="Save">
+        <accelerator>
+          <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+        </accelerator>
+      </MenuItem>
+      <MenuItem mnemonicParsing="false" text="Load">
+        <accelerator>
+          <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+        </accelerator>
+      </MenuItem>
+      <MenuItem mnemonicParsing="false" text="Open">
+        <accelerator>
+          <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+        </accelerator>
+      </MenuItem>
+    </Menu>
+  </MenuBar>
+  <ScrollPane VBox.vgrow="ALWAYS" prefViewportHeight="150.0" prefViewportWidth="200.0">
+    <AnchorPane fx:id="pointPlacement">
+      <ImageView onMouseClicked="#handleMouseClicked" pickOnBounds="true" preserveRatio="true" fx:id="fieldImage"/>
+    </AnchorPane>
+  </ScrollPane>
+  <HBox spacing="5.0" fx:id="infoPane">
+    <VBox.margin>
+      <Insets/>
+    </VBox.margin>
+    <TextField editable="false" text="Select Image" fx:id="distanceViewer"/>
+    <Region HBox.hgrow="ALWAYS"/>
+    <Button mnemonicParsing="false" text="Select image"/>
+  </HBox>
+</VBox>
