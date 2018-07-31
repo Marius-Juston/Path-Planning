@@ -1,5 +1,6 @@
 package testing;
 
+import drawer.content.NotificationArrow;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -31,7 +32,11 @@ public class RecreationFieldSelection implements Initializable {
 		polygon.setStroke(Color.RED);
 		polygon.setStrokeWidth(1);
 
-		pointPlacement.getChildren().add(polygon);
+		pointPlacement.getChildren().addAll(new NotificationArrow(150, 150, "Hello is Marius, What is your? I love you is it mutual?"));
+		pointPlacement.getChildren().addAll(new NotificationArrow(150, 350, "Hello"));
+//		pointPlacement.getChildren().add(new PositionPoint(100, 100));
+
+//		pointPlacement.getChildren().add(polygon);
 	}
 
 	@FXML
