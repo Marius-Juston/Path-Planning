@@ -74,7 +74,7 @@ public class Controller implements Initializable {
 	public TextField distanceViewer;
 	@FXML
 	public HBox infoPane;
-	Polygon polygon = new Polygon();
+	private Polygon polygon = new Polygon();
 	private boolean firstConversion = true;
 	private Selection scaleSelection = Selection.NO_SELECTION;
 	private boolean calibrating = true;
@@ -185,10 +185,17 @@ public class Controller implements Initializable {
 		rectangle.setFill(Color.color(1, 0, 0, .3));
 
 		Polygon polygon = new Polygon(this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
+
 		Path subtract = (Path) Polygon.subtract(rectangle, polygon);
 		subtract.setFill(ThreatLevel.ERROR.getDisplayColor());
 		subtract.setStroke(ThreatLevel.ERROR.getDisplayColor());
 		subtract.setStrokeWidth(1);
+
+//		subtract.setTranslateX(-scrollPane.getLayoutX());
+//		subtract.setTranslateY(-scrollPane.getLayoutY());
+
+//		System.out.println(scrollPane.getLayoutX());
+//		System.out.println(scrollPane.getLayoutY());
 
 		polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
 
@@ -317,7 +324,7 @@ public class Controller implements Initializable {
 			cleanUp();
 		});
 
-		MenuItem confirmFieldBoarder = new MenuItem("Confirm Field boarder");
+		MenuItem confirmFieldBoarder = new MenuItem("Set as Field boarder");
 		confirmFieldBoarder.setOnAction(event -> createFieldBorder());
 
 		MenuItem confirmObstacle = new MenuItem("Confirm Obstacle");

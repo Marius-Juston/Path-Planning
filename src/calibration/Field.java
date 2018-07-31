@@ -42,6 +42,7 @@ public enum Field {
 	public static Image image;
 	static HashMap<ObstacleType, List<Obstacle>> obstacleTypeListHashMap = new HashMap<>();
 	static Group obstacleGroup = new Group();
+	private static Obstacle fieldBorder = null;
 
 	static {
 		useFieldValue
@@ -113,9 +114,19 @@ public enum Field {
 	}
 
 	public static void addObstacle(ObstacleType obstacleType, Obstacle obstacle) {
-		System.out.println(obstacleType);
-		obstacleTypeListHashMap.get(obstacleType).add(obstacle);
-		fieldObstacles.add(obstacle);
-		obstacleGroup.getChildren().add(obstacle.getDefiningShape());
+		if (obstacleType == ObstacleType.OBSTACLE) {
+			fieldObstacles.add(obstacle);
+			obstacleGroup.getChildren().add(obstacle.getDefiningShape());
+		} else {
+			if (fieldBorder != null) {
+				fieldObstacles.remove(fieldBorder);
+				obstacleGroup.getChildren().remove(fieldBorder.getDefiningShape());
+			}
+
+			fieldObstacles.add(obstacle);
+			obstacleGroup.getChildren().add(obstacle.getDefiningShape());
+			fieldBorder = obstacle;
+		}
 	}
+
 }
