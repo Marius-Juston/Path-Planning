@@ -111,7 +111,10 @@ public enum PathType {
 					{
 						for (Obstacle obstacle : Field.getFieldObstacles()) {
 
+							cubicCurve.setStrokeWidth(Field.robotWidth / Field.SCALE.get());
 							Path intersection = (Path) Shape.intersect(obstacle.getDefiningShape(), cubicCurve);
+							cubicCurve.setStrokeWidth(3);
+
 							if (!intersection.getElements().isEmpty()) {
 
 //							TODO fix this
@@ -132,8 +135,8 @@ public enum PathType {
 						}
 					});
 
-					group.getChildren().addAll(cubicCurves);
 					group.getChildren().addAll(intersections);
+					group.getChildren().addAll(cubicCurves);
 					group.getChildren().addAll(notificationArrows);
 
 				}

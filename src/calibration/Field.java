@@ -30,6 +30,7 @@ import javax.imageio.ImageIO;
 
 public enum Field {
 	;
+	public static final double robotWidth = 0.8171; //TODO make it be set manually
 
 	public static final SimpleDoubleProperty SCALE = new SimpleDoubleProperty(1);
 	public static final WritableObjectValue<String> UNIT = new SimpleStringProperty(PIXELS);
