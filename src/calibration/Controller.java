@@ -192,7 +192,6 @@ public class Controller implements Initializable {
 
 		polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
 
-
 		subtract.setOnMouseClicked(event -> {
 			try {
 				handleMouseClicked(event);
@@ -200,7 +199,6 @@ public class Controller implements Initializable {
 				e.printStackTrace();
 			}
 		});
-
 
 		Field.addObstacle(ObstacleType.FIELD_BORDER, new Obstacle(ThreatLevel.ERROR, subtract));
 
@@ -220,7 +218,6 @@ public class Controller implements Initializable {
 				e.printStackTrace();
 			}
 		});
-
 
 		Field.addObstacle(ObstacleType.OBSTACLE, new Obstacle(ThreatLevel.WARNING, polygon));
 

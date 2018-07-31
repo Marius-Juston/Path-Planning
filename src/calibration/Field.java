@@ -113,7 +113,7 @@ public enum Field {
 	}
 
 	public static void addObstacle(ObstacleType obstacleType, Obstacle obstacle) {
-		System.out.println(obstacleType );
+		System.out.println(obstacleType);
 		obstacleTypeListHashMap.get(obstacleType).add(obstacle);
 		fieldObstacles.add(obstacle);
 		obstacleGroup.getChildren().add(obstacle.getDefiningShape());
