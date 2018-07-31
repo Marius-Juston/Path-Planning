@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -20,6 +21,7 @@ import java.util.regex.Pattern;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.WritableObjectValue;
+import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -35,15 +37,21 @@ public enum Field {
 	//	public static BufferedImage bufferedImage;
 	private static final String MATCH_PATTERN = "[0-9.]+ [a-zA-Z]+";
 	private static final Alert useFieldValue = new Alert(AlertType.CONFIRMATION);
+	private static final List<Obstacle> fieldObstacles = new ArrayList<>();
 	public static File imageFile;
 	public static Image image;
+	static HashMap<ObstacleType, List<Obstacle>> obstacleTypeListHashMap = new HashMap<>();
+	static Group obstacleGroup = new Group();
 
 	static {
 		useFieldValue
 			.setContentText("This file already has field information inside of it do you wish to load it?");
 	}
 
-	private final List<Obstacle> fieldObstacles = new ArrayList<>();
+	static {
+		obstacleTypeListHashMap.put(ObstacleType.FIELD_BORDER, new ArrayList<>());
+		obstacleTypeListHashMap.put(ObstacleType.OBSTACLE, new ArrayList<>());
+	}
 
 	public static Image loadData(File loadFile) throws IOException, java.io.FileNotFoundException {
 		Image image = getImage(loadFile);
@@ -104,7 +112,10 @@ public enum Field {
 		return false;
 	}
 
-	public List<Obstacle> getFieldObstacles() {
-		return fieldObstacles;
+	public static void addObstacle(ObstacleType obstacleType, Obstacle obstacle) {
+		System.out.println(obstacleType );
+		obstacleTypeListHashMap.get(obstacleType).add(obstacle);
+		fieldObstacles.add(obstacle);
+		obstacleGroup.getChildren().add(obstacle.getDefiningShape());
 	}
 }

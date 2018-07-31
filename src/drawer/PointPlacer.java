@@ -55,7 +55,8 @@ public class PointPlacer implements Initializable {
 	TODO make a receive from SmartDashboard functionality
 	TODO do a save button
 
-	TODO make origin point - Partially finished needs improvements
+	TODO make origin point - Partially finished nee
+	ds improvements
 
 	TODO show name of point when showing details - DONE
 	*/

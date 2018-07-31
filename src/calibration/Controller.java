@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -78,6 +79,7 @@ public class Controller implements Initializable {
 	private Selection scaleSelection = Selection.NO_SELECTION;
 	private boolean calibrating = true;
 	private boolean now = true;
+	private Button outlineToggleButton = new Button("Outline field");
 
 	public Controller() {
 	}
@@ -103,6 +105,7 @@ public class Controller implements Initializable {
 		distanceViewer.setText(defaultDistance);
 		convertedInfo.setText(defaultDistance);
 		scaleSelection = Selection.NO_SELECTION;
+		polygon.getPoints().clear();
 	}
 
 	@FXML
@@ -150,29 +153,80 @@ public class Controller implements Initializable {
 //		PositionPoint positionPoint = new PositionPoint(mouseEvent.getX(), mouseEvent.getY());
 
 		polygon.getPoints().addAll(mouseEvent.getX(), mouseEvent.getY());
-//		Collections.addAll(array, mouseEvent.getX(), mouseEvent.getY());
 
+		////		Collections.addAll(array, mouseEvent.getX(), mouseEvent.getY());
+//
+////		if (polygon.getPoints().size() / 2 >= 8 && now) {
 //		if (polygon.getPoints().size() / 2 >= 8 && now) {
-		if (polygon.getPoints().size() / 2 >= 8 && now) {
-			now = false;
-
-//			TODO fix this problem
-			Rectangle rectangle = new Rectangle(Field.image.getWidth(), Field.image.getHeight());
-			rectangle.setFill(Color.color(1, 0, 0, .3));
-
-			Polygon polygon = new Polygon(this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
-			Path subtract = (Path) Polygon.subtract(rectangle, polygon);
-			subtract.setFill(ThreatLevel.ERROR.getDisplayColor());
-			subtract.setStroke(ThreatLevel.ERROR.getDisplayColor());
-			subtract.setStrokeWidth(1);
-
-			polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
-
-			pointPlacement.getChildren().addAll(subtract);
-
-//			pointPlacement.getChildren().add(polygon);
-		}
+//			now = false;
+//
+////			TODO fix this problem
+//			Rectangle rectangle = new Rectangle(Field.image.getWidth(), Field.image.getHeight());
+//			rectangle.setFill(Color.color(1, 0, 0, .3));
+//
+//			Polygon polygon = new Polygon(this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
+//			Path subtract = (Path) Polygon.subtract(rectangle, polygon);
+//			subtract.setFill(ThreatLevel.ERROR.getDisplayColor());
+//			subtract.setStroke(ThreatLevel.ERROR.getDisplayColor());
+//			subtract.setStrokeWidth(1);
+//
+//			polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
+//
+//			pointPlacement.getChildren().addAll(subtract);
+//			pointPlacement.getChildren().remove(this.polygon);
+//
+//			Field.addObstacle(ObstacleType.FIELD_BORDER, new Obstacle(ThreatLevel.ERROR, subtract));
+//		}
 	}
+
+	public void createFieldBorder() {
+		//			TODO fix this problem
+		Rectangle rectangle = new Rectangle(Field.image.getWidth(), Field.image.getHeight());
+		rectangle.setFill(Color.color(1, 0, 0, .3));
+
+		Polygon polygon = new Polygon(this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
+		Path subtract = (Path) Polygon.subtract(rectangle, polygon);
+		subtract.setFill(ThreatLevel.ERROR.getDisplayColor());
+		subtract.setStroke(ThreatLevel.ERROR.getDisplayColor());
+		subtract.setStrokeWidth(1);
+
+		polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
+
+
+		subtract.setOnMouseClicked(event -> {
+			try {
+				handleMouseClicked(event);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+
+
+		Field.addObstacle(ObstacleType.FIELD_BORDER, new Obstacle(ThreatLevel.ERROR, subtract));
+
+		this.polygon.getPoints().clear();
+	}
+
+	public void createNormalObstacle() {
+		Polygon polygon = new Polygon(this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
+		polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
+		polygon.setStroke(ThreatLevel.WARNING.getDisplayColor());
+		polygon.setStrokeWidth(1);
+
+		polygon.setOnMouseClicked(event -> {
+			try {
+				handleMouseClicked(event);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+
+
+		Field.addObstacle(ObstacleType.OBSTACLE, new Obstacle(ThreatLevel.WARNING, polygon));
+
+		this.polygon.getPoints().clear();
+	}
+
 
 	private void setConversion() throws IOException {
 		double pixelDistance = line.getLineLength();
@@ -195,14 +249,9 @@ public class Controller implements Initializable {
 			infoPane.getChildren().add(1, new Text("=>"));
 			infoPane.getChildren().add(2, convertedInfo);
 
-			Button button = new Button("Outline field");
-			button.setOnAction(event -> {
-				calibrating = !calibrating;
-				button.setText(calibrating ? "Outline field" : "Calibrate Field");
-				cleanUp();
-			});
-
-			infoPane.getChildren().add(3, button);
+			if (!infoPane.getChildren().contains(outlineToggleButton)) {
+				infoPane.getChildren().add(3, outlineToggleButton);
+			}
 
 			infoPane.getChildren().add(infoPane.getChildren().size() - 1, rescale);
 			infoPane.getChildren().add(infoPane.getChildren().size() - 1, moveToPointPlacement);
@@ -235,6 +284,10 @@ public class Controller implements Initializable {
 				Field.imageFile = image;
 				fieldImage.setImage(Field.image = getImage(image));
 				distanceViewer.setText(defaultDistance);
+
+				if (!infoPane.getChildren().contains(outlineToggleButton)) {
+					infoPane.getChildren().add(1, outlineToggleButton);
+				}
 			}
 		}
 	}
@@ -261,10 +314,40 @@ public class Controller implements Initializable {
 		});
 		moveToPointPlacement.setDefaultButton(true);
 
-		pointPlacement.getChildren().add(polygon);
+		outlineToggleButton.setOnAction(event -> {
+			calibrating = !calibrating;
+			outlineToggleButton.setText(calibrating ? "Outline field" : "Calibrate Field");
+			cleanUp();
+		});
+
+		MenuItem confirmFieldBoarder = new MenuItem("Confirm Field boarder");
+		confirmFieldBoarder.setOnAction(event -> createFieldBorder());
+
+		MenuItem confirmObstacle = new MenuItem("Confirm Obstacle");
+		confirmObstacle.setOnAction(event -> createNormalObstacle());
+
+		MenuItem cancelObstacle = new MenuItem("Cancel Obstacle");
+		cancelObstacle.setOnAction(event -> polygon.getPoints().clear());
+
+		ContextMenu confirmFishedObstacle = new ContextMenu(cancelObstacle, confirmFieldBoarder, confirmObstacle);
+
+		pointPlacement.setOnContextMenuRequested(
+			event -> confirmFishedObstacle.show(fieldImage, event.getScreenX(), event.getScreenY()));
+
 		polygon.setFill(Color.TRANSPARENT);
 		polygon.setStroke(Color.RED);
 		polygon.setStrokeWidth(1);
+
+		polygon.setOnMouseClicked(event -> {
+			try {
+				handleMouseClicked(event);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+
+		pointPlacement.getChildren().add(polygon);
+		pointPlacement.getChildren().add(Field.obstacleGroup);
 	}
 
 	@FXML
@@ -299,6 +382,8 @@ public class Controller implements Initializable {
 
 	private void load(File loadFile) throws IOException {
 		fieldImage.setImage(Field.loadData(loadFile));
+
+//		TODO add here?
 
 		addExtraData();
 		cleanUp();
