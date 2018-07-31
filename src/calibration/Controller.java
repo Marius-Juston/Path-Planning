@@ -73,11 +73,10 @@ public class Controller implements Initializable {
 	public TextField distanceViewer;
 	@FXML
 	public HBox infoPane;
+	Polygon polygon = new Polygon();
 	private boolean firstConversion = true;
 	private Selection scaleSelection = Selection.NO_SELECTION;
-
 	private boolean calibrating = true;
-	private Polygon polygon = new Polygon();
 	private boolean now = true;
 
 	public Controller() {
@@ -143,59 +142,35 @@ public class Controller implements Initializable {
 
 	@FXML
 	private void outlineField(MouseEvent mouseEvent) {
+
+		if (!pointPlacement.getChildren().contains(polygon)) {
+			pointPlacement.getChildren().add(polygon);
+		}
+
 //		PositionPoint positionPoint = new PositionPoint(mouseEvent.getX(), mouseEvent.getY());
 
 		polygon.getPoints().addAll(mouseEvent.getX(), mouseEvent.getY());
+//		Collections.addAll(array, mouseEvent.getX(), mouseEvent.getY());
 
 //		if (polygon.getPoints().size() / 2 >= 8 && now) {
 		if (polygon.getPoints().size() / 2 >= 8 && now) {
 			now = false;
 
 //			TODO fix this problem
-			Rectangle rectangle = new Rectangle(0, 0, Field.image.getWidth(), Field.image.getHeight());
+			Rectangle rectangle = new Rectangle(Field.image.getWidth(), Field.image.getHeight());
 			rectangle.setFill(Color.color(1, 0, 0, .3));
 
+			Polygon polygon = new Polygon(this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
 			Path subtract = (Path) Polygon.subtract(rectangle, polygon);
 			subtract.setFill(ThreatLevel.ERROR.getDisplayColor());
 			subtract.setStroke(ThreatLevel.ERROR.getDisplayColor());
 			subtract.setStrokeWidth(1);
-//			subtract.setTranslateY(-37);
-
-			System.out.println(rectangle.getY());
-			System.out.println(rectangle.getLayoutY());
-			System.out.println(rectangle.getScaleY());
-			System.out.println(rectangle.getTranslateY());
-
-			System.out.println();
-			System.out.println(polygon.getLayoutY());
-			System.out.println(polygon.getScaleY());
-			System.out.println(polygon.getTranslateY());
-
-			System.out.println();
-			System.out.println(subtract.getLayoutY());
-			System.out.println(subtract.getScaleY());
-			System.out.println(subtract.getTranslateY());
-
-			System.out.println();
-			System.out.println(pointPlacement.getLayoutY());
-			System.out.println(pointPlacement.getScaleY());
-			System.out.println(pointPlacement.getTranslateY());
-
-			System.out.println();
-			final double top = pointPlacement.snappedTopInset();
-			final double right = pointPlacement.snappedRightInset();
-			final double bottom = pointPlacement.snappedBottomInset();
-			final double left = pointPlacement.snappedLeftInset();
-
-			System.out.println(top);
-			System.out.println(right);
-			System.out.println(bottom);
-			System.out.println(left);
 
 			polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
 
 			pointPlacement.getChildren().addAll(subtract);
 
+//			pointPlacement.getChildren().add(polygon);
 		}
 	}
 
@@ -286,10 +261,10 @@ public class Controller implements Initializable {
 		});
 		moveToPointPlacement.setDefaultButton(true);
 
+		pointPlacement.getChildren().add(polygon);
 		polygon.setFill(Color.TRANSPARENT);
 		polygon.setStroke(Color.RED);
 		polygon.setStrokeWidth(1);
-		pointPlacement.getChildren().add(polygon);
 	}
 
 	@FXML
