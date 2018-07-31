@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -23,8 +24,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
@@ -62,6 +67,7 @@ public class PointPlacer implements Initializable {
 	*/
 
 	private static final double originsDividerPosition = 0.15772870662460567;
+	Alert confirmPoint = new Alert(AlertType.CONFIRMATION);
 	@FXML
 	private ImageView field;
 	@FXML
@@ -70,6 +76,11 @@ public class PointPlacer implements Initializable {
 	private SplitPane splitPane;
 	private Accordion titledPaneAccordion;
 	private Accordion originsPaneAccordion = new Accordion();
+
+	{
+		confirmPoint
+			.setContentText("There is an obstacle in this position are you sure you wish to place a point here?");
+	}
 
 	public static Parent getRoot() throws IOException {
 		Parent root = FXMLLoader.load(PointPlacer.class.getResource("pointPlacer.fxml"));
@@ -93,6 +104,10 @@ public class PointPlacer implements Initializable {
 			}
 		} else {
 			field.setImage(Field.image);
+
+			pointPlane.getChildren().add(Field.obstacleGroup);
+
+//			Field.obstacleGroup.setOnMousePressed(this::handlePointEvent);
 		}
 
 		titledPaneAccordion = new Accordion();
@@ -133,6 +148,7 @@ public class PointPlacer implements Initializable {
 	}
 
 	public void handlePointEvent(MouseEvent mouseEvent) {
+
 		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 			addPoint(mouseEvent);
 		} else if (mouseEvent.getButton() == MouseButton.MIDDLE) {
@@ -155,7 +171,20 @@ public class PointPlacer implements Initializable {
 
 	private void addPoint(MouseEvent mouseEvent) {
 
-		if (!(mouseEvent.getPickResult().getIntersectedNode() instanceof Shape)) {
+		Node intersectedNode = mouseEvent.getPickResult().getIntersectedNode();
+
+		boolean isFieldObstacle = Field.getFieldObstacles().stream()
+			.anyMatch(obstacle -> obstacle.getDefiningShape().equals(intersectedNode));
+
+		if (isFieldObstacle) {
+			Optional<ButtonType> buttonType = confirmPoint.showAndWait();
+
+			if (buttonType.isPresent() && buttonType.get() != ButtonType.OK) {
+				isFieldObstacle = false;
+			}
+		}
+
+		if (!(intersectedNode instanceof Shape) || isFieldObstacle) {
 
 			PathTitledTab<PointsPathGroup> pointsPathTitledTab;
 			if (titledPaneAccordion.getPanes().isEmpty()) {
