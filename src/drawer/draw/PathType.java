@@ -97,7 +97,7 @@ public enum PathType {
 							CubicCurve cubicCurve = new CubicCurve(p1.getX(), p1.getY(), p2.getX(), p2.getY(),
 								p3.getX(), p3.getY(), p4.getX(), p4.getY());
 
-							cubicCurve.setFill(Color.TRANSPARENT);
+							cubicCurve.setFill(null);
 							cubicCurve.setStroke(Color.RED);
 							cubicCurve.setStrokeWidth(3);
 
@@ -116,7 +116,6 @@ public enum PathType {
 
 //							TODO fix this
 								intersection.setFill(obstacle.getThreatLevel().getOverlayColor());
-//								intersection.setFill(Color.RED);
 								intersections.add(intersection);
 
 								Bounds layoutBounds = intersection.getLayoutBounds();
@@ -124,7 +123,8 @@ public enum PathType {
 								double x = (layoutBounds.getMinX() + layoutBounds.getMaxX()) / 2.0;
 								double y = (layoutBounds.getMinY() + layoutBounds.getMaxY()) / 2.0;
 
-								NotificationArrow notificationArrow = new NotificationArrow(x, y, obstacle.getThreatLevel().getMessage());
+								NotificationArrow notificationArrow = new NotificationArrow(x, y,
+									obstacle.getThreatLevel().getMessage());
 
 								notificationArrows.add(notificationArrow);
 
