@@ -40,8 +40,8 @@ public enum Field {
 	private static final List<Obstacle> fieldObstacles = new ArrayList<>();
 	public static File imageFile;
 	public static Image image;
+	public static Group obstacleGroup = new Group();
 	static HashMap<ObstacleType, List<Obstacle>> obstacleTypeListHashMap = new HashMap<>();
-	static Group obstacleGroup = new Group();
 	private static Obstacle fieldBorder = null;
 
 	static {
@@ -52,6 +52,14 @@ public enum Field {
 	static {
 		obstacleTypeListHashMap.put(ObstacleType.FIELD_BORDER, new ArrayList<>());
 		obstacleTypeListHashMap.put(ObstacleType.OBSTACLE, new ArrayList<>());
+	}
+
+	public static Obstacle getFieldBorder() {
+		return fieldBorder;
+	}
+
+	public static List<Obstacle> getFieldObstacles() {
+		return fieldObstacles;
 	}
 
 	public static Image loadData(File loadFile) throws IOException, java.io.FileNotFoundException {
@@ -116,15 +124,15 @@ public enum Field {
 	public static void addObstacle(ObstacleType obstacleType, Obstacle obstacle) {
 		if (obstacleType == ObstacleType.OBSTACLE) {
 			fieldObstacles.add(obstacle);
-			obstacleGroup.getChildren().add(obstacle.getDefiningShape());
+			obstacleGroup.getChildren().add(obstacle);
 		} else {
 			if (fieldBorder != null) {
 				fieldObstacles.remove(fieldBorder);
-				obstacleGroup.getChildren().remove(fieldBorder.getDefiningShape());
+				obstacleGroup.getChildren().remove(fieldBorder);
 			}
 
 			fieldObstacles.add(obstacle);
-			obstacleGroup.getChildren().add(obstacle.getDefiningShape());
+			obstacleGroup.getChildren().add(obstacle);
 			fieldBorder = obstacle;
 		}
 	}

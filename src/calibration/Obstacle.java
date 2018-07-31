@@ -1,8 +1,9 @@
 package calibration;
 
+import javafx.scene.Group;
 import javafx.scene.shape.Shape;
 
-public class Obstacle {
+public class Obstacle extends Group {
 
 	private final ThreatLevel threatLevel;
 	private final Shape definingShape;
@@ -10,6 +11,7 @@ public class Obstacle {
 	public Obstacle(ThreatLevel threatLevel, Shape definingShape) {
 		this.threatLevel = threatLevel;
 		this.definingShape = definingShape;
+		getChildren().add(definingShape);
 	}
 
 	public ThreatLevel getThreatLevel() {
