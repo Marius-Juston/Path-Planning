@@ -14,6 +14,11 @@ public class Obstacle extends Group {
 	public Obstacle(ThreatLevel threatLevel, Polygon definingShape) {
 		this.threatLevel = threatLevel;
 		this.definingShape = new Polygon(definingShape.getPoints().stream().mapToDouble(value -> value).toArray());
+
+		this.definingShape.setFill(definingShape.getFill());
+		this.definingShape.setStroke(definingShape.getStroke());
+		this.definingShape.setStrokeWidth(definingShape.getStrokeWidth());
+
 		getChildren().add(definingShape);
 	}
 
@@ -21,6 +26,10 @@ public class Obstacle extends Group {
 		this.threatLevel = threatLevel;
 
 		this.definingShape = new Path(definingShape.getElements());
+		this.definingShape.setFill(definingShape.getFill());
+		this.definingShape.setStroke(definingShape.getStroke());
+		this.definingShape.setStrokeWidth(definingShape.getStrokeWidth());
+
 		getChildren().add(definingShape);
 	}
 
