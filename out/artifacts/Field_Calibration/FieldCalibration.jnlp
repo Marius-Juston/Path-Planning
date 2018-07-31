@@ -9,7 +9,7 @@
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
     <jar href="2974Splines.jar" size="69278" download="eager" />
-    <jar href="FieldCalibration.jar" size="473162" download="eager" />
+    <jar href="FieldCalibration.jar" size="473329" download="eager" />
   </resources>
   <jfx:javafx-desc  width="600" height="400" main-class="calibration.Main"  name="Field Calibration" />
   <update check="background"/>
