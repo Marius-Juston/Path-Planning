@@ -18,8 +18,6 @@ public class RecreationFieldSelection implements Initializable {
 
 	public AnchorPane pointPlacement;
 	public ImageView fieldImage;
-	public TextField distanceViewer;
-	public HBox infoPane;
 
 	private Polygon polygon = new Polygon();
 	private Color gray = Color.gray(.5, .6);
