@@ -21,6 +21,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -74,12 +75,22 @@ public class Controller implements Initializable {
 	public TextField distanceViewer;
 	@FXML
 	public HBox infoPane;
+	private MenuItem confirmFieldBoarder = new MenuItem("Set as Field boarder");
+	private MenuItem confirmObstacle = new MenuItem("Confirm Obstacle");
+	private MenuItem cancelObstacle = new MenuItem("Cancel Obstacle");
+	private ContextMenu confirmFishedObstacle = new ContextMenu(cancelObstacle, confirmFieldBoarder, confirmObstacle);
 	private Polygon polygon = new Polygon();
 	private boolean firstConversion = true;
 	private Selection scaleSelection = Selection.NO_SELECTION;
 	private boolean calibrating = true;
 	private boolean now = true;
 	private Button outlineToggleButton = new Button("Outline field");
+
+	{
+		confirmFieldBoarder.setOnAction(event -> createFieldBorder());
+		confirmObstacle.setOnAction(event -> createNormalObstacle());
+		cancelObstacle.setOnAction(event -> polygon.getPoints().clear());
+	}
 
 	public Controller() {
 	}
@@ -140,6 +151,20 @@ public class Controller implements Initializable {
 			selectPoint(mouseEvent);
 		} else {
 			outlineField(mouseEvent);
+
+			if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+				if (polygon.getPoints().size() < 3) {
+					confirmFieldBoarder.setDisable(true);
+					confirmObstacle.setDisable(true);
+				} else {
+					confirmFieldBoarder.setDisable(false);
+					confirmObstacle.setDisable(false);
+				}
+				confirmFishedObstacle.show(fieldImage, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+			} else {
+				confirmFishedObstacle.hide();
+			}
+
 		}
 	}
 
@@ -198,14 +223,14 @@ public class Controller implements Initializable {
 //		System.out.println(scrollPane.getLayoutY());
 
 		polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
-
-		subtract.setOnMouseClicked(event -> {
-			try {
-				handleMouseClicked(event);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
+//
+//		subtract.setOnMouseClicked(event -> {
+//			try {
+//				handleMouseClicked(event);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		});
 
 		Field.addObstacle(ObstacleType.FIELD_BORDER, new Obstacle(ThreatLevel.ERROR, subtract));
 
@@ -217,14 +242,6 @@ public class Controller implements Initializable {
 		polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
 		polygon.setStroke(ThreatLevel.WARNING.getDisplayColor());
 		polygon.setStrokeWidth(1);
-
-		polygon.setOnMouseClicked(event -> {
-			try {
-				handleMouseClicked(event);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
 
 		Field.addObstacle(ObstacleType.OBSTACLE, new Obstacle(ThreatLevel.WARNING, polygon));
 
@@ -324,25 +341,24 @@ public class Controller implements Initializable {
 			cleanUp();
 		});
 
-		MenuItem confirmFieldBoarder = new MenuItem("Set as Field boarder");
-		confirmFieldBoarder.setOnAction(event -> createFieldBorder());
-
-		MenuItem confirmObstacle = new MenuItem("Confirm Obstacle");
-		confirmObstacle.setOnAction(event -> createNormalObstacle());
-
-		MenuItem cancelObstacle = new MenuItem("Cancel Obstacle");
-		cancelObstacle.setOnAction(event -> polygon.getPoints().clear());
-
-		ContextMenu confirmFishedObstacle = new ContextMenu(cancelObstacle, confirmFieldBoarder, confirmObstacle);
-
-		pointPlacement.setOnContextMenuRequested(
-			event -> confirmFishedObstacle.show(fieldImage, event.getScreenX(), event.getScreenY()));
+		//		pointPlacement.setOnContextMenuRequested(
+//			event -> {
+//
+//			});
 
 		polygon.setFill(Color.TRANSPARENT);
 		polygon.setStroke(Color.RED);
 		polygon.setStrokeWidth(1);
 
 		polygon.setOnMouseClicked(event -> {
+			try {
+				handleMouseClicked(event);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+
+		Field.obstacleGroup.setOnMouseClicked(event -> {
 			try {
 				handleMouseClicked(event);
 			} catch (IOException e) {
