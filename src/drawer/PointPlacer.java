@@ -205,7 +205,7 @@ public class PointPlacer implements Initializable {
 				originsPaneAccordion.setExpandedPane(originsPathTitledTab);
 
 				splitPane.getItems().add(0, originsPaneAccordion);
-				splitPane.getDividers().get(0).setPosition(originsDividerPosition);
+				updateDividerPositions();
 
 			} else {
 				pointsPathTitledTab = (PathTitledTab<PointsPathGroup>) titledPaneAccordion.getExpandedPane();
@@ -232,7 +232,7 @@ public class PointPlacer implements Initializable {
 				if (pointsPathTitledTab.getPointNumber() == PointsAdded.SECOND_POINT) {
 					pointsPathTitledTab.setPointNumber(PointsAdded.MORE);
 					splitPane.getItems().add(titledPaneAccordion);
-					splitPane.getDividers().get(1).setPosition(1 - originsDividerPosition);
+					updateDividerPositions();
 				}
 
 				pointPlane.getChildren().add(keyPoint);
