@@ -2,6 +2,7 @@ package drawer.content;
 
 import java.io.IOException;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,6 +22,7 @@ public class RenameDialog {
 		primaryStage.setTitle("Unit converter");
 	}
 
+	@FXML
 	private TextField pathName;
 
 	public static String display(String previousName) throws IOException {
