@@ -1,6 +1,8 @@
 package testing;
 
 import drawer.content.NotificationArrow;
+import drawer.curves.ObservedDirectionalArrow;
+import drawer.curves.PositionPoint;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -36,6 +38,26 @@ public class RecreationFieldSelection implements Initializable {
 			.addAll(new NotificationArrow(150, 150, "Hello is Marius, What is your? I love you is it mutual?"));
 		pointPlacement.getChildren().addAll(new NotificationArrow(150, 350, "Hello"));
 
+		PositionPoint positionPoint = new PositionPoint(200, 200);
+		ObservedDirectionalArrow observedDirectionalArrow = new ObservedDirectionalArrow(positionPoint, 10, 100, false);
+
+		pointPlacement.getChildren().add(observedDirectionalArrow);
+
+		double offsetPerpendicular = 100;
+		double angle = observedDirectionalArrow.getAngle() + StrictMath.PI / 2.0;
+
+		PositionPoint positionPointOffset = new PositionPoint(
+			positionPoint.getCenterX() + StrictMath.cos(angle) * offsetPerpendicular,
+			positionPoint.getCenterY() + StrictMath.sin(angle) * -offsetPerpendicular);
+		ObservedDirectionalArrow observedDirectionalArrowOffset = new ObservedDirectionalArrow(positionPointOffset,
+			observedDirectionalArrow.getAngle(),
+			100,
+			true, Color.BLUE);
+
+		pointPlacement.getChildren().add(observedDirectionalArrowOffset);
+
+//		ObservedDirectionalArrow observedDirectionalArrow = new ObservedDirectionalArrow(positionPoint, 0, 100, true);
+
 		//		pointPlacement.getChildren().add(new PositionPoint(100, 100));
 
 //		pointPlacement.getChildren().add(polygon);
@@ -66,6 +88,7 @@ public class RecreationFieldSelection implements Initializable {
 			polygon.setFill(blue);
 
 			pointPlacement.getChildren().addAll(subtract);
+
 
 		}
 	}
