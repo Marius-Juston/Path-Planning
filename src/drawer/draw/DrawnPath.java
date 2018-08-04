@@ -16,7 +16,7 @@ public class DrawnPath extends Group {
 
 	private Path path;
 	private PathType pathType;
-	private boolean showVelocities = false;
+	private boolean showVelocities = true;
 
 	public DrawnPath(PathType pathType) {
 
