@@ -44,9 +44,15 @@ public class PointAngleGroup extends PointGroup {
 		return translatedAngle;
 	}
 
+	public Pose getRealPose() {
+		return new Pose(getPositionPoint().getTranslateX(), getPositionPoint().getTranslateY(),
+			-StrictMath.toRadians(translatedAngle.get()));
+	}
+
+
 	public Pose getPose() {
 		return new Pose(getPositionPoint().getCenterX(), getPositionPoint().getCenterY(),
-			-getObservedDirectionalArrow().getAngle());
+			-angleProperty().get());
 	}
 
 	public void setOrigin(OriginPoint originPoint) {
