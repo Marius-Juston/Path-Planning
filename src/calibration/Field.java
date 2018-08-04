@@ -27,6 +27,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
+import org.waltonrobotics.motion.Path;
 
 public enum Field {
 	;
@@ -48,6 +49,8 @@ public enum Field {
 	static {
 		useFieldValue
 			.setContentText("This file already has field information inside of it do you wish to load it?");
+
+		Path.setRobotWidth(robotWidth);
 	}
 
 	static {
