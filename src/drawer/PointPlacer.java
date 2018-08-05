@@ -49,6 +49,8 @@ public class PointPlacer implements Initializable {
 		    - ERROR - in red (Ex: goes through a wall)
 		- use Polygon.intersect()
 
+	TODO scale the points when displaying them to the screen otherwise the velocities will be incorrect
+
 	TODO make the robot move along the path
 	TODO make the program be able to calculate the shortest path between two point angle group all the while evading the obstacles
 
