@@ -194,7 +194,12 @@ public class ObservedDirectionalArrow extends Polygon {
 	}
 
 	public ObservedDirectionalArrow(Pose centerPose, double length, Color color) {
-		this(new PositionPoint(centerPose), -centerPose.getAngle(), length, true, color);
+		this(centerPose, length, color, false);
+	}
+
+	public ObservedDirectionalArrow(Pose offset, double length, Color red, boolean includesHead) {
+		this(new PositionPoint(offset), -offset.getAngle(), length, true, 4, includesHead, -1, 6, "full", 0, false,
+			red);
 	}
 
 	private void followPoint(Number oldValue, Number newValue, boolean isX) {

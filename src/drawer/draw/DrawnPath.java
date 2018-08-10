@@ -14,7 +14,8 @@ import org.waltonrobotics.motion.Path;
 //TODO make this an ENUM
 public class DrawnPath extends Group {
 
-	private Path path;
+	private Path drawingPath;
+	private Path actualPath;
 	private PathType pathType;
 	private boolean showVelocities = true;
 
@@ -44,12 +45,12 @@ public class DrawnPath extends Group {
 		this.pathType = pathType;
 	}
 
-	public Path getPath() {
-		return path;
+	public Path getDrawingPath() {
+		return drawingPath;
 	}
 
-	public void setPath(Path path) {
-		this.path = path;
+	public void setDrawingPath(Path drawingPath) {
+		this.drawingPath = drawingPath;
 	}
 
 	private void clearCreateAndAddPoints(ObservableList<? extends PointAngleGroup> list) {
@@ -58,5 +59,13 @@ public class DrawnPath extends Group {
 
 	public void draw(Change<? extends PointAngleGroup> c) {
 		clearCreateAndAddPoints(c.getList());
+	}
+
+	public Path getActualPath() {
+		return actualPath;
+	}
+
+	public void setActualPath(Path actualPath) {
+		this.actualPath = actualPath;
 	}
 }

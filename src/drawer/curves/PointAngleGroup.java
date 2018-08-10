@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.ObservableList;
 import org.waltonrobotics.controller.Pose;
 
 public class PointAngleGroup extends PointGroup {
@@ -27,6 +28,10 @@ public class PointAngleGroup extends PointGroup {
 		return points.stream().map(PointAngleGroup::getPose).collect(Collectors.toList());
 	}
 
+	public static List<Pose> mapToRealPoses(ObservableList<? extends PointAngleGroup> keyPoints) {
+		return keyPoints.stream().map(PointAngleGroup::getRealPose).collect(Collectors.toList());
+	}
+
 	public PointGroup getOriginPoint() {
 		return originPoint;
 	}
@@ -45,7 +50,7 @@ public class PointAngleGroup extends PointGroup {
 	}
 
 	public Pose getRealPose() {
-		return new Pose(getPositionPoint().getTranslateX(), getPositionPoint().getTranslateY(),
+		return new Pose(translatedX.get(), translatedY.get(),
 			-StrictMath.toRadians(translatedAngle.get()));
 	}
 
