@@ -20,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -368,6 +369,10 @@ public class Controller implements Initializable {
 
 		pointPlacement.getChildren().add(polygon);
 		pointPlacement.getChildren().add(Field.obstacleGroup);
+
+		if (Field.imageFile != null) {
+			load(Field.image);
+		}
 	}
 
 	@FXML
@@ -401,7 +406,11 @@ public class Controller implements Initializable {
 	}
 
 	private void load(File loadFile) throws IOException {
-		fieldImage.setImage(Field.loadData(loadFile));
+		load(Field.loadData(loadFile));
+	}
+
+	private void load(Image fieldImage) {
+		this.fieldImage.setImage(fieldImage);
 
 //		TODO add here?
 
