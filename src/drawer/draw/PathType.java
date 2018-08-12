@@ -161,7 +161,7 @@ public enum PathType {
 								Color.ORANGE));
 
 							double angle = pathData.getCenterPose().getAngle() + (StrictMath.PI / 2);
-							double robotWidth = ((Field.robotWidth / 2) / Field.SCALE.get());
+							double robotWidth = ((Field.robotWidth / 2.0) / Field.SCALE.get());
 
 //							double robotWidth = 100;
 
@@ -181,21 +181,25 @@ public enum PathType {
 //									* maxLength,
 //								Color.BLUE));
 
-							observedDirectionalArrows.add(new ObservedDirectionalArrow(
-								pathData.getCenterPose()
-									.offset(-StrictMath.cos(angle) * robotWidth, -StrictMath.sin(angle) * robotWidth,
-										0.0),
-								(velocities.getLeftState().getVelocity() / group.getActualPath().getVCruise())
-									* maxLength,
-								Color.RED, false));
+							if (robotWidth
+								> 10 /* if there is only a 10 pixel gap between the center and the velocity arrow*/) {
+								observedDirectionalArrows.add(new ObservedDirectionalArrow(
+									pathData.getCenterPose()
+										.offset(-StrictMath.cos(angle) * robotWidth,
+											-StrictMath.sin(angle) * robotWidth,
+											0.0),
+									(velocities.getLeftState().getVelocity() / group.getActualPath().getVCruise())
+										* maxLength,
+									Color.RED, false));
 
-							observedDirectionalArrows.add(new ObservedDirectionalArrow(
-								pathData.getCenterPose()
-									.offset(StrictMath.cos(angle) * robotWidth, StrictMath.sin(angle) * robotWidth,
-										0.0),
-								(velocities.getRightState().getVelocity() / group.getActualPath().getVCruise())
-									* maxLength,
-								Color.BLUE, false));
+								observedDirectionalArrows.add(new ObservedDirectionalArrow(
+									pathData.getCenterPose()
+										.offset(StrictMath.cos(angle) * robotWidth, StrictMath.sin(angle) * robotWidth,
+											0.0),
+									(velocities.getRightState().getVelocity() / group.getActualPath().getVCruise())
+										* maxLength,
+									Color.BLUE, false));
+							}
 
 						} else {
 							pathPoints.add(new PathPoint(pathData.getCenterPose()));
