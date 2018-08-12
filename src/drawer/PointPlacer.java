@@ -95,6 +95,7 @@ public class PointPlacer implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		SplineSender.initNetworkTableParallel();
 
 		if (Field.image == null) {
 			try {
