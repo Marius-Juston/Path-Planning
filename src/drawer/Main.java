@@ -10,8 +10,6 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	private static Stage primaryStage;
-
 	public Main() {
 	}
 
@@ -21,7 +19,6 @@ public class Main extends Application {
 
 	@Override
 	public final void start(Stage primaryStage) throws IOException {
-		Main.primaryStage = primaryStage;
 
 		primaryStage.getIcons().add(new Image(
 			String.valueOf(Main.class.getResource("../calibration/Walton-Robotic-Logo.png"))));
