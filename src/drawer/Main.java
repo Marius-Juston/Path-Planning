@@ -1,5 +1,6 @@
 package drawer;
 
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -28,8 +29,8 @@ public class Main extends Application {
 		primaryStage.setTitle("Path Planner");
 		primaryStage.setScene(new Scene(root));
 
+		primaryStage.setOnCloseRequest(event -> NetworkTable.shutdown());
+
 		primaryStage.show();
-
-
 	}
 }
