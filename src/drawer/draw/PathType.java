@@ -32,7 +32,7 @@ public enum PathType {
 		public void clearCreateAndAddPoints(DrawnPath group, ObservableList<? extends PointAngleGroup> keyPoints) {
 			super.clearCreateAndAddPoints(group, keyPoints);
 
-			System.out.println(org.waltonrobotics.motion.Path.getRobotWidth());
+//			System.out.println(org.waltonrobotics.motion.Path.getRobotWidth());
 
 			group.getChildren().clear();
 
@@ -43,16 +43,16 @@ public enum PathType {
 
 				Spline drawingSpline = new Spline(1, 1, 0, 0, false, poses);
 
-				System.out.println(drawingSpline.getVCruise() + "\t\t" + drawingSpline.getAMax());
+//				System.out.println(drawingSpline.getVCruise() + "\t\t" + drawingSpline.getAMax());
 
 //				TODO improve this to be more efficient
 				poses = PointAngleGroup.mapToRealPoses(keyPoints);
-				System.out.println(poses);
+//				System.out.println(poses);
 
 				Spline actualSpline = new Spline(1, 1, 0, 0, false, poses);
 
-				System.out.println(actualSpline.getPathData().getLast());
-				System.out.println(actualSpline.getPathData().getFirst());
+//				System.out.println(actualSpline.getPathData().getLast());
+//				System.out.println(actualSpline.getPathData().getFirst());
 
 				group.setDrawingPath(drawingSpline);
 				group.setActualPath(actualSpline);
@@ -144,13 +144,13 @@ public enum PathType {
 
 						if ((index[0]++ % every) == 0) {
 
-							System.out.println(
-								velocities.getLeftState().getLength() + "\t\t" + velocities.getRightState()
-									.getLength());
-							System.out.println(
-								velocities.getLeftState().getVelocity() + "\t\t" + velocities.getRightState()
-									.getVelocity());
-							System.out.println();
+//							System.out.println(
+//								velocities.getLeftState().getLength() + "\t\t" + velocities.getRightState()
+//									.getLength());
+//							System.out.println(
+//								velocities.getLeftState().getVelocity() + "\t\t" + velocities.getRightState()
+//									.getVelocity());
+//							System.out.println();
 
 							double centerVelocity =
 								(velocities.getLeftState().getVelocity() + velocities.getRightState().getVelocity())
