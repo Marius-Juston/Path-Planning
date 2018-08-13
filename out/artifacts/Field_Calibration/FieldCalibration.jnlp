@@ -9,7 +9,7 @@
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
     <jar href="2974Splines.jar" size="69091" download="eager" />
-    <jar href="FieldCalibration.jar" size="532127" download="eager" />
+    <jar href="FieldCalibration.jar" size="532556" download="eager" />
     <jar href="SmartDashboard.jar" size="4381529" download="eager" />
   </resources>
   <jfx:javafx-desc  width="600" height="400" main-class="calibration.Main"  name="Field Calibration" />
