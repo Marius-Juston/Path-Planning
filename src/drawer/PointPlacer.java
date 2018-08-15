@@ -3,15 +3,17 @@ package drawer;
 import calibration.Controller;
 import calibration.Field;
 import calibration.Helper;
-import drawer.content.OriginPathTable;
 import drawer.content.PathTitledTab;
 import drawer.content.PathTitledTab.PointsAdded;
-import drawer.content.PointsPathTable;
 import drawer.content.RenameDialog;
-import drawer.curves.OriginPoint;
+import drawer.content.origin.OriginPathTable;
+import drawer.content.origin.OriginsPathTitledTab;
+import drawer.content.points.PointsPathTable;
+import drawer.content.points.PointsPathTitledTab;
 import drawer.curves.OriginsPathGroup;
 import drawer.curves.PointAngleGroup;
 import drawer.curves.PointsPathGroup;
+import drawer.curves.figures.OriginPoint;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -245,7 +247,7 @@ public class PointPlacer implements Initializable {
 	}
 
 	private PathTitledTab<OriginsPathGroup> createOriginsPathTitledTab() {
-		PathTitledTab<OriginsPathGroup> pathTitledTab = new PathTitledTab<>(new OriginsPathGroup());
+		OriginsPathTitledTab pathTitledTab = new OriginsPathTitledTab();
 
 		{
 			MenuItem rename = new MenuItem("Rename");
@@ -266,9 +268,9 @@ public class PointPlacer implements Initializable {
 		return pathTitledTab;
 	}
 
-	private PathTitledTab<PointsPathGroup> createPointsPathTitledTab() {
+	private PointsPathTitledTab createPointsPathTitledTab() {
 
-		PathTitledTab<PointsPathGroup> pathTitledTab = new PathTitledTab<>(new PointsPathGroup());
+		PointsPathTitledTab pathTitledTab = new PointsPathTitledTab();
 
 		{
 			MenuItem rename = new MenuItem("Rename");
@@ -305,9 +307,9 @@ public class PointPlacer implements Initializable {
 		return pathTitledTab;
 	}
 
-	private PathTitledTab<PointsPathGroup> createAndSetupPathTitledTab() {
+	private PointsPathTitledTab createAndSetupPathTitledTab() {
 
-		PathTitledTab<PointsPathGroup> pathTitledTab = createPointsPathTitledTab();
+		PointsPathTitledTab pathTitledTab = createPointsPathTitledTab();
 
 		titledPaneAccordion.getPanes().add(pathTitledTab);
 		pointPlane.getChildren().add(pathTitledTab.getPointsPathGroup());
@@ -315,8 +317,8 @@ public class PointPlacer implements Initializable {
 		return pathTitledTab;
 	}
 
-	private PathTitledTab getExpandedPane() {
-		return (PathTitledTab) titledPaneAccordion.getExpandedPane();
+	private PointsPathTitledTab getExpandedPane() {
+		return (PointsPathTitledTab) titledPaneAccordion.getExpandedPane();
 	}
 
 	public void goBackToFieldSelector(ActionEvent actionEvent) throws IOException {
@@ -357,4 +359,7 @@ public class PointPlacer implements Initializable {
 	}
 
 
+	public void toggleShowingVelocityArrows(ActionEvent actionEvent) {
+		getExpandedPane().toggleShowingVelocity();
+	}
 }

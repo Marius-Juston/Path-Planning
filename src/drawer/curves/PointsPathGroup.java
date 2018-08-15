@@ -1,6 +1,7 @@
 package drawer.curves;
 
 import drawer.content.PathGroup;
+import drawer.curves.figures.OriginPoint;
 import drawer.draw.DrawnPath;
 import drawer.draw.PathType;
 import javafx.collections.ListChangeListener;
@@ -132,5 +133,9 @@ public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 
 		getChildren().add(pointAngleCombo);
 		getKeyPoints().add(pointAngleCombo);
+	}
+
+	public DrawnPath getDrawer() {
+		return drawer;
 	}
 }

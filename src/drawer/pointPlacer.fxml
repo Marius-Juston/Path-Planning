@@ -52,6 +52,11 @@
           <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
         </accelerator>
       </MenuItem>
+      <MenuItem mnemonicParsing="false" onAction="#toggleShowingVelocityArrows" text="Toggle Velocities">
+        <accelerator>
+          <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+        </accelerator>
+      </MenuItem>
     </Menu>
   </MenuBar>
   <SplitPane VBox.vgrow="ALWAYS" fx:id="splitPane">
