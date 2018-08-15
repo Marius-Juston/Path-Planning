@@ -37,7 +37,7 @@ public enum PathType {
 			group.clearAllChildren();
 
 			if (keyPoints.size() > 1) {
-				System.out.println("Spline");
+//				System.out.println("Spline");
 
 				List<Pose> poses = PointAngleGroup.mapToPoses(keyPoints);
 
@@ -126,7 +126,7 @@ public enum PathType {
 			super.clearCreateAndAddPoints(group, keyPoints);
 
 			group.clearAllChildren();
-			System.out.println("Turn");
+//			System.out.println("Turn");
 
 			if (keyPoints.size() == 2) {
 				PointTurn pointTurn = new PointTurn(4, 2, keyPoints.get(0).getPose(),
