@@ -1,8 +1,8 @@
 package testing;
 
-import drawer.content.NotificationArrow;
-import drawer.curves.ObservedDirectionalArrow;
-import drawer.curves.PositionPoint;
+import drawer.curves.figures.NotificationArrow;
+import drawer.curves.figures.ObservedDirectionalArrow;
+import drawer.curves.figures.PositionPoint;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;

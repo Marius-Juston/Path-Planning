@@ -1,4 +1,4 @@
-package drawer.curves;
+package drawer.curves.figures;
 
 import static javafx.scene.paint.Color.RED;
 

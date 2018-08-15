@@ -2,7 +2,7 @@ package drawer.content;
 
 import javafx.scene.control.TitledPane;
 
-public class PathTitledTab<K extends PathGroup> extends TitledPane {
+public abstract class PathTitledTab<K extends PathGroup> extends TitledPane {
 
 	private static int index = 0;
 	public final K pointsPathGroup;

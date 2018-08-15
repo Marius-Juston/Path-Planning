@@ -2,11 +2,11 @@ package drawer.draw;
 
 import calibration.Field;
 import calibration.Obstacle;
-import drawer.content.NotificationArrow;
-import drawer.curves.ObservedDirectionalArrow;
-import drawer.curves.PathPoint;
 import drawer.curves.PointAngleGroup;
-import drawer.curves.PositionPoint;
+import drawer.curves.figures.NotificationArrow;
+import drawer.curves.figures.ObservedDirectionalArrow;
+import drawer.curves.figures.PathPoint;
+import drawer.curves.figures.PositionPoint;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

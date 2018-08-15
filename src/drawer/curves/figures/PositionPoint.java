@@ -1,4 +1,4 @@
-package drawer.curves;
+package drawer.curves.figures;
 
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;

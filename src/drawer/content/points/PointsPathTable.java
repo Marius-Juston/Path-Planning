@@ -1,6 +1,7 @@
-package drawer.content;
+package drawer.content.points;
 
 import calibration.Field;
+import drawer.content.PathTable;
 import drawer.curves.PointAngleGroup;
 import drawer.curves.PointsPathGroup;
 import javafx.scene.control.ContextMenu;

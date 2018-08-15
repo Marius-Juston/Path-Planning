@@ -1,8 +1,9 @@
-package drawer.content;
+package drawer.content.origin;
 
 import calibration.Field;
-import drawer.curves.OriginPoint;
+import drawer.content.PathTable;
 import drawer.curves.OriginsPathGroup;
+import drawer.curves.figures.OriginPoint;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 

@@ -1,4 +1,4 @@
-package drawer.content;
+package drawer.curves.figures;
 
 import javafx.geometry.VPos;
 import javafx.scene.Group;

@@ -1,5 +1,6 @@
-package drawer.curves;
+package drawer.curves.figures;
 
+import drawer.curves.PointGroup;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.paint.Color;
 

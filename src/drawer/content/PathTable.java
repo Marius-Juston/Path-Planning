@@ -11,14 +11,14 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.NumberStringConverter;
 
 // Copied from my CurveDrawer class from my POE-Project Repository
-class PathTable<K extends PathGroup, U extends PointGroup> extends TableView<U> {
+public class PathTable<K extends PathGroup, U extends PointGroup> extends TableView<U> {
 
 	/**
 	 * Initializes a TableView that observers the defining points of a path
 	 *
 	 * @param pathGroup points of the path to observe
 	 */
-	PathTable(K pathGroup) {
+	public PathTable(K pathGroup) {
 
 		setEditable(true);
 		setColumnResizePolicy(CONSTRAINED_RESIZE_POLICY);
@@ -34,7 +34,7 @@ class PathTable<K extends PathGroup, U extends PointGroup> extends TableView<U> 
 	 * @param property name of the property the column should be observing
 	 * @param eventHandler event handler that handles when a value from the column is changed
 	 */
-	void initializeNumberColumn(String columnName, String property,
+	public void initializeNumberColumn(String columnName, String property,
 		EventHandler<CellEditEvent<U, Number>> eventHandler) {
 
 		TableColumn<U, Number> column = new TableColumn<>();
@@ -54,7 +54,7 @@ class PathTable<K extends PathGroup, U extends PointGroup> extends TableView<U> 
 	 * @param property name of the property the column should be observing
 	 * @param eventHandler event handler that handles when a value from the column is changed
 	 */
-	void initializeStringColumn(String columnName, String property,
+	public void initializeStringColumn(String columnName, String property,
 		EventHandler<CellEditEvent<U, String>> eventHandler) {
 		TableColumn<U, String> column = new TableColumn<>();
 		column.setCellValueFactory(new PropertyValueFactory<>(property));

@@ -1,6 +1,7 @@
 package drawer.curves;
 
 import calibration.Field;
+import drawer.curves.figures.OriginPoint;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

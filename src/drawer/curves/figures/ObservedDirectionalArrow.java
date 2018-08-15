@@ -1,4 +1,4 @@
-package drawer.curves;
+package drawer.curves.figures;
 
 import calibration.Helper;
 import javafx.beans.property.SimpleDoubleProperty;

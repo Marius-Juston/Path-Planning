@@ -37,6 +37,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 
+
 public class Controller implements Initializable {
 
 
@@ -77,19 +78,21 @@ public class Controller implements Initializable {
 	@FXML
 	public HBox infoPane;
 	private MenuItem confirmFieldBoarder = new MenuItem("Set as Field boarder");
-	private MenuItem confirmObstacle = new MenuItem("Confirm Obstacle");
+	private MenuItem confirmNormalObstacle = new MenuItem("Confirm Normal Obstacle");
+	private MenuItem confirmDangerousObstacle = new MenuItem("Confirm Dangerous Obstacle");
 	private MenuItem cancelObstacle = new MenuItem("Cancel Obstacle");
-	private ContextMenu confirmFishedObstacle = new ContextMenu(cancelObstacle, confirmFieldBoarder, confirmObstacle);
+	private ContextMenu confirmFishedObstacle = new ContextMenu(cancelObstacle, confirmFieldBoarder,
+		confirmNormalObstacle, confirmDangerousObstacle);
 	private Polygon polygon = new Polygon();
 	private boolean firstConversion = true;
 	private Selection scaleSelection = Selection.NO_SELECTION;
 	private boolean calibrating = true;
-	private boolean now = true;
 	private Button outlineToggleButton = new Button("Outline field");
 
 	{
 		confirmFieldBoarder.setOnAction(event -> createFieldBorder());
-		confirmObstacle.setOnAction(event -> createNormalObstacle());
+		confirmNormalObstacle.setOnAction(event -> createNormalObstacle());
+		confirmDangerousObstacle.setOnAction(event -> createDangerousObstacle());
 		cancelObstacle.setOnAction(event -> polygon.getPoints().clear());
 	}
 
@@ -155,11 +158,9 @@ public class Controller implements Initializable {
 
 			if (mouseEvent.getButton() == MouseButton.SECONDARY) {
 				if (polygon.getPoints().size() < 3) {
-					confirmFieldBoarder.setDisable(true);
-					confirmObstacle.setDisable(true);
+					setDisableObstacleConfirmationMenueItems(true);
 				} else {
-					confirmFieldBoarder.setDisable(false);
-					confirmObstacle.setDisable(false);
+					setDisableObstacleConfirmationMenueItems(false);
 				}
 				confirmFishedObstacle.show(fieldImage, mouseEvent.getScreenX(), mouseEvent.getScreenY());
 			} else {
@@ -167,6 +168,13 @@ public class Controller implements Initializable {
 			}
 
 		}
+	}
+
+	public void setDisableObstacleConfirmationMenueItems(boolean isDisabled) {
+
+		confirmFieldBoarder.setDisable(isDisabled);
+		confirmNormalObstacle.setDisable(isDisabled);
+		confirmDangerousObstacle.setDisable(isDisabled);
 	}
 
 	@FXML
@@ -238,15 +246,23 @@ public class Controller implements Initializable {
 		this.polygon.getPoints().clear();
 	}
 
-	public void createNormalObstacle() {
+	public void createObstacle(ThreatLevel threatLevel) {
 		Polygon polygon = new Polygon(this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
-		polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
-		polygon.setStroke(ThreatLevel.WARNING.getDisplayColor());
+		polygon.setFill(threatLevel.getDisplayColor());
+		polygon.setStroke(threatLevel.getDisplayColor());
 		polygon.setStrokeWidth(1);
 
-		Field.addObstacle(ObstacleType.OBSTACLE, new Obstacle(ThreatLevel.WARNING, polygon));
+		Field.addObstacle(ObstacleType.OBSTACLE, new Obstacle(threatLevel, polygon));
 
 		this.polygon.getPoints().clear();
+	}
+
+	public void createNormalObstacle() {
+		createObstacle(ThreatLevel.WARNING);
+	}
+
+	public void createDangerousObstacle() {
+		createObstacle(ThreatLevel.ERROR);
 	}
 
 
@@ -417,7 +433,6 @@ public class Controller implements Initializable {
 		addExtraData();
 		cleanUp();
 	}
-
 
 	public enum Selection {
 		NO_SELECTION, ONE_POINT, TWO_POINT

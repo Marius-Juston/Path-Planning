@@ -1,5 +1,7 @@
 package drawer.curves;
 
+import drawer.curves.figures.ObservedDirectionalArrow;
+import drawer.curves.figures.PositionPoint;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
@@ -26,7 +28,7 @@ public class PointGroup extends Group {
 	private PositionPoint positionPoint;
 	private SimpleDoubleProperty degrees = new SimpleDoubleProperty(1.0);
 
-	PointGroup(double centerX, double centerY) {
+	public PointGroup(double centerX, double centerY) {
 		positionPoint = new PositionPoint(centerX, centerY);
 
 		name.textOriginProperty().setValue(VPos.CENTER);
@@ -136,7 +138,7 @@ public class PointGroup extends Group {
 		observedDirectionalArrow.angleProperty().set(Math.toRadians(value));
 	}
 
-	SimpleDoubleProperty degreesProperty() {
+	public SimpleDoubleProperty degreesProperty() {
 		return degrees;
 	}
 
