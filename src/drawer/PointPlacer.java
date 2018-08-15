@@ -80,7 +80,7 @@ public class PointPlacer implements Initializable {
 	private AnchorPane pointPlane;
 	@FXML
 	private SplitPane splitPane;
-	private Accordion titledPaneAccordion;
+	private Accordion pointsTitledPaneAccordion;
 	private Accordion originsPaneAccordion = new Accordion();
 
 	{
@@ -117,8 +117,8 @@ public class PointPlacer implements Initializable {
 //			Field.obstacleGroup.setOnMousePressed(this::handlePointEvent);
 		}
 
-		titledPaneAccordion = new Accordion();
-		titledPaneAccordion.expandedPaneProperty().addListener((property, oldPane, newPane) -> {
+		pointsTitledPaneAccordion = new Accordion();
+		pointsTitledPaneAccordion.expandedPaneProperty().addListener((property, oldPane, newPane) -> {
 			if (oldPane != null) {
 				oldPane.setCollapsible(true);
 			}
@@ -128,6 +128,8 @@ public class PointPlacer implements Initializable {
 				Platform.runLater(() -> newPane.setCollapsible(false));
 			}
 		});
+
+		splitPane.widthProperty().addListener((observable, oldValue, newValue) -> updateDividerPositions());
 
 //		TODO uncomment this to see Polygon.intersect example
 //		Rectangle rectangle = new Rectangle(200, 200, 50, 50);
@@ -142,6 +144,7 @@ public class PointPlacer implements Initializable {
 //
 //		pointPlane.getChildren().addAll(rectangle, line, shape);
 	}
+
 
 	public void saveData(ActionEvent actionEvent) {
 	}
@@ -192,8 +195,8 @@ public class PointPlacer implements Initializable {
 
 		if (!(intersectedNode instanceof Shape) || isFieldObstacle) {
 
-			PathTitledTab<PointsPathGroup> pointsPathTitledTab;
-			if (titledPaneAccordion.getPanes().isEmpty()) {
+			PointsPathTitledTab pointsPathTitledTab;
+			if (pointsTitledPaneAccordion.getPanes().isEmpty()) {
 //////				TODO clean this up ///////////////////////////////////////////////////////////////
 				PathTitledTab<OriginsPathGroup> originsPathTitledTab = createOriginsPathTitledTab();
 
@@ -212,7 +215,7 @@ public class PointPlacer implements Initializable {
 				updateDividerPositions();
 
 			} else {
-				pointsPathTitledTab = (PathTitledTab<PointsPathGroup>) titledPaneAccordion.getExpandedPane();
+				pointsPathTitledTab = getExpandedPane();
 			}
 
 			if (pointsPathTitledTab.getPointNumber() == PointsAdded.FIRST_POINT) {
@@ -224,8 +227,7 @@ public class PointPlacer implements Initializable {
 
 				pointsPathTitledTab.getPointsPathGroup().setOriginPoint(mouseEvent.getX(), mouseEvent.getY());
 
-				((PathTitledTab<OriginsPathGroup>) originsPaneAccordion.getExpandedPane()).getPointsPathGroup()
-					.add(originPoint);
+				((OriginsPathTitledTab) originsPaneAccordion.getExpandedPane()).getPointsPathGroup().add(originPoint);
 
 				pointPlane.getChildren().add(originPoint);
 
@@ -235,7 +237,7 @@ public class PointPlacer implements Initializable {
 
 				if (pointsPathTitledTab.getPointNumber() == PointsAdded.SECOND_POINT) {
 					pointsPathTitledTab.setPointNumber(PointsAdded.MORE);
-					splitPane.getItems().add(titledPaneAccordion);
+					splitPane.getItems().add(pointsTitledPaneAccordion);
 					updateDividerPositions();
 				}
 
@@ -284,12 +286,12 @@ public class PointPlacer implements Initializable {
 
 			MenuItem delete = new MenuItem("Delete");
 			delete.setOnAction(event -> {
-				ObservableList<TitledPane> panes = titledPaneAccordion.getPanes();
+				ObservableList<TitledPane> panes = pointsTitledPaneAccordion.getPanes();
 
 				if (panes.size() > 1) {
 
-					if (titledPaneAccordion.getExpandedPane().equals(pathTitledTab)) {
-						titledPaneAccordion.setExpandedPane(panes.get(panes.size() - 1));
+					if (pointsTitledPaneAccordion.getExpandedPane().equals(pathTitledTab)) {
+						pointsTitledPaneAccordion.setExpandedPane(panes.get(panes.size() - 1));
 					}
 
 					pointPlane.getChildren().remove(pathTitledTab.getPointsPathGroup());
@@ -299,7 +301,10 @@ public class PointPlacer implements Initializable {
 				}
 			});
 
-			ContextMenu contextMenu = new ContextMenu(rename, delete);
+			MenuItem sendPath = new MenuItem("Send");
+			sendPath.setOnAction(this::sendCurrentPath);
+
+			ContextMenu contextMenu = new ContextMenu(rename, delete, sendPath);
 			pathTitledTab.setContextMenu(contextMenu);
 
 			pathTitledTab.setContent(new PointsPathTable(pathTitledTab.pointsPathGroup));
@@ -311,14 +316,14 @@ public class PointPlacer implements Initializable {
 
 		PointsPathTitledTab pathTitledTab = createPointsPathTitledTab();
 
-		titledPaneAccordion.getPanes().add(pathTitledTab);
+		pointsTitledPaneAccordion.getPanes().add(pathTitledTab);
 		pointPlane.getChildren().add(pathTitledTab.getPointsPathGroup());
-		titledPaneAccordion.setExpandedPane(pathTitledTab);
+		pointsTitledPaneAccordion.setExpandedPane(pathTitledTab);
 		return pathTitledTab;
 	}
 
 	private PointsPathTitledTab getExpandedPane() {
-		return (PointsPathTitledTab) titledPaneAccordion.getExpandedPane();
+		return (PointsPathTitledTab) pointsTitledPaneAccordion.getExpandedPane();
 	}
 
 	public void goBackToFieldSelector(ActionEvent actionEvent) throws IOException {
@@ -332,10 +337,10 @@ public class PointPlacer implements Initializable {
 	}
 
 	public void togglePointTable(ActionEvent actionEvent) {
-		if (splitPane.getItems().contains(titledPaneAccordion)) {
-			splitPane.getItems().remove(titledPaneAccordion);
+		if (splitPane.getItems().contains(pointsTitledPaneAccordion)) {
+			splitPane.getItems().remove(pointsTitledPaneAccordion);
 		} else {
-			splitPane.getItems().add(titledPaneAccordion);
+			splitPane.getItems().add(pointsTitledPaneAccordion);
 		}
 		updateDividerPositions();
 	}
@@ -353,13 +358,24 @@ public class PointPlacer implements Initializable {
 		if (splitPane.getItems().contains(originsPaneAccordion)) {
 			splitPane.getDividers().get(0).setPosition(originsDividerPosition);
 		}
-		if (splitPane.getItems().contains(titledPaneAccordion)) {
+		if (splitPane.getItems().contains(pointsTitledPaneAccordion)) {
 			splitPane.getDividers().get(splitPane.getDividers().size() - 1).setPosition(1 - originsDividerPosition);
 		}
 	}
 
 
+	public void sendCurrentPath(ActionEvent event) {
+		SplineSender.sendPath(getExpandedPane());
+	}
+
 	public void toggleShowingVelocityArrows(ActionEvent actionEvent) {
 		getExpandedPane().toggleShowingVelocity();
+	}
+
+	public void sendAllToSmartDashboard(ActionEvent event) {
+		for (TitledPane titledTab : pointsTitledPaneAccordion.getPanes()) {
+			PointsPathTitledTab pointsPathTitledTab = (PointsPathTitledTab) titledTab;
+			SplineSender.sendPath(pointsPathTitledTab);
+		}
 	}
 }

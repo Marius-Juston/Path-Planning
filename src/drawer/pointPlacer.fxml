@@ -75,7 +75,8 @@
     </padding>
     <Button mnemonicParsing="false" onAction="#goBackToFieldSelector" text="Reselect Field"/>
     <Region HBox.hgrow="ALWAYS"/>
-    <Button defaultButton="true" mnemonicParsing="false" text="Send to Network table"/>
+    <Button defaultButton="true" mnemonicParsing="false" text="Send to Network table"
+      onAction="#sendAllToSmartDashboard"/>
     <Button mnemonicParsing="false" text="Save"/>
   </HBox>
 </VBox>

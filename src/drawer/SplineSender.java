@@ -1,6 +1,8 @@
 package drawer;
 
+import drawer.content.points.PointsPathTitledTab;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import org.waltonrobotics.motion.Path;
 
 public class SplineSender {
 
@@ -24,9 +26,11 @@ public class SplineSender {
 			hasBeenStarted = true;
 
 			if (IS_CLIENT) {
+				System.out.println("CLIENT MODE");
 				NetworkTable.setClientMode();
 				NetworkTable.setTeam(TEAM_NUMBER);
 			} else {
+				System.out.println("SERVER MODE");
 				NetworkTable.setServerMode();
 //				NetworkTable.setIPAddress(IP_ADDRESS);
 				NetworkTable.setIPAddress("localhost");
@@ -41,4 +45,13 @@ public class SplineSender {
 		Thread thread = new Thread(SplineSender::initNetworkTable);
 		thread.start();
 	}
+
+	public static void sendPath(PointsPathTitledTab titledPane) {
+		sendPath(titledPane.getText(), titledPane.pointsPathGroup.getDrawer().getActualPath());
+	}
+
+	public static void sendPath(String key, Path path) {
+		networkTable.putString(key, path.convertToString());
+	}
+
 }
