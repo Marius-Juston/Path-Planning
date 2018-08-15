@@ -34,7 +34,7 @@ public enum PathType {
 
 //			System.out.println(org.waltonrobotics.motion.Path.getRobotWidth());
 
-			group.getChildren().clear();
+			group.clearAllChildren();
 
 			if (keyPoints.size() > 1) {
 				System.out.println("Spline");
@@ -112,103 +112,12 @@ public enum PathType {
 						}
 					});
 
-					group.getChildren().addAll(intersections);
-					group.getChildren().addAll(cubicCurves);
-					group.getChildren().addAll(notificationArrows);
+					group.getPathDefinition().getChildren().addAll(intersections);
+					group.getPathDefinition().getChildren().addAll(cubicCurves);
+					group.getPathDefinition().getChildren().addAll(notificationArrows);
 				}
 
-				if (group.isShowVelocities()) {
-					double maxLength = 20;
-					double everyPercent = 0.05;
-
-					int every = (int) (group.getDrawingPath().getPathData().size() * everyPercent);
-
-					int[] index = {0};
-//			List<Node> pathPoints = getDrawingPath().getPathData().stream().map(pathData -> {
-//				if (index[0]++ % every == 0) {
-//					double centerVelocity =
-//						(pathData.getLeftState().getVelocity() + pathData.getRightState().getVelocity()) / 2.0;
-//
-//					return new ObservedDirectionalArrow(pathData.getCenterPose(),
-//						(centerVelocity / getDrawingPath().getVCruise()) * maxLength,
-//						Color.ORANGE);
-//				} else {
-//					return new PathPoint(pathData.getCenterPose());
-//				}
-//			}).collect(Collectors.toList());
-					Collection<PathPoint> pathPoints = new ArrayList<>();
-					Collection<ObservedDirectionalArrow> observedDirectionalArrows = new ArrayList<>();
-
-					group.getDrawingPath().getPathData().forEach(pathData -> {
-						PathData velocities = group.getActualPath().getPathData().get(index[0]);
-
-						if ((index[0]++ % every) == 0) {
-
-//							System.out.println(
-//								velocities.getLeftState().getLength() + "\t\t" + velocities.getRightState()
-//									.getLength());
-//							System.out.println(
-//								velocities.getLeftState().getVelocity() + "\t\t" + velocities.getRightState()
-//									.getVelocity());
-//							System.out.println();
-
-							double centerVelocity =
-								(velocities.getLeftState().getVelocity() + velocities.getRightState().getVelocity())
-									/ 2.0;
-
-							observedDirectionalArrows.add(new ObservedDirectionalArrow(pathData.getCenterPose(),
-								(centerVelocity / group.getActualPath().getVCruise()) * maxLength,
-								Color.ORANGE));
-
-							double angle = pathData.getCenterPose().getAngle() + (StrictMath.PI / 2);
-							double robotWidth = ((Field.robotWidth / 2.0) / Field.SCALE.get());
-
-//							double robotWidth = 100;
-
-//							observedDirectionalArrows.add(new ObservedDirectionalArrow(
-//								pathData.getCenterPose()
-//									.offset(-StrictMath.cos(angle) * robotWidth, -StrictMath.sin(angle) * robotWidth,
-//										0.0),
-//								(velocities.getLeftState().getVelocity() / group.getActualPath().getVCruise())
-//									* maxLength,
-//								Color.RED));
-//
-//							observedDirectionalArrows.add(new ObservedDirectionalArrow(
-//								pathData.getCenterPose()
-//									.offset(StrictMath.cos(angle) * robotWidth, StrictMath.sin(angle) * robotWidth,
-//										0.0),
-//								(velocities.getRightState().getVelocity() / group.getActualPath().getVCruise())
-//									* maxLength,
-//								Color.BLUE));
-
-							if (robotWidth
-								> 10 /* if there is only a 10 pixel gap between the center and the velocity arrow*/) {
-								observedDirectionalArrows.add(new ObservedDirectionalArrow(
-									pathData.getCenterPose()
-										.offset(-StrictMath.cos(angle) * robotWidth,
-											-StrictMath.sin(angle) * robotWidth,
-											0.0),
-									(velocities.getLeftState().getVelocity() / group.getActualPath().getVCruise())
-										* maxLength,
-									Color.RED, false));
-
-								observedDirectionalArrows.add(new ObservedDirectionalArrow(
-									pathData.getCenterPose()
-										.offset(StrictMath.cos(angle) * robotWidth, StrictMath.sin(angle) * robotWidth,
-											0.0),
-									(velocities.getRightState().getVelocity() / group.getActualPath().getVCruise())
-										* maxLength,
-									Color.BLUE, false));
-							}
-
-						} else {
-							pathPoints.add(new PathPoint(pathData.getCenterPose()));
-						}
-					});
-
-					group.getChildren().addAll(pathPoints);
-					group.getChildren().addAll(observedDirectionalArrows);
-				}
+				drawVelocityArrows(group);
 			}
 		}
 	}, POINT_TURN {
@@ -216,7 +125,7 @@ public enum PathType {
 		public void clearCreateAndAddPoints(DrawnPath group, ObservableList<? extends PointAngleGroup> keyPoints) {
 			super.clearCreateAndAddPoints(group, keyPoints);
 
-			group.getChildren().clear();
+			group.clearAllChildren();
 			System.out.println("Turn");
 
 			if (keyPoints.size() == 2) {
@@ -240,7 +149,7 @@ public enum PathType {
 //					System.out.println(StrictMath.toDegrees(observedDirectionalArrow.getAngle()));
 //				}
 
-				group.getChildren().addAll(pathPoints);
+				group.getPathDefinition().getChildren().addAll(pathPoints);
 			}
 		}
 	}, STRAIGHT_LINE {
@@ -249,7 +158,7 @@ public enum PathType {
 		public void clearCreateAndAddPoints(DrawnPath group, ObservableList<? extends PointAngleGroup> keyPoints) {
 			super.clearCreateAndAddPoints(group, keyPoints);
 
-			group.getChildren().clear();
+			group.clearAllChildren();
 
 			if (keyPoints.size() == 2) {
 				Line pointTurn = new Line(4, 2, 0, 0, false, keyPoints.get(0).getPose(), keyPoints.get(1).getPose());
@@ -265,15 +174,74 @@ public enum PathType {
 						Color.rgb(255, (int) ((index[0]) * percentage), (int) ((index[0]--) * percentage))))
 					.collect(Collectors.toList());
 
-//				for (ObservedDirectionalArrow observedDirectionalArrow : pathPoints) {
-//					System.out.println(StrictMath.toDegrees(observedDirectionalArrow.getAngle()));
-//				}
+				group.getPathDefinition().getChildren().addAll(pathPoints);
 
-				group.getChildren().addAll(pathPoints);
+				drawVelocityArrows(group);
 			}
-			System.out.println("Straight");
 		}
 	};
+
+
+	public void drawVelocityArrows(DrawnPath group) {
+		if (group.isShowVelocities()) {
+			double maxLength = 20;
+			double everyPercent = 0.05;
+
+			int every = (int) (group.getDrawingPath().getPathData().size() * everyPercent);
+
+			int[] index = {0};
+			Collection<ObservedDirectionalArrow> observedDirectionalArrows = new ArrayList<>();
+
+			group.getDrawingPath().getPathData().forEach(pathData -> {
+				PathData velocities = group.getActualPath().getPathData().get(index[0]);
+
+				if ((index[0]++ % every) == 0) {
+
+//							System.out.println(
+//								velocities.getLeftState().getLength() + "\t\t" + velocities.getRightState()
+//									.getLength());
+//							System.out.println(
+//								velocities.getLeftState().getVelocity() + "\t\t" + velocities.getRightState()
+//									.getVelocity());
+//							System.out.println();
+
+					double centerVelocity =
+						(velocities.getLeftState().getVelocity() + velocities.getRightState().getVelocity())
+							/ 2.0;
+
+					observedDirectionalArrows.add(new ObservedDirectionalArrow(pathData.getCenterPose(),
+						(centerVelocity / group.getActualPath().getVCruise()) * maxLength,
+						Color.ORANGE));
+
+					double angle = pathData.getCenterPose().getAngle() + (StrictMath.PI / 2);
+					double robotWidth = ((Field.robotWidth / 2.0) / Field.SCALE.get());
+
+					if (robotWidth
+						> 10 /* if there is only a 10 pixel gap between the center and the velocity arrow*/) {
+						observedDirectionalArrows.add(new ObservedDirectionalArrow(
+							pathData.getCenterPose()
+								.offset(-StrictMath.cos(angle) * robotWidth,
+									-StrictMath.sin(angle) * robotWidth,
+									0.0),
+							(velocities.getLeftState().getVelocity() / group.getActualPath().getVCruise())
+								* maxLength,
+							Color.RED, false));
+
+						observedDirectionalArrows.add(new ObservedDirectionalArrow(
+							pathData.getCenterPose()
+								.offset(StrictMath.cos(angle) * robotWidth, StrictMath.sin(angle) * robotWidth,
+									0.0),
+							(velocities.getRightState().getVelocity() / group.getActualPath().getVCruise())
+								* maxLength,
+							Color.BLUE, false));
+					}
+
+				}
+			});
+
+			group.getVelocities().getChildren().addAll(observedDirectionalArrows);
+		}
+	}
 
 	public void clearCreateAndAddPoints(DrawnPath group, ObservableList<? extends PointAngleGroup> keyPoints) {
 	}

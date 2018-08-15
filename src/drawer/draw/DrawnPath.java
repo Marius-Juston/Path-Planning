@@ -4,6 +4,7 @@ import drawer.curves.PointAngleGroup;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -14,14 +15,32 @@ import org.waltonrobotics.motion.Path;
 //TODO make this an ENUM
 public class DrawnPath extends Group {
 
+	private final Group velocities;
+	private final Group pathDefinition;
 	private Path drawingPath;
 	private Path actualPath;
 	private PathType pathType;
-	private boolean showVelocities = true;
+	private SimpleBooleanProperty showVelocities = new SimpleBooleanProperty(true);
 
 	public DrawnPath(PathType pathType) {
 
 		this.pathType = pathType;
+		velocities = new Group();
+		pathDefinition = new Group();
+
+		showVelocities.addListener((observable, oldValue, newValue) -> {
+
+			if (newValue) {
+				if (!getChildren().contains(velocities)) {
+					getChildren().add(velocities);
+				}
+			} else {
+				getChildren().remove(velocities);
+			}
+		});
+
+		getChildren().add(pathDefinition);
+		getChildren().add(velocities);
 	}
 
 	public static List<Pose> extractPositionData(Collection<PathData> pathDataList) {
@@ -29,11 +48,36 @@ public class DrawnPath extends Group {
 	}
 
 	public boolean isShowVelocities() {
-		return showVelocities;
+		return showVelocities.get();
 	}
 
 	public void setShowVelocities(boolean showVelocities) {
-		this.showVelocities = showVelocities;
+		this.showVelocities.set(showVelocities);
+	}
+
+	public void clearAllChildren() {
+		clearVelocities();
+		clearPathDefinition();
+	}
+
+	public void clearPathDefinition() {
+		pathDefinition.getChildren().clear();
+	}
+
+	public Group getPathDefinition() {
+		return pathDefinition;
+	}
+
+	public void clearVelocities() {
+		velocities.getChildren().clear();
+	}
+
+	public SimpleBooleanProperty showVelocitiesProperty() {
+		return showVelocities;
+	}
+
+	public Group getVelocities() {
+		return velocities;
 	}
 
 	public PathType getPathType() {
