@@ -133,7 +133,8 @@ public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 //					straightLineCreation.setDisable(false);
 //				}
 
-                contextMenu.show(pointAngleCombo.getPositionPoint(), event.getScreenX(), event.getScreenY());
+                contextMenu
+                        .show(pointAngleCombo.getPositionPoint(), event.getScreenX(), event.getScreenY());
             } else {
                 contextMenu.hide();
             }

@@ -9,15 +9,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" spacing="5.0" xmlns="http://javafx.com/javafx/8"
-  fx:controller="drawer.content.RenameDialog">
-  <padding>
-    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-  </padding>
-  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Enter new path name"/>
-  <TextField promptText="Enter path name here" fx:id="pathName"/>
-  <HBox alignment="CENTER">
-    <Button defaultButton="true" mnemonicParsing="false" onAction="#submitName" text="Submit"/>
-    <Region HBox.hgrow="ALWAYS"/>
-    <Button cancelButton="true" mnemonicParsing="false" onAction="#cancel" text="Cancel"/>
-  </HBox>
+      fx:controller="drawer.content.RenameDialog">
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+    </padding>
+    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Enter new path name"/>
+    <TextField promptText="Enter path name here" fx:id="pathName"/>
+    <HBox alignment="CENTER">
+        <Button defaultButton="true" mnemonicParsing="false" onAction="#submitName" text="Submit"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button cancelButton="true" mnemonicParsing="false" onAction="#cancel" text="Cancel"/>
+    </HBox>
 </VBox>
