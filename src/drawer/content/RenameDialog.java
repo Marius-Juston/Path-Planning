@@ -1,5 +1,6 @@
 package drawer.content;
 
+import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,41 +11,39 @@ import javafx.scene.control.TextInputControl;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 public class RenameDialog {
 
-    private static final Stage primaryStage = new Stage();
-    private static String newName;
+  private static final Stage primaryStage = new Stage();
+  private static String newName;
 
-    static {
-        primaryStage.initModality(Modality.APPLICATION_MODAL);
+  static {
+    primaryStage.initModality(Modality.APPLICATION_MODAL);
 //		primaryStage.initStyle(StageStyle.UTILITY);
-        primaryStage.setTitle("Unit converter");
-    }
+    primaryStage.setTitle("Unit converter");
+  }
 
-    @FXML
-    private TextField pathName;
+  @FXML
+  private TextField pathName;
 
-    public static String display(String previousName) throws IOException {
+  public static String display(String previousName) throws IOException {
 
-        newName = previousName;
+    newName = previousName;
 
-        Parent root = FXMLLoader.load(RenameDialog.class.getResource("renameDialog.fxml"));
-        ((TextInputControl) root.getChildrenUnmodifiable().get(1)).setText(previousName);
+    Parent root = FXMLLoader.load(RenameDialog.class.getResource("renameDialog.fxml"));
+    ((TextInputControl) root.getChildrenUnmodifiable().get(1)).setText(previousName);
 
-        primaryStage.setScene(new Scene(root));
-        primaryStage.showAndWait();
+    primaryStage.setScene(new Scene(root));
+    primaryStage.showAndWait();
 
-        return newName;
-    }
+    return newName;
+  }
 
-    public void submitName(ActionEvent actionEvent) {
-        newName = pathName.getText();
-        primaryStage.close();
-    }
+  public void submitName(ActionEvent actionEvent) {
+    newName = pathName.getText();
+    primaryStage.close();
+  }
 
-    public void cancel() {
-        primaryStage.close();
-    }
+  public void cancel() {
+    primaryStage.close();
+  }
 }
