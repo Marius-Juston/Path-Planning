@@ -79,65 +79,67 @@ public class PointPlacer implements Initializable {
 	TODO show name of point when showing details - DONE
 	*/
 
-	private static final double originsDividerPosition = 0.15772870662460567;
-	ChoiceDialog<PathNetworkTableKeyPathPair> stringChoiceDialog = new ChoiceDialog<>();
-	private Alert confirmPoint = new Alert(AlertType.CONFIRMATION);
-	@FXML
-	private ImageView field;
-	@FXML
-	private AnchorPane pointPlane;
-	@FXML
-	private SplitPane splitPane;
-	private Accordion pointsTitledPaneAccordion;
-	private Accordion originsPaneAccordion = new Accordion();
+  private static final double originsDividerPosition = 0.15772870662460567;
+  ChoiceDialog<PathNetworkTableKeyPathPair> stringChoiceDialog = new ChoiceDialog<>();
+  private Alert confirmPoint = new Alert(AlertType.CONFIRMATION);
+  @FXML
+  private ImageView field;
+  @FXML
+  private AnchorPane pointPlane;
+  @FXML
+  private SplitPane splitPane;
+  private Accordion pointsTitledPaneAccordion;
+  private Accordion originsPaneAccordion = new Accordion();
 
-	{
-		confirmPoint
-			.setContentText("There is an obstacle in this position are you sure you wish to place a point here?");
-	}
+  {
+    confirmPoint
+        .setContentText(
+            "There is an obstacle in this position are you sure you wish to place a point here?");
+  }
 
-	public static Parent getRoot() throws IOException {
-		Parent root = FXMLLoader.load(PointPlacer.class.getResource("pointPlacer.fxml"));
+  public static Parent getRoot() throws IOException {
+    Parent root = FXMLLoader.load(PointPlacer.class.getResource("pointPlacer.fxml"));
 
-		root.getStylesheets().add(PointPlacer.class.getResource("circles.css").toExternalForm());
-		return root;
-	}
+    root.getStylesheets().add(PointPlacer.class.getResource("circles.css").toExternalForm());
+    return root;
+  }
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		SplineSender.initNetworkTableParallel();
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {
+    SplineSender.initNetworkTableParallel();
 
-		if (Field.image == null) {
-			try {
-				File imageFile = new File("./src/FRC 2018 Field Drawings.png");
-				Image defaultImage = Helper.getImage(imageFile);
-				field.setImage(defaultImage);
-				Field.image = field.getImage();
-				Field.imageFile = imageFile;
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		} else {
-			field.setImage(Field.image);
+    if (Field.image == null) {
+      try {
+        File imageFile = new File("./src/FRC 2018 Field Drawings.png");
+        Image defaultImage = Helper.getImage(imageFile);
+        field.setImage(defaultImage);
+        Field.image = field.getImage();
+        Field.imageFile = imageFile;
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+    } else {
+      field.setImage(Field.image);
 
-			pointPlane.getChildren().add(Field.obstacleGroup);
+      pointPlane.getChildren().add(Field.obstacleGroup);
 
 //			Field.obstacleGroup.setOnMousePressed(this::handlePointEvent);
-		}
+    }
 
-		pointsTitledPaneAccordion = new Accordion();
-		pointsTitledPaneAccordion.expandedPaneProperty().addListener((property, oldPane, newPane) -> {
-			if (oldPane != null) {
-				oldPane.setCollapsible(true);
-			}
-			if (newPane != null) {
+    pointsTitledPaneAccordion = new Accordion();
+    pointsTitledPaneAccordion.expandedPaneProperty().addListener((property, oldPane, newPane) -> {
+      if (oldPane != null) {
+        oldPane.setCollapsible(true);
+      }
+      if (newPane != null) {
 //				newPane.setCollapsible(false);
 
-				Platform.runLater(() -> newPane.setCollapsible(false));
-			}
-		});
+        Platform.runLater(() -> newPane.setCollapsible(false));
+      }
+    });
 
-		splitPane.widthProperty().addListener((observable, oldValue, newValue) -> updateDividerPositions());
+    splitPane.widthProperty()
+        .addListener((observable, oldValue, newValue) -> updateDividerPositions());
 
 //		TODO uncomment this to see Polygon.intersect example
 //		Rectangle rectangle = new Rectangle(200, 200, 50, 50);
@@ -152,313 +154,335 @@ public class PointPlacer implements Initializable {
 //
 //		pointPlane.getChildren().addAll(rectangle, line, shape);
 
-		stringChoiceDialog.showingProperty()
-			.addListener((observable, oldValue, newValue) -> {
-				List<PathNetworkTableKeyPathPair> availablePathChoices = findAvailablePathChoices(
-					SplineSender.SMARTDASHBOARD_NETWORKTABLE_KEY); //TODO make it so that you can see and select the table you want table
+    stringChoiceDialog.showingProperty()
+        .addListener((observable, oldValue, newValue) -> {
+          List<PathNetworkTableKeyPathPair> availablePathChoices = findAvailablePathChoices(
+              SplineSender.isIsClient() ? SplineSender.SMARTDASHBOARD_NETWORKTABLE_KEY
+                  : SplineSender.NETWORK_TABLE_TABLE_KEY); //TODO make it so that you can see and select the table you want table
 
-				stringChoiceDialog.getItems().setAll(availablePathChoices);
+          stringChoiceDialog.getItems().setAll(availablePathChoices);
 
-				if (!availablePathChoices.isEmpty()) {
-					stringChoiceDialog.setSelectedItem(availablePathChoices.get(0));
-				}
-			});
-	}
+          if (!availablePathChoices.isEmpty()) {
+            stringChoiceDialog.setSelectedItem(availablePathChoices.get(0));
+          }
+        });
+  }
 
-	private List<PathNetworkTableKeyPathPair> findAvailablePathChoices(String table) {
-		NetworkTable networkTable = NetworkTable.getTable(table);
+  private List<PathNetworkTableKeyPathPair> findAvailablePathChoices(String table) {
+    NetworkTable networkTable = NetworkTable.getTable(table);
 
-		Set<String> networkTableKeys = networkTable.getKeys(4);//Through testing key 4 is strings
+    Set<String> networkTableKeys = networkTable.getKeys(4);//Through testing key 4 is strings
 
-		List<PathNetworkTableKeyPathPair> pathNetworkTableKeyPathPairs = new LinkedList<>();
+    List<PathNetworkTableKeyPathPair> pathNetworkTableKeyPathPairs = new LinkedList<>();
 
-		for (String key : networkTableKeys) {
-			String stringValue = networkTable.getString(key, "");
+    for (String key : networkTableKeys) {
+      String stringValue = networkTable.getString(key, "");
 
-			try {
-				Path path = Path.loadingPathFromString(stringValue);
+      try {
+        Path path = Path.loadingPathFromString(stringValue, Field.SCALE.get());
 
-				pathNetworkTableKeyPathPairs.add(new PathNetworkTableKeyPathPair(key, path));
-			} catch (InstantiationException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		}
+        pathNetworkTableKeyPathPairs.add(new PathNetworkTableKeyPathPair(key, path));
+      } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | IllegalAccessException e) {
+        e.printStackTrace();
+      }
+    }
 
-		return pathNetworkTableKeyPathPairs;
-	}
+    return pathNetworkTableKeyPathPairs;
+  }
 
-	public void saveData(ActionEvent actionEvent) {
-		stringChoiceDialog.showAndWait();
-	}
+  public void saveData(ActionEvent actionEvent) {
+    stringChoiceDialog.showAndWait();
+  }
 
-	public void loadData(ActionEvent actionEvent) {
+  public void loadData(ActionEvent actionEvent) {
 
-	}
+  }
 
-	public void openData(ActionEvent actionEvent) {
+  public void openData(ActionEvent actionEvent) {
 
-	}
+  }
 
-	public void handlePointEvent(MouseEvent mouseEvent) {
-		if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-			addPoint(mouseEvent);
-		} else if (mouseEvent.getButton() == MouseButton.MIDDLE) {
-			showPointInfo(mouseEvent);
-		} else {
-			removePoint(mouseEvent);
-		}
-	}
+  public void handlePointEvent(MouseEvent mouseEvent) {
+    if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+      addPoint(mouseEvent);
+    } else if (mouseEvent.getButton() == MouseButton.MIDDLE) {
+      showPointInfo(mouseEvent);
+    } else {
+      removePoint(mouseEvent);
+    }
+  }
 
-	private void removePoint(MouseEvent mouseEvent) {
+  private void removePoint(MouseEvent mouseEvent) {
 
-	}
+  }
 
-	/**
-	 * Will show the angle of the point bold the point and allow you to change the angle direction
-	 */
-	private void showPointInfo(MouseEvent mouseEvent) {
+  /**
+   * Will show the angle of the point bold the point and allow you to change the angle direction
+   */
+  private void showPointInfo(MouseEvent mouseEvent) {
 
-	}
+  }
 
-	private void addPoint(MouseEvent mouseEvent) {
+  private void addPoint(MouseEvent mouseEvent) {
 
-		Node intersectedNode = mouseEvent.getPickResult().getIntersectedNode();
+    Node intersectedNode = mouseEvent.getPickResult().getIntersectedNode();
 
-		boolean isFieldObstacle = Field.getFieldObstacles().stream()
-			.anyMatch(obstacle -> obstacle.getChildren().contains(intersectedNode));
+    boolean isFieldObstacle = Field.getFieldObstacles().stream()
+        .anyMatch(obstacle -> obstacle.getChildren().contains(intersectedNode));
 
-		if (isFieldObstacle) {
-			Optional<ButtonType> buttonType = confirmPoint.showAndWait();
+    if (isFieldObstacle) {
+      Optional<ButtonType> buttonType = confirmPoint.showAndWait();
 
-			if (buttonType.isPresent() && buttonType.get() != ButtonType.OK) {
-				isFieldObstacle = false;
-			}
-		}
+      if (buttonType.isPresent() && buttonType.get() != ButtonType.OK) {
+        isFieldObstacle = false;
+      }
+    }
 
-		if (!(intersectedNode instanceof Shape) || isFieldObstacle) {
+    if (!(intersectedNode instanceof Shape) || isFieldObstacle) {
 
-			PointsPathTitledTab pointsPathTitledTab;
-			if (pointsTitledPaneAccordion.getPanes().isEmpty()) {
+      PointsPathTitledTab pointsPathTitledTab;
+      if (pointsTitledPaneAccordion.getPanes().isEmpty()) {
 //////				TODO clean this up ///////////////////////////////////////////////////////////////
-				PathTitledTab<OriginsPathGroup> originsPathTitledTab = createOriginsPathTitledTab();
+        PathTitledTab<OriginsPathGroup> originsPathTitledTab = createOriginsPathTitledTab();
 
-				pointsPathTitledTab = createAndSetupPathTitledTab();
+        pointsPathTitledTab = createAndSetupPathTitledTab();
 
 //				originsPathTitledTab.getPointsPathGroup().add(originPoint);
 
-				originsPathTitledTab.setCollapsible(false);
+        originsPathTitledTab.setCollapsible(false);
 //				pointPlane.getChildren().add(originPoint);
-				originsPathTitledTab.setText("Origin points");
+        originsPathTitledTab.setText("Origin points");
 
-				originsPaneAccordion.getPanes().add(originsPathTitledTab);
-				originsPaneAccordion.setExpandedPane(originsPathTitledTab);
+        originsPaneAccordion.getPanes().add(originsPathTitledTab);
+        originsPaneAccordion.setExpandedPane(originsPathTitledTab);
 
-				splitPane.getItems().add(0, originsPaneAccordion);
-				updateDividerPositions();
+        splitPane.getItems().add(0, originsPaneAccordion);
+        updateDividerPositions();
 
-			} else {
-				pointsPathTitledTab = getExpandedPane();
-			}
+      } else {
+        pointsPathTitledTab = getExpandedPane();
+      }
 
-			if (pointsPathTitledTab.getPointNumber() == PointsAdded.FIRST_POINT) {
-				pointsPathTitledTab.setPointNumber(PointsAdded.SECOND_POINT);
+      if (pointsPathTitledTab.getPointNumber() == PointsAdded.FIRST_POINT) {
+        pointsPathTitledTab.setPointNumber(PointsAdded.SECOND_POINT);
 
 //				PathTitledTab<PointsPathGroup> pointsPathTitledTab = createAndSetupPathTitledTab();
 
-				OriginPoint originPoint = pointsPathTitledTab.getPointsPathGroup().getOriginPoint();
+        OriginPoint originPoint = pointsPathTitledTab.getPointsPathGroup().getOriginPoint();
 
-				pointsPathTitledTab.getPointsPathGroup().setOriginPoint(mouseEvent.getX(), mouseEvent.getY());
+        pointsPathTitledTab.getPointsPathGroup()
+            .setOriginPoint(mouseEvent.getX(), mouseEvent.getY());
 
-				((OriginsPathTitledTab) originsPaneAccordion.getExpandedPane()).getPointsPathGroup().add(originPoint);
+        ((OriginsPathTitledTab) originsPaneAccordion.getExpandedPane()).getPointsPathGroup()
+            .add(originPoint);
 
-				pointPlane.getChildren().add(originPoint);
+        pointPlane.getChildren().add(originPoint);
 
 /////////////////////////////////////////////////////////////////////////////////////////
-			} else {
-				PointAngleGroup keyPoint = new PointAngleGroup(mouseEvent.getX(), mouseEvent.getY());
+      } else {
+        PointAngleGroup keyPoint = new PointAngleGroup(mouseEvent.getX(), mouseEvent.getY());
 
-				if (pointsPathTitledTab.getPointNumber() == PointsAdded.SECOND_POINT) {
-					pointsPathTitledTab.setPointNumber(PointsAdded.MORE);
-					splitPane.getItems().add(pointsTitledPaneAccordion);
-					updateDividerPositions();
-				}
+        if (pointsPathTitledTab.getPointNumber() == PointsAdded.SECOND_POINT) {
+          pointsPathTitledTab.setPointNumber(PointsAdded.MORE);
+          splitPane.getItems().add(pointsTitledPaneAccordion);
+          updateDividerPositions();
+        }
 
-				pointPlane.getChildren().add(keyPoint);
-				getExpandedPane().getPointsPathGroup().add(keyPoint);
-			}
+        pointPlane.getChildren().add(keyPoint);
+        getExpandedPane().getPointsPathGroup().add(keyPoint);
+      }
 
-		}
-	}
+    }
+  }
 
-	private PathTitledTab<OriginsPathGroup> createOriginsPathTitledTab() {
-		OriginsPathTitledTab pathTitledTab = new OriginsPathTitledTab();
+  private PathTitledTab<OriginsPathGroup> createOriginsPathTitledTab() {
+    OriginsPathTitledTab pathTitledTab = new OriginsPathTitledTab();
 
-		{
-			MenuItem rename = new MenuItem("Rename");
-			rename.setOnAction(event -> {
-				try {
-					pathTitledTab.setText(RenameDialog.display(pathTitledTab.getText()));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
+    {
+      MenuItem rename = new MenuItem("Rename");
+      rename.setOnAction(event -> {
+        try {
+          pathTitledTab.setText(RenameDialog.display(pathTitledTab.getText()));
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      });
 
-			ContextMenu contextMenu = new ContextMenu(rename);
-			pathTitledTab.setContextMenu(contextMenu);
+      ContextMenu contextMenu = new ContextMenu(rename);
+      pathTitledTab.setContextMenu(contextMenu);
 
-			pathTitledTab.setContent(new OriginPathTable(pathTitledTab.pointsPathGroup, pointsTitledPaneAccordion));
-		}
+      pathTitledTab.setContent(
+          new OriginPathTable(pathTitledTab.getPointsPathGroup(), pointsTitledPaneAccordion));
+    }
 
-		return pathTitledTab;
-	}
+    return pathTitledTab;
+  }
 
-	private PointsPathTitledTab createPointsPathTitledTab() {
+  private PointsPathTitledTab createPointsPathTitledTab() {
 
-		PointsPathTitledTab pathTitledTab = new PointsPathTitledTab();
+    PointsPathTitledTab pathTitledTab = new PointsPathTitledTab();
 
-		{
-			MenuItem rename = new MenuItem("Rename");
-			rename.setOnAction(event -> {
-				try {
-					pathTitledTab.setText(RenameDialog.display(pathTitledTab.getText()));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
+    {
+      MenuItem rename = new MenuItem("Rename");
+      rename.setOnAction(event -> {
+        try {
+          pathTitledTab.setText(RenameDialog.display(pathTitledTab.getText()));
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      });
 
-			MenuItem delete = new MenuItem("Delete");
-			delete.setOnAction(event -> {
-				ObservableList<TitledPane> panes = pointsTitledPaneAccordion.getPanes();
+      MenuItem delete = new MenuItem("Delete");
+      delete.setOnAction(event -> {
+        ObservableList<TitledPane> panes = pointsTitledPaneAccordion.getPanes();
 
-				if (panes.size() > 1) {
+        if (panes.size() > 1) {
 
-					if (pointsTitledPaneAccordion.getExpandedPane().equals(pathTitledTab)) {
-						pointsTitledPaneAccordion.setExpandedPane(panes.get(panes.size() - 1));
-					}
+          if (pointsTitledPaneAccordion.getExpandedPane().equals(pathTitledTab)) {
+            pointsTitledPaneAccordion.setExpandedPane(panes.get(panes.size() - 1));
+          }
 
-					pointPlane.getChildren().remove(pathTitledTab.getPointsPathGroup());
-					panes.remove(pathTitledTab);
-				} else {
+          pointPlane.getChildren().remove(pathTitledTab.getPointsPathGroup());
+          panes.remove(pathTitledTab);
+        } else {
 //					pathTitledTab.clear();
-				}
-			});
+        }
+      });
 
-			MenuItem sendPath = new MenuItem("Send");
-			sendPath.setOnAction(this::sendCurrentPath);
+      MenuItem sendPath = new MenuItem("Send");
+      sendPath.setOnAction(this::sendCurrentPath);
 
-			ContextMenu contextMenu = new ContextMenu(rename, delete, sendPath);
-			pathTitledTab.setContextMenu(contextMenu);
+      ContextMenu contextMenu = new ContextMenu(rename, delete, sendPath);
+      pathTitledTab.setContextMenu(contextMenu);
 
-			pathTitledTab.setContent(new PointsPathTable(pathTitledTab.pointsPathGroup));
-		}
-		return pathTitledTab;
-	}
+      pathTitledTab.setContent(new PointsPathTable(pathTitledTab.getPointsPathGroup()));
+    }
+    return pathTitledTab;
+  }
 
-	private PointsPathTitledTab createAndSetupPathTitledTab() {
+  private PointsPathTitledTab createAndSetupPathTitledTab() {
 
-		PointsPathTitledTab pathTitledTab = createPointsPathTitledTab();
+    PointsPathTitledTab pathTitledTab = createPointsPathTitledTab();
 
-		pointsTitledPaneAccordion.getPanes().add(pathTitledTab);
-		pointPlane.getChildren().add(pathTitledTab.getPointsPathGroup());
-		pointsTitledPaneAccordion.setExpandedPane(pathTitledTab);
-		return pathTitledTab;
-	}
+    pointsTitledPaneAccordion.getPanes().add(pathTitledTab);
+    pointPlane.getChildren().add(pathTitledTab.getPointsPathGroup());
+    pointsTitledPaneAccordion.setExpandedPane(pathTitledTab);
+    return pathTitledTab;
+  }
 
-	private PointsPathTitledTab getExpandedPane() {
-		return (PointsPathTitledTab) pointsTitledPaneAccordion.getExpandedPane();
-	}
+  private PointsPathTitledTab getExpandedPane() {
+    return (PointsPathTitledTab) pointsTitledPaneAccordion.getExpandedPane();
+  }
 
-	public void goBackToFieldSelector(ActionEvent actionEvent) throws IOException {
+  public void goBackToFieldSelector(ActionEvent actionEvent) throws IOException {
 
-		Parent root = Controller.getRoot();
-		Helper.setRoot(actionEvent, root);
-	}
+    Parent root = Controller.getRoot();
+    Helper.setRoot(actionEvent, root);
+  }
 
-	public void newPath(ActionEvent actionEvent) {
-		createAndSetupPathTitledTab();
-	}
+  public void newPath(ActionEvent actionEvent) {
+    createAndSetupPathTitledTab();
+  }
 
-	public void togglePointTable(ActionEvent actionEvent) {
-		if (splitPane.getItems().contains(pointsTitledPaneAccordion)) {
-			splitPane.getItems().remove(pointsTitledPaneAccordion);
-		} else {
-			splitPane.getItems().add(pointsTitledPaneAccordion);
-		}
-		updateDividerPositions();
-	}
+  public void togglePointTable(ActionEvent actionEvent) {
+    if (splitPane.getItems().contains(pointsTitledPaneAccordion)) {
+      splitPane.getItems().remove(pointsTitledPaneAccordion);
+    } else {
+      splitPane.getItems().add(pointsTitledPaneAccordion);
+    }
+    updateDividerPositions();
+  }
 
-	public void toggleOriginsTable(ActionEvent actionEvent) {
-		if (splitPane.getItems().contains(originsPaneAccordion)) {
-			splitPane.getItems().remove(originsPaneAccordion);
-		} else {
-			splitPane.getItems().add(0, originsPaneAccordion);
-		}
-		updateDividerPositions();
-	}
+  public void toggleOriginsTable(ActionEvent actionEvent) {
+    if (splitPane.getItems().contains(originsPaneAccordion)) {
+      splitPane.getItems().remove(originsPaneAccordion);
+    } else {
+      splitPane.getItems().add(0, originsPaneAccordion);
+    }
+    updateDividerPositions();
+  }
 
-	private void updateDividerPositions() {
-		if (splitPane.getItems().contains(originsPaneAccordion)) {
-			splitPane.getDividers().get(0).setPosition(originsDividerPosition);
-		}
-		if (splitPane.getItems().contains(pointsTitledPaneAccordion)) {
-			splitPane.getDividers().get(splitPane.getDividers().size() - 1).setPosition(1 - originsDividerPosition);
-		}
-	}
+  private void updateDividerPositions() {
+    if (splitPane.getItems().contains(originsPaneAccordion)) {
+      splitPane.getDividers().get(0).setPosition(originsDividerPosition);
+    }
+    if (splitPane.getItems().contains(pointsTitledPaneAccordion)) {
+      splitPane.getDividers().get(splitPane.getDividers().size() - 1)
+          .setPosition(1 - originsDividerPosition);
+    }
+  }
 
-	public void sendCurrentPath(ActionEvent event) {
-		SplineSender.sendPath(getExpandedPane());
-	}
+  public void sendCurrentPath(ActionEvent event) {
+    SplineSender.sendPath(getExpandedPane());
+  }
 
-	public void toggleShowingVelocityArrows(ActionEvent actionEvent) {
-		getExpandedPane().toggleShowingVelocity();
-	}
+  public void toggleShowingVelocityArrows(ActionEvent actionEvent) {
+    getExpandedPane().toggleShowingVelocity();
+  }
 
-	public void sendAllToSmartDashboard(ActionEvent event) {
-		for (TitledPane titledTab : pointsTitledPaneAccordion.getPanes()) {
-			PointsPathTitledTab pointsPathTitledTab = (PointsPathTitledTab) titledTab;
-			SplineSender.sendPath(pointsPathTitledTab);
-		}
-	}
+  public void sendAllToSmartDashboard(ActionEvent event) {
+    for (TitledPane titledTab : pointsTitledPaneAccordion.getPanes()) {
+      PointsPathTitledTab pointsPathTitledTab = (PointsPathTitledTab) titledTab;
+      SplineSender.sendPath(pointsPathTitledTab);
+    }
+  }
 
-	public void loadPathFromNetworkTable(ActionEvent event) {
-		Optional<PathNetworkTableKeyPathPair> pathNetworkTableKeyPathPair = stringChoiceDialog.showAndWait();
+  public void loadPathFromNetworkTable(ActionEvent event) {
+    Optional<PathNetworkTableKeyPathPair> pathNetworkTableKeyPathPair = stringChoiceDialog
+        .showAndWait();
 
-		if (pathNetworkTableKeyPathPair.isPresent()) {
-			Path path = pathNetworkTableKeyPathPair.get().path;
+    if (pathNetworkTableKeyPathPair.isPresent()) {
+      Path path = pathNetworkTableKeyPathPair.get().path;
 
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setContentText("You will need to first input the origin point for your path");
-			alert.show();
+      ChoiceDialog<OriginPoint> choiceDialog = new ChoiceDialog<>();
+      ObservableList<OriginPoint> keyPoints = ((OriginsPathTitledTab) originsPaneAccordion
+          .getExpandedPane()).getPointsPathGroup().getKeyPoints();
 
-			PointsPathTitledTab andSetupPathTitledTab = createAndSetupPathTitledTab();
+      OriginPoint originPoint;
+      if (keyPoints.isEmpty()) {
+        originPoint = null;
+      } else if (keyPoints.size() > 1) {
+        choiceDialog.getItems().setAll(keyPoints);
+        choiceDialog.setSelectedItem(keyPoints.get(0));
 
-			for (Pose kepoint : path.getKeyPoints()) {
-				andSetupPathTitledTab.getPointsPathGroup().add(new PointAngleGroup(kepoint));
-			}
-		}
-	}
+        Optional<OriginPoint> originPoint1 = choiceDialog.showAndWait();
 
-	private static class PathNetworkTableKeyPathPair {
+        originPoint = originPoint1.orElse(null);
+      } else {
+        originPoint = keyPoints.get(0);
+      }
 
-		private String networkTableKey;
-		private Path path;
+      PointsPathTitledTab andSetupPathTitledTab = createAndSetupPathTitledTab();
 
-		public PathNetworkTableKeyPathPair(String networkTableKey, Path path) {
-			this.networkTableKey = networkTableKey;
-			this.path = path;
-		}
+      for (Pose kepoint : path.getKeyPoints()) {
+        andSetupPathTitledTab.getPointsPathGroup().add(new PointAngleGroup(kepoint));
+      }
 
-		public String getNetworkTableKey() {
-			return networkTableKey;
-		}
+      andSetupPathTitledTab.getPointsPathGroup().changeOrigin(originPoint);
+    }
+  }
 
-		public Path getPath() {
-			return path;
-		}
+  private static class PathNetworkTableKeyPathPair {
 
-		@Override
-		public String toString() {
-			return networkTableKey;
-		}
-	}
+    private String networkTableKey;
+    private Path path;
+
+    public PathNetworkTableKeyPathPair(String networkTableKey, Path path) {
+      this.networkTableKey = networkTableKey;
+      this.path = path;
+    }
+
+    public String getNetworkTableKey() {
+      return networkTableKey;
+    }
+
+    public Path getPath() {
+      return path;
+    }
+
+    @Override
+    public String toString() {
+      return networkTableKey;
+    }
+  }
 }

@@ -36,7 +36,7 @@ public class OriginPathTable extends PathTable<OriginsPathGroup, OriginPoint> {
 			OriginPoint selectedItem = getSelectionModel().getSelectedItem();
 			getExpandedPane().getPointsPathGroup().changeOrigin(selectedItem);
 
-			getItems().remove(getExpandedPane().getPointsPathGroup().getOriginPoint());
+//			getItems().remove(getExpandedPane().getPointsPathGroup().getOriginPoint());
 //			pathGroup.getKeyPoints().remove(selectedItem);
 		});
 
