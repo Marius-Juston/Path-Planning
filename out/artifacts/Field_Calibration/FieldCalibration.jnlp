@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp xmlns:jfx="http://javafx.com" spec="1.0" href="FieldCalibration.jnlp">
-    <information>
-        <title>Walton Robotics Path Planner</title>
-        <vendor>Marius Juston</vendor>
-        <description>Field Calibration</description>
-        <offline-allowed/>
-    </information>
-    <resources>
-        <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-        <jar href="2974Splines.jar" size="73705" download="eager"/>
-        <jar href="FieldCalibration.jar" size="540648" download="eager"/>
-        <jar href="SmartDashboard.jar" size="4381529" download="eager"/>
-    </resources>
-    <jfx:javafx-desc width="600" height="400" main-class="calibration.Main" name="Field Calibration"/>
-    <update check="background"/>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="FieldCalibration.jnlp">
+  <information>
+    <title>Walton Robotics Path Planner</title>
+    <vendor>Marius Juston</vendor>
+    <description>Field Calibration</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="2974Splines.jar" size="73705" download="eager" />
+    <jar href="FieldCalibration.jar" size="540834" download="eager" />
+    <jar href="SmartDashboard.jar" size="4381529" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="600" height="400" main-class="calibration.Main"  name="Field Calibration" />
+  <update check="background"/>
 </jnlp>
