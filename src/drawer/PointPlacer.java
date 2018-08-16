@@ -12,14 +12,18 @@ import drawer.content.points.PointsPathTable;
 import drawer.content.points.PointsPathTitledTab;
 import drawer.curves.OriginsPathGroup;
 import drawer.curves.PointAngleGroup;
-import drawer.curves.PointsPathGroup;
 import drawer.curves.figures.OriginPoint;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,6 +36,7 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
@@ -42,6 +47,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Shape;
+import org.waltonrobotics.controller.Pose;
+import org.waltonrobotics.motion.Path;
 
 public class PointPlacer implements Initializable {
 	/*
@@ -73,6 +80,7 @@ public class PointPlacer implements Initializable {
 	*/
 
 	private static final double originsDividerPosition = 0.15772870662460567;
+	ChoiceDialog<PathNetworkTableKeyPathPair> stringChoiceDialog = new ChoiceDialog<>();
 	private Alert confirmPoint = new Alert(AlertType.CONFIRMATION);
 	@FXML
 	private ImageView field;
@@ -143,10 +151,44 @@ public class PointPlacer implements Initializable {
 //		shape.setFill(Color.GREEN);
 //
 //		pointPlane.getChildren().addAll(rectangle, line, shape);
+
+		stringChoiceDialog.showingProperty()
+			.addListener((observable, oldValue, newValue) -> {
+				List<PathNetworkTableKeyPathPair> availablePathChoices = findAvailablePathChoices(
+					SplineSender.SMARTDASHBOARD_NETWORKTABLE_KEY); //TODO make it so that you can see and select the table you want table
+
+				stringChoiceDialog.getItems().setAll(availablePathChoices);
+
+				if (!availablePathChoices.isEmpty()) {
+					stringChoiceDialog.setSelectedItem(availablePathChoices.get(0));
+				}
+			});
 	}
 
+	private List<PathNetworkTableKeyPathPair> findAvailablePathChoices(String table) {
+		NetworkTable networkTable = NetworkTable.getTable(table);
+
+		Set<String> networkTableKeys = networkTable.getKeys(4);//Through testing key 4 is strings
+
+		List<PathNetworkTableKeyPathPair> pathNetworkTableKeyPathPairs = new LinkedList<>();
+
+		for (String key : networkTableKeys) {
+			String stringValue = networkTable.getString(key, "");
+
+			try {
+				Path path = Path.loadingPathFromString(stringValue);
+
+				pathNetworkTableKeyPathPairs.add(new PathNetworkTableKeyPathPair(key, path));
+			} catch (InstantiationException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return pathNetworkTableKeyPathPairs;
+	}
 
 	public void saveData(ActionEvent actionEvent) {
+		stringChoiceDialog.showAndWait();
 	}
 
 	public void loadData(ActionEvent actionEvent) {
@@ -242,7 +284,7 @@ public class PointPlacer implements Initializable {
 				}
 
 				pointPlane.getChildren().add(keyPoint);
-				((PointsPathGroup) getExpandedPane().getPointsPathGroup()).add(keyPoint);
+				getExpandedPane().getPointsPathGroup().add(keyPoint);
 			}
 
 		}
@@ -264,7 +306,7 @@ public class PointPlacer implements Initializable {
 			ContextMenu contextMenu = new ContextMenu(rename);
 			pathTitledTab.setContextMenu(contextMenu);
 
-			pathTitledTab.setContent(new OriginPathTable(pathTitledTab.pointsPathGroup));
+			pathTitledTab.setContent(new OriginPathTable(pathTitledTab.pointsPathGroup, pointsTitledPaneAccordion));
 		}
 
 		return pathTitledTab;
@@ -363,7 +405,6 @@ public class PointPlacer implements Initializable {
 		}
 	}
 
-
 	public void sendCurrentPath(ActionEvent event) {
 		SplineSender.sendPath(getExpandedPane());
 	}
@@ -376,6 +417,48 @@ public class PointPlacer implements Initializable {
 		for (TitledPane titledTab : pointsTitledPaneAccordion.getPanes()) {
 			PointsPathTitledTab pointsPathTitledTab = (PointsPathTitledTab) titledTab;
 			SplineSender.sendPath(pointsPathTitledTab);
+		}
+	}
+
+	public void loadPathFromNetworkTable(ActionEvent event) {
+		Optional<PathNetworkTableKeyPathPair> pathNetworkTableKeyPathPair = stringChoiceDialog.showAndWait();
+
+		if (pathNetworkTableKeyPathPair.isPresent()) {
+			Path path = pathNetworkTableKeyPathPair.get().path;
+
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setContentText("You will need to first input the origin point for your path");
+			alert.show();
+
+			PointsPathTitledTab andSetupPathTitledTab = createAndSetupPathTitledTab();
+
+			for (Pose kepoint : path.getKeyPoints()) {
+				andSetupPathTitledTab.getPointsPathGroup().add(new PointAngleGroup(kepoint));
+			}
+		}
+	}
+
+	private static class PathNetworkTableKeyPathPair {
+
+		private String networkTableKey;
+		private Path path;
+
+		public PathNetworkTableKeyPathPair(String networkTableKey, Path path) {
+			this.networkTableKey = networkTableKey;
+			this.path = path;
+		}
+
+		public String getNetworkTableKey() {
+			return networkTableKey;
+		}
+
+		public Path getPath() {
+			return path;
+		}
+
+		@Override
+		public String toString() {
+			return networkTableKey;
 		}
 	}
 }

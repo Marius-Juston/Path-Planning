@@ -25,6 +25,13 @@ public class PointAngleGroup extends PointGroup {
 		setName(String.format("Point %d", index++));
 	}
 
+	public PointAngleGroup(Pose pose) {
+		super(pose.getX(), pose.getY());
+
+		angleProperty().set(pose.getAngle());
+		setName(String.format("Point %d", index++));
+	}
+
 	public static List<Pose> mapToPoses(Collection<? extends PointAngleGroup> points) {
 		return points.stream().map(PointAngleGroup::getPose).collect(Collectors.toList());
 	}

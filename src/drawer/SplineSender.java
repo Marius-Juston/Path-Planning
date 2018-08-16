@@ -11,10 +11,10 @@ public class SplineSender {
 	//	public static final String NETWORK_TABLE_TABLE_KEY = "SmartDashboard"; //network table to send the data to
 	public static final String NETWORK_TABLE_TABLE_KEY = String
 		.format("Path Planner - %s", System.getProperty("user.name")); //network table to send the data to
+	public static final String SMARTDASHBOARD_NETWORKTABLE_KEY = "SmartDashboard";
 	private static final int TEAM_NUMBER = 2974; // team number
 	private static final boolean IS_CLIENT = false; // if the program will send to robotRIO or not
 	public static NetworkTable networkTable;
-
 	private static boolean hasBeenStarted = false;
 
 	/**

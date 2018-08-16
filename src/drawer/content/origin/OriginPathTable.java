@@ -2,20 +2,25 @@ package drawer.content.origin;
 
 import calibration.Field;
 import drawer.content.PathTable;
+import drawer.content.points.PointsPathTitledTab;
 import drawer.curves.OriginsPathGroup;
 import drawer.curves.figures.OriginPoint;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 
 public class OriginPathTable extends PathTable<OriginsPathGroup, OriginPoint> {
+
+	private final Accordion pointsAnchorPane;
 
 	/**
 	 * Initializes a TableView that observers the defining points of a path
 	 *
 	 * @param pathGroup points of the path to observe
 	 */
-	public OriginPathTable(OriginsPathGroup pathGroup) {
+	public OriginPathTable(OriginsPathGroup pathGroup, Accordion pointsAnchorPane) {
 		super(pathGroup);
+		this.pointsAnchorPane = pointsAnchorPane;
 		/////////////////////// CONTEXT MENU INITIALIZATION    //////////////////////////
 		ContextMenu pathTableContextMenu = new ContextMenu();
 
@@ -25,7 +30,17 @@ public class OriginPathTable extends PathTable<OriginsPathGroup, OriginPoint> {
 		MenuItem hidePointsDetails = new MenuItem("Hide Points Details");
 		hidePointsDetails.setOnAction(event -> pathGroup.hideAllPointDetails(getSelectionModel().getSelectedItems()));
 
-		pathTableContextMenu.getItems().addAll(showPointsDetails, hidePointsDetails);
+		MenuItem mergeOriginPoint = new MenuItem("Use origin point instead");
+		mergeOriginPoint.setOnAction(event -> {
+
+			OriginPoint selectedItem = getSelectionModel().getSelectedItem();
+			getExpandedPane().getPointsPathGroup().changeOrigin(selectedItem);
+
+			getItems().remove(getExpandedPane().getPointsPathGroup().getOriginPoint());
+//			pathGroup.getKeyPoints().remove(selectedItem);
+		});
+
+		pathTableContextMenu.getItems().addAll(showPointsDetails, hidePointsDetails, mergeOriginPoint);
 		setContextMenu(pathTableContextMenu);
 		///////////////////////////////////////////////////////////////////////////////////
 
@@ -67,5 +82,9 @@ public class OriginPathTable extends PathTable<OriginsPathGroup, OriginPoint> {
 					.set(Math.toRadians(cellEditEvent.getNewValue().doubleValue()));
 			});
 
+	}
+
+	private PointsPathTitledTab getExpandedPane() {
+		return (PointsPathTitledTab) pointsAnchorPane.getExpandedPane();
 	}
 }

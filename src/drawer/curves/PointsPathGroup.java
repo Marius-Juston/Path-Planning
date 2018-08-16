@@ -13,7 +13,7 @@ import javafx.scene.input.MouseButton;
 
 public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 
-	private OriginPoint originPoint = new OriginPoint(10, 10);
+	private OriginPoint originPoint = new OriginPoint(0, 0);
 	private DrawnPath drawer = new DrawnPath(PathType.SPLINE);
 
 	public PointsPathGroup() {
@@ -50,6 +50,14 @@ public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 
 	public OriginPoint getOriginPoint() {
 		return originPoint;
+	}
+
+	private void setOriginPoint(OriginPoint selectedItem) {
+		originPoint = selectedItem;
+
+		for (PointAngleGroup pointAngleGroup : getKeyPoints()) {
+			pointAngleGroup.setOrigin(selectedItem);
+		}
 	}
 
 	public void setOriginPoint(double x, double y) {
@@ -138,4 +146,24 @@ public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 	public DrawnPath getDrawer() {
 		return drawer;
 	}
+
+	public void changeOrigin(OriginPoint selectedItem) {
+		getKeyPoints().forEach(pointAngleGroup -> {
+
+			double x = pointAngleGroup.centerXProperty().subtract(originPoint.centerXProperty())
+				.add(selectedItem.centerXProperty()).get();
+			double y = pointAngleGroup.centerYProperty().subtract(originPoint.centerYProperty())
+				.add(selectedItem.centerYProperty()).get();
+			double angle = pointAngleGroup.angleProperty().subtract(originPoint.angleProperty())
+				.add(selectedItem.angleProperty()).get();
+
+			pointAngleGroup.centerXProperty().set(x);
+			pointAngleGroup.centerYProperty().set(y);
+			pointAngleGroup.angleProperty().set(angle);
+		});
+
+		setOriginPoint(selectedItem);
+	}
+
+
 }
