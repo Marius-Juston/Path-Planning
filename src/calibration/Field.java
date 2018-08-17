@@ -6,7 +6,6 @@ import static calibration.Helper.getImage;
 import calibration.obstacle.AbstractObstacle;
 import calibration.obstacle.FieldBorder;
 import calibration.obstacle.Obstacle;
-import calibration.obstacle.ObstacleType;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -47,7 +45,6 @@ public enum Field {
   public static File imageFile;
   public static Image image;
   public static Group obstacleGroup = new Group();
-  static HashMap<ObstacleType, List<Obstacle>> obstacleTypeListHashMap = new HashMap<>();
   private static FieldBorder fieldBorder = null;
 
   static {
@@ -56,11 +53,6 @@ public enum Field {
             "This file already has field information inside of it do you wish to load it?");
 
     Path.setRobotWidth(robotWidth);
-  }
-
-  static {
-    obstacleTypeListHashMap.put(ObstacleType.FIELD_BORDER, new ArrayList<>());
-    obstacleTypeListHashMap.put(ObstacleType.OBSTACLE, new ArrayList<>());
   }
 
   public static FieldBorder getFieldBorder() {
