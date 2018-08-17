@@ -1,4 +1,4 @@
-package calibration;
+package calibration.obstacle;
 
 import javafx.scene.paint.Color;
 

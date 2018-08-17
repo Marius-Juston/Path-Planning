@@ -5,6 +5,9 @@ import static calibration.Helper.getImage;
 import static calibration.Helper.getWindow;
 
 import calibration.Helper.Unit;
+import calibration.obstacle.FieldBorder;
+import calibration.obstacle.Obstacle;
+import calibration.obstacle.ThreatLevel;
 import drawer.PointPlacer;
 import java.io.File;
 import java.io.IOException;
@@ -243,7 +246,7 @@ public class Controller implements Initializable {
 //			}
 //		});
 
-    Field.addObstacle(ObstacleType.FIELD_BORDER, new Obstacle(ThreatLevel.ERROR, subtract));
+    Field.addObstacle(new FieldBorder(subtract));
 
     this.polygon.getPoints().clear();
   }
@@ -255,7 +258,7 @@ public class Controller implements Initializable {
     polygon.setStroke(threatLevel.getDisplayColor());
     polygon.setStrokeWidth(1);
 
-    Field.addObstacle(ObstacleType.OBSTACLE, new Obstacle(threatLevel, polygon));
+    Field.addObstacle(new Obstacle(threatLevel, polygon));
 
     this.polygon.getPoints().clear();
   }

@@ -1,7 +1,8 @@
 package drawer.draw;
 
 import calibration.Field;
-import calibration.Obstacle;
+import calibration.obstacle.AbstractObstacle;
+import calibration.obstacle.Obstacle;
 import drawer.curves.PointAngleGroup;
 import drawer.curves.figures.NotificationArrow;
 import drawer.curves.figures.ObservedDirectionalArrow;
@@ -88,7 +89,7 @@ public enum PathType {
 
           cubicCurves.forEach(cubicCurve ->
           {
-            for (Obstacle obstacle : Field.getFieldObstacles()) {
+            for (AbstractObstacle obstacle : Field.getFieldObstacles()) {
 
               cubicCurve.setStrokeWidth(Field.robotWidth / Field.SCALE.get());
               Path intersection = (Path) Shape.intersect(obstacle.getDefiningShape(), cubicCurve);

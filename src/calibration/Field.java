@@ -3,6 +3,10 @@ package calibration;
 import static calibration.Helper.PIXELS;
 import static calibration.Helper.getImage;
 
+import calibration.obstacle.AbstractObstacle;
+import calibration.obstacle.FieldBorder;
+import calibration.obstacle.Obstacle;
+import calibration.obstacle.ObstacleType;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -39,12 +43,12 @@ public enum Field {
   //	public static BufferedImage bufferedImage;
   private static final String MATCH_PATTERN = "[0-9.]+ [a-zA-Z]+";
   private static final Alert useFieldValue = new Alert(AlertType.CONFIRMATION);
-  private static final List<Obstacle> fieldObstacles = new ArrayList<>();
+  private static final List<AbstractObstacle> fieldObstacles = new ArrayList<>();
   public static File imageFile;
   public static Image image;
   public static Group obstacleGroup = new Group();
   static HashMap<ObstacleType, List<Obstacle>> obstacleTypeListHashMap = new HashMap<>();
-  private static Obstacle fieldBorder = null;
+  private static FieldBorder fieldBorder = null;
 
   static {
     useFieldValue
@@ -59,11 +63,11 @@ public enum Field {
     obstacleTypeListHashMap.put(ObstacleType.OBSTACLE, new ArrayList<>());
   }
 
-  public static Obstacle getFieldBorder() {
+  public static FieldBorder getFieldBorder() {
     return fieldBorder;
   }
 
-  public static List<Obstacle> getFieldObstacles() {
+  public static List<AbstractObstacle> getFieldObstacles() {
     return fieldObstacles;
   }
 
@@ -126,20 +130,22 @@ public enum Field {
     return false;
   }
 
-  public static void addObstacle(ObstacleType obstacleType, Obstacle obstacle) {
-    if (obstacleType == ObstacleType.OBSTACLE) {
-      fieldObstacles.add(obstacle);
-      obstacleGroup.getChildren().add(obstacle);
-    } else {
-      if (fieldBorder != null) {
-        fieldObstacles.remove(fieldBorder);
-        obstacleGroup.getChildren().remove(fieldBorder);
-      }
+  public static void addObstacle(Obstacle obstacle) {
+    fieldObstacles.add(obstacle);
+    obstacleGroup.getChildren().add(obstacle);
 
-      fieldObstacles.add(obstacle);
-      obstacleGroup.getChildren().add(obstacle);
-      fieldBorder = obstacle;
+  }
+
+  public static void addObstacle(FieldBorder obstacle) {
+
+    if (fieldBorder != null) {
+      fieldObstacles.remove(fieldBorder);
+      obstacleGroup.getChildren().remove(fieldBorder);
     }
+
+    fieldObstacles.add(obstacle);
+    obstacleGroup.getChildren().add(obstacle);
+    fieldBorder = obstacle;
   }
 
 }
