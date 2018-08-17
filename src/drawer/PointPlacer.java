@@ -452,13 +452,13 @@ public class PointPlacer implements Initializable {
         originPoint = keyPoints.get(0);
       }
 
-      PointsPathTitledTab andSetupPathTitledTab = createAndSetupPathTitledTab();
+      PointsPathTitledTab pointsPathTitledTab = createAndSetupPathTitledTab();
 
-      for (Pose kepoint : path.getKeyPoints()) {
-        andSetupPathTitledTab.getPointsPathGroup().add(new PointAngleGroup(kepoint));
+      for (Pose keyPoint : path.getKeyPoints()) {
+        pointsPathTitledTab.getPointsPathGroup().add(new PointAngleGroup(keyPoint));
       }
 
-      andSetupPathTitledTab.getPointsPathGroup().changeOrigin(originPoint);
+      pointsPathTitledTab.getPointsPathGroup().changeOrigin(originPoint);
     }
   }
 
