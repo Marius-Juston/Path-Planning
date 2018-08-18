@@ -199,7 +199,7 @@ public class Controller implements Initializable {
 //			now = false;
 //
 ////			TODO fix this problem
-//			Rectangle rectangle = new Rectangle(Field.image.getWidth(), Field.image.getHeight());
+//			Rectangle rectangle = new Rectangle(Field.getInstance().image.getWidth(), Field.getInstance().image.getHeight());
 //			rectangle.setFill(Color.color(1, 0, 0, .3));
 //
 //			Polygon polygon = new Polygon(this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
@@ -213,13 +213,13 @@ public class Controller implements Initializable {
 //			pointPlacement.getChildren().addAll(subtract);
 //			pointPlacement.getChildren().remove(this.polygon);
 //
-//			Field.addObstacle(ObstacleType.FIELD_BORDER, new Obstacle(ThreatLevel.ERROR, subtract));
+//			Field.getInstance().addObstacle(ObstacleType.FIELD_BORDER, new Obstacle(ThreatLevel.ERROR, subtract));
 //		}
   }
 
   public void createFieldBorder() {
     //			TODO fix this problem
-    Rectangle rectangle = new Rectangle(Field.image.getWidth(), Field.image.getHeight());
+    Rectangle rectangle = new Rectangle(Field.getInstance().image.getWidth(), Field.getInstance().image.getHeight());
     rectangle.setFill(Color.color(1, 0, 0, .3));
 
     Polygon polygon = new Polygon(
@@ -246,7 +246,7 @@ public class Controller implements Initializable {
 //			}
 //		});
 
-    Field.addObstacle(new FieldBorder(subtract));
+    Field.getInstance().addObstacle(new FieldBorder(subtract));
 
     this.polygon.getPoints().clear();
   }
@@ -258,7 +258,7 @@ public class Controller implements Initializable {
     polygon.setStroke(threatLevel.getDisplayColor());
     polygon.setStrokeWidth(1);
 
-    Field.addObstacle(new Obstacle(threatLevel, polygon));
+    Field.getInstance().addObstacle(new Obstacle(threatLevel, polygon));
 
     this.polygon.getPoints().clear();
   }
@@ -278,11 +278,11 @@ public class Controller implements Initializable {
 
     if (actualDistance != null) {
 
-      Field.SCALE.set(actualDistance.getValue() / pixelDistance);
-      Field.UNIT.set(actualDistance.getUnit());
+      Field.getInstance().SCALE.set(actualDistance.getValue() / pixelDistance);
+      Field.getInstance().UNIT.set(actualDistance.getUnit());
 
       addExtraData();
-      convertedInfo.setText(String.format("%.3f %s", actualDistance.getValue(), Field.UNIT.get()));
+      convertedInfo.setText(String.format("%.3f %s", actualDistance.getValue(), Field.getInstance().UNIT.get()));
     }
   }
 
@@ -321,12 +321,12 @@ public class Controller implements Initializable {
 
       startOpenLocation = image.getParentFile();
 
-      if (Field.isFieldFile(image)) {
+      if (Field.getInstance().isFieldFile(image)) {
         load(image);
 
       } else {
-        Field.imageFile = image;
-        fieldImage.setImage(Field.image = getImage(image));
+        Field.getInstance().imageFile = image;
+        fieldImage.setImage(Field.getInstance().image = getImage(image));
         distanceViewer.setText(defaultDistance);
 
         if (!infoPane.getChildren().contains(outlineToggleButton)) {
@@ -381,7 +381,7 @@ public class Controller implements Initializable {
       }
     });
 
-    Field.obstacleGroup.setOnMouseClicked(event -> {
+    Field.getInstance().obstacleGroup.setOnMouseClicked(event -> {
       try {
         handleMouseClicked(event);
       } catch (IOException e) {
@@ -390,10 +390,10 @@ public class Controller implements Initializable {
     });
 
     pointPlacement.getChildren().add(polygon);
-    pointPlacement.getChildren().add(Field.obstacleGroup);
+    pointPlacement.getChildren().add(Field.getInstance().obstacleGroup);
 
-    if (Field.imageFile != null) {
-      load(Field.image);
+    if (Field.getInstance().imageFile != null) {
+      load(Field.getInstance().image);
     }
   }
 
@@ -409,7 +409,7 @@ public class Controller implements Initializable {
       if (saveFile != null) {
         startSaveLocation = saveFile.getParentFile();
 
-        Field.saveData(saveFile);
+        Field.getInstance().saveData(saveFile);
       }
     }
   }
@@ -429,7 +429,7 @@ public class Controller implements Initializable {
   }
 
   private void load(File loadFile) throws IOException {
-    load(Field.loadData(loadFile));
+    load(Field.getInstance().loadData(loadFile));
   }
 
   private void load(Image fieldImage) {
@@ -488,7 +488,7 @@ public class Controller implements Initializable {
 
       if (!firstConversion) {
         convertedInfo
-            .setText(String.format("%.3f %s", Field.SCALE.get() * distance, Field.UNIT.get()));
+            .setText(String.format("%.3f %s", Field.getInstance().SCALE.get() * distance, Field.getInstance().UNIT.get()));
       }
 
     }

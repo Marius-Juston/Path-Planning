@@ -51,7 +51,7 @@ public class PointsPathTable extends PathTable<PointsPathGroup, PointAngleGroup>
               cellEditEvent.getTablePosition().getRow());
 
           pointAngleGroup.getPositionPoint().setCenterX(((
-              cellEditEvent.getNewValue().doubleValue()) / Field.SCALE.get()) + pointAngleGroup
+              cellEditEvent.getNewValue().doubleValue()) / Field.getInstance().SCALE.get()) + pointAngleGroup
               .getOriginPoint()
               .getPositionPoint()
               .getCenterX());
@@ -65,7 +65,7 @@ public class PointsPathTable extends PathTable<PointsPathGroup, PointAngleGroup>
               cellEditEvent.getTablePosition().getRow());
 
           pointAngleGroup.getPositionPoint().setCenterY(((
-              cellEditEvent.getNewValue().doubleValue()) / Field.SCALE.get()) + pointAngleGroup
+              cellEditEvent.getNewValue().doubleValue()) / Field.getInstance().SCALE.get()) + pointAngleGroup
               .getOriginPoint()
               .getPositionPoint()
               .getCenterY());

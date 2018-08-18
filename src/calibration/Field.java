@@ -31,12 +31,12 @@ import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
 import org.waltonrobotics.motion.Path;
 
-public enum Field {
-  ;
-  public static final double robotWidth = 0.8171; //TODO make it be set manually
+public class Field {
 
+  public static final double robotWidth = 0.8171; //TODO make it be set manually
   public static final SimpleDoubleProperty SCALE = new SimpleDoubleProperty(1);
   public static final WritableObjectValue<String> UNIT = new SimpleStringProperty(PIXELS);
+  private static final Field instance = new Field();
   private static final String SUFFIX = ".field";
   //	public static BufferedImage bufferedImage;
   private static final String MATCH_PATTERN = "[0-9.]+ [a-zA-Z]+";
@@ -54,6 +54,13 @@ public enum Field {
 
     Path.setRobotWidth(robotWidth);
   }
+  private Field() {
+
+  }
+
+  public static Field getInstance() {
+    return instance;
+  }
 
   public static FieldBorder getFieldBorder() {
     return fieldBorder;
@@ -67,7 +74,7 @@ public enum Field {
     Image image = getImage(loadFile);
 
     imageFile = loadFile;
-    Field.image = image;
+    Field.getInstance().image = image;
 
     try (BufferedReader bufferedReader = new BufferedReader(
         new InputStreamReader(new FileInputStream(loadFile), StandardCharsets.UTF_8))) {

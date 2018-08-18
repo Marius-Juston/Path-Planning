@@ -75,12 +75,12 @@ public class PointAngleGroup extends PointGroup {
     translatedX.unbind();
     translatedX
         .bind(getPositionPoint().centerXProperty().subtract(originPoint.centerXProperty())
-            .multiply(Field.SCALE));
+            .multiply(Field.getInstance().SCALE));
 
     translatedY.unbind();
     translatedY
         .bind(getPositionPoint().centerYProperty().subtract(originPoint.centerYProperty())
-            .multiply(Field.SCALE));
+            .multiply(Field.getInstance().SCALE));
 
     translatedAngle.unbind();
     translatedAngle.bind(angleProperty().subtract(originPoint.angleProperty()));

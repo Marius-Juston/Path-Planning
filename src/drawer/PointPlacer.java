@@ -108,22 +108,22 @@ public class PointPlacer implements Initializable {
   public void initialize(URL location, ResourceBundle resources) {
     SplineSender.initNetworkTableParallel();
 
-    if (Field.image == null) {
+    if (Field.getInstance().image == null) {
       try {
         File imageFile = new File("./src/FRC 2018 Field Drawings.png");
         Image defaultImage = Helper.getImage(imageFile);
         field.setImage(defaultImage);
-        Field.image = field.getImage();
-        Field.imageFile = imageFile;
+        Field.getInstance().image = field.getImage();
+        Field.getInstance().imageFile = imageFile;
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
     } else {
-      field.setImage(Field.image);
+      field.setImage(Field.getInstance().image);
 
-      pointPlane.getChildren().add(Field.obstacleGroup);
+      pointPlane.getChildren().add(Field.getInstance().obstacleGroup);
 
-//			Field.obstacleGroup.setOnMousePressed(this::handlePointEvent);
+//			Field.getInstance().obstacleGroup.setOnMousePressed(this::handlePointEvent);
     }
 
     pointsTitledPaneAccordion = new Accordion();
@@ -179,7 +179,7 @@ public class PointPlacer implements Initializable {
       String stringValue = networkTable.getString(key, "");
 
       try {
-        Path path = Path.loadingPathFromString(stringValue, Field.SCALE.get());
+        Path path = Path.loadingPathFromString(stringValue, Field.getInstance().SCALE.get());
 
         pathNetworkTableKeyPathPairs.add(new PathNetworkTableKeyPathPair(key, path));
       } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException | IllegalAccessException e) {
@@ -227,7 +227,7 @@ public class PointPlacer implements Initializable {
 
     Node intersectedNode = mouseEvent.getPickResult().getIntersectedNode();
 
-    boolean isFieldObstacle = Field.getFieldObstacles().stream()
+    boolean isFieldObstacle = Field.getInstance().getFieldObstacles().stream()
         .anyMatch(obstacle -> obstacle.getChildren().contains(intersectedNode));
 
     if (isFieldObstacle) {

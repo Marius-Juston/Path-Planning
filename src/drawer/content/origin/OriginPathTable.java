@@ -59,7 +59,7 @@ public class OriginPathTable extends PathTable<OriginsPathGroup, OriginPoint> {
               cellEditEvent.getTablePosition().getRow());
 
           pointAngleGroup.getPositionPoint().setCenterX((
-              cellEditEvent.getNewValue().doubleValue()) / Field.SCALE.get());
+              cellEditEvent.getNewValue().doubleValue()) / Field.getInstance().SCALE.get());
         }
     );
 
@@ -70,7 +70,7 @@ public class OriginPathTable extends PathTable<OriginsPathGroup, OriginPoint> {
               cellEditEvent.getTablePosition().getRow());
 
           pointAngleGroup.getPositionPoint().setCenterY((
-              cellEditEvent.getNewValue().doubleValue()) / Field.SCALE.get());
+              cellEditEvent.getNewValue().doubleValue()) / Field.getInstance().SCALE.get());
         });
 
     //Adds column to observe the scaled Y property of points

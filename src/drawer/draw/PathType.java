@@ -89,9 +89,9 @@ public enum PathType {
 
           cubicCurves.forEach(cubicCurve ->
           {
-            for (AbstractObstacle obstacle : Field.getFieldObstacles()) {
+            for (AbstractObstacle obstacle : Field.getInstance().getFieldObstacles()) {
 
-              cubicCurve.setStrokeWidth(Field.robotWidth / Field.SCALE.get());
+              cubicCurve.setStrokeWidth(Field.getInstance().robotWidth / Field.getInstance().SCALE.get());
               Path intersection = (Path) Shape.intersect(obstacle.getDefiningShape(), cubicCurve);
               cubicCurve.setStrokeWidth(3);
 
@@ -221,7 +221,7 @@ public enum PathType {
               Color.ORANGE));
 
           double angle = pathData.getCenterPose().getAngle() + (StrictMath.PI / 2);
-          double robotWidth = ((Field.robotWidth / 2.0) / Field.SCALE.get());
+          double robotWidth = ((Field.getInstance().robotWidth / 2.0) / Field.getInstance().SCALE.get());
 
           if (robotWidth
               > 10 /* if there is only a 10 pixel gap between the center and the velocity arrow*/) {
