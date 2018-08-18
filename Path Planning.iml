@@ -8,5 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="motionLibrary" level="project" />
+    <orderEntry type="library" name="fx-gson-3.1.0-sources" level="project" />
+    <orderEntry type="library" name="gson-2.8.5" level="project" />
   </component>
 </module>

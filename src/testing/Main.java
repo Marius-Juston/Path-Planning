@@ -1,11 +1,11 @@
 package testing;
 
+import calibration.Field;
+import com.google.gson.Gson;
 import java.io.IOException;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.hildan.fxgson.FxGson;
 
 public class Main extends Application {
 
@@ -20,11 +20,15 @@ public class Main extends Application {
   @Override
   public final void start(Stage primaryStage) throws IOException {
 
-    Parent root = FXMLLoader
-        .load(getClass().getResource("../testing/recreationFieldSelection.fxml"));
+    Gson fxGsonWithExtras = FxGson.createWithExtras();
+    String s = fxGsonWithExtras.toJson(Field.getInstance());
+    System.out.println(s);
 
-    primaryStage.setTitle("Path Planner");
-    primaryStage.setScene(new Scene(root));
-    primaryStage.show();
+//    Parent root = FXMLLoader
+//        .load(getClass().getResource("../testing/recreationFieldSelection.fxml"));
+//
+//    primaryStage.setTitle("Path Planner");
+//    primaryStage.setScene(new Scene(root));
+//    primaryStage.show();
   }
 }
