@@ -33,44 +33,45 @@ import org.waltonrobotics.motion.Path;
 
 public class Field {
 
-  public static final double robotWidth = 0.8171; //TODO make it be set manually
-  public static final SimpleDoubleProperty SCALE = new SimpleDoubleProperty(1);
-  public static final WritableObjectValue<String> UNIT = new SimpleStringProperty(PIXELS);
   private static final Field instance = new Field();
   private static final String SUFFIX = ".field";
   //	public static BufferedImage bufferedImage;
   private static final String MATCH_PATTERN = "[0-9.]+ [a-zA-Z]+";
   private static final Alert useFieldValue = new Alert(AlertType.CONFIRMATION);
-  private static final List<AbstractObstacle> fieldObstacles = new ArrayList<>();
-  public static File imageFile;
-  public static Image image;
-  public static Group obstacleGroup = new Group();
-  private static FieldBorder fieldBorder = null;
+  public final double robotWidth = 0.8171; //TODO make it be set manually
+  public final SimpleDoubleProperty SCALE = new SimpleDoubleProperty(1);
+  public final WritableObjectValue<String> UNIT = new SimpleStringProperty(PIXELS);
+  private final List<AbstractObstacle> fieldObstacles = new ArrayList<>();
+  public File imageFile;
+  public Image image;
+  public Group obstacleGroup = new Group();
+  private FieldBorder fieldBorder = null;
 
   static {
     useFieldValue
         .setContentText(
             "This file already has field information inside of it do you wish to load it?");
 
-    Path.setRobotWidth(robotWidth);
-  }
-  private Field() {
 
+  }
+
+  private Field() {
+    Path.setRobotWidth(robotWidth);
   }
 
   public static Field getInstance() {
     return instance;
   }
 
-  public static FieldBorder getFieldBorder() {
+  public  FieldBorder getFieldBorder() {
     return fieldBorder;
   }
 
-  public static List<AbstractObstacle> getFieldObstacles() {
+  public  List<AbstractObstacle> getFieldObstacles() {
     return fieldObstacles;
   }
 
-  public static Image loadData(File loadFile) throws IOException, java.io.FileNotFoundException {
+  public  Image loadData(File loadFile) throws IOException, java.io.FileNotFoundException {
     Image image = getImage(loadFile);
 
     imageFile = loadFile;
@@ -98,7 +99,7 @@ public class Field {
     return image;
   }
 
-  public static void saveData(File saveFile) throws IOException {
+  public  void saveData(File saveFile) throws IOException {
     if (saveFile.exists()) {
       System.out.println((saveFile.delete() ? "M" : "Did not m") + "anage to delete the file");
     }
@@ -119,7 +120,7 @@ public class Field {
     }
   }
 
-  public static boolean isFieldFile(File file) {
+  public  boolean isFieldFile(File file) {
     if (file.getName().endsWith(SUFFIX)) {
       Optional<ButtonType> buttonTypeOptional = useFieldValue.showAndWait();
 
@@ -129,13 +130,13 @@ public class Field {
     return false;
   }
 
-  public static void addObstacle(Obstacle obstacle) {
+  public  void addObstacle(Obstacle obstacle) {
     fieldObstacles.add(obstacle);
     obstacleGroup.getChildren().add(obstacle);
 
   }
 
-  public static void addObstacle(FieldBorder obstacle) {
+  public  void addObstacle(FieldBorder obstacle) {
 
     if (fieldBorder != null) {
       fieldObstacles.remove(fieldBorder);
