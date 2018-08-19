@@ -38,14 +38,6 @@ public class Field {
   //	public static BufferedImage bufferedImage;
   private static final String MATCH_PATTERN = "[0-9.]+ [a-zA-Z]+";
   private static final Alert useFieldValue = new Alert(AlertType.CONFIRMATION);
-  public final double robotWidth = 0.8171; //TODO make it be set manually
-  public final SimpleDoubleProperty SCALE = new SimpleDoubleProperty(1);
-  public final WritableObjectValue<String> UNIT = new SimpleStringProperty(PIXELS);
-  private final List<AbstractObstacle> fieldObstacles = new ArrayList<>();
-  public File imageFile;
-  public Image image;
-  public Group obstacleGroup = new Group();
-  private FieldBorder fieldBorder = null;
 
   static {
     useFieldValue
@@ -55,6 +47,15 @@ public class Field {
 
   }
 
+  public final double robotWidth = 0.8171; //TODO make it be set manually
+  public final SimpleDoubleProperty SCALE = new SimpleDoubleProperty(1);
+  public final WritableObjectValue<String> UNIT = new SimpleStringProperty(PIXELS);
+  private final List<AbstractObstacle> fieldObstacles = new ArrayList<>();
+  public File imageFile;
+  public Image image;
+  public Group obstacleGroup = new Group();
+  private FieldBorder fieldBorder = null;
+
   private Field() {
     Path.setRobotWidth(robotWidth);
   }
@@ -63,15 +64,15 @@ public class Field {
     return instance;
   }
 
-  public  FieldBorder getFieldBorder() {
+  public FieldBorder getFieldBorder() {
     return fieldBorder;
   }
 
-  public  List<AbstractObstacle> getFieldObstacles() {
+  public List<AbstractObstacle> getFieldObstacles() {
     return fieldObstacles;
   }
 
-  public  Image loadData(File loadFile) throws IOException, java.io.FileNotFoundException {
+  public Image loadData(File loadFile) throws IOException, java.io.FileNotFoundException {
     Image image = getImage(loadFile);
 
     imageFile = loadFile;
@@ -99,7 +100,7 @@ public class Field {
     return image;
   }
 
-  public  void saveData(File saveFile) throws IOException {
+  public void saveData(File saveFile) throws IOException {
     if (saveFile.exists()) {
       System.out.println((saveFile.delete() ? "M" : "Did not m") + "anage to delete the file");
     }
@@ -120,7 +121,7 @@ public class Field {
     }
   }
 
-  public  boolean isFieldFile(File file) {
+  public boolean isFieldFile(File file) {
     if (file.getName().endsWith(SUFFIX)) {
       Optional<ButtonType> buttonTypeOptional = useFieldValue.showAndWait();
 
@@ -130,13 +131,13 @@ public class Field {
     return false;
   }
 
-  public  void addObstacle(Obstacle obstacle) {
+  public void addObstacle(Obstacle obstacle) {
     fieldObstacles.add(obstacle);
     obstacleGroup.getChildren().add(obstacle);
 
   }
 
-  public  void addObstacle(FieldBorder obstacle) {
+  public void addObstacle(FieldBorder obstacle) {
 
     if (fieldBorder != null) {
       fieldObstacles.remove(fieldBorder);
@@ -148,4 +149,17 @@ public class Field {
     fieldBorder = obstacle;
   }
 
+  @Override
+  public String toString() {
+    return "Field{" +
+        "robotWidth=" + robotWidth +
+        ", SCALE=" + SCALE +
+        ", UNIT=" + UNIT +
+        ", fieldObstacles=" + fieldObstacles +
+        ", imageFile=" + imageFile +
+        ", image=" + image +
+        ", obstacleGroup=" + obstacleGroup +
+        ", fieldBorder=" + fieldBorder +
+        '}';
+  }
 }
