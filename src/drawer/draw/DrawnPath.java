@@ -17,10 +17,10 @@ public class DrawnPath extends Group {
 
   private final Group velocities;
   private final Group pathDefinition;
+  private final SimpleBooleanProperty showVelocities = new SimpleBooleanProperty(true);
   private Path drawingPath;
   private Path actualPath;
   private PathType pathType;
-  private SimpleBooleanProperty showVelocities = new SimpleBooleanProperty(true);
 
   public DrawnPath(PathType pathType) {
 
@@ -60,7 +60,7 @@ public class DrawnPath extends Group {
     clearPathDefinition();
   }
 
-  public void clearPathDefinition() {
+  private void clearPathDefinition() {
     pathDefinition.getChildren().clear();
   }
 
@@ -68,7 +68,7 @@ public class DrawnPath extends Group {
     return pathDefinition;
   }
 
-  public void clearVelocities() {
+  private void clearVelocities() {
     velocities.getChildren().clear();
   }
 

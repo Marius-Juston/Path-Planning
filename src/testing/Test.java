@@ -9,7 +9,7 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
-public class Test {
+class Test {
 
   public static void main(String[] args) {
 

@@ -1,7 +1,6 @@
 package testing;
 
 import calibration.obstacle.FieldBorder;
-import java.io.IOException;
 import javafx.application.Application;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -19,7 +18,7 @@ public class Main extends Application {
   }
 
   @Override
-  public final void start(Stage primaryStage) throws IOException {
+  public final void start(Stage primaryStage) {
 
     FieldBorder fieldBorder = new FieldBorder(new Path(new MoveTo(0, 0), new LineTo(3, 3)));
 

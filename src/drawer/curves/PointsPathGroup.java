@@ -13,8 +13,8 @@ import javafx.scene.input.MouseButton;
 
 public class PointsPathGroup extends PathGroup<drawer.curves.PointAngleGroup> {
 
+  private final DrawnPath drawer = new DrawnPath(PathType.SPLINE);
   private OriginPoint originPoint = new OriginPoint(0, 0);
-  private DrawnPath drawer = new DrawnPath(PathType.SPLINE);
 
   public PointsPathGroup() {
     getKeyPoints().addListener((ListChangeListener<? super PointAngleGroup>) this::reDrawContent);

@@ -18,7 +18,7 @@ public class PathTable<K extends PathGroup, U extends PointGroup> extends TableV
    *
    * @param pathGroup points of the path to observe
    */
-  public PathTable(K pathGroup) {
+  protected PathTable(K pathGroup) {
 
     setEditable(true);
     setColumnResizePolicy(CONSTRAINED_RESIZE_POLICY);
@@ -34,7 +34,7 @@ public class PathTable<K extends PathGroup, U extends PointGroup> extends TableV
    * @param property name of the property the column should be observing
    * @param eventHandler event handler that handles when a value from the column is changed
    */
-  public void initializeNumberColumn(String columnName, String property,
+  protected void initializeNumberColumn(String columnName, String property,
       EventHandler<CellEditEvent<U, Number>> eventHandler) {
 
     TableColumn<U, Number> column = new TableColumn<>();
@@ -54,7 +54,7 @@ public class PathTable<K extends PathGroup, U extends PointGroup> extends TableV
    * @param property name of the property the column should be observing
    * @param eventHandler event handler that handles when a value from the column is changed
    */
-  public void initializeStringColumn(String columnName, String property,
+  protected void initializeStringColumn(String columnName, String property,
       EventHandler<CellEditEvent<U, String>> eventHandler) {
     TableColumn<U, String> column = new TableColumn<>();
     column.setCellValueFactory(new PropertyValueFactory<>(property));

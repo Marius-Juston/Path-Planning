@@ -31,7 +31,7 @@ import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
 import org.waltonrobotics.motion.Path;
 
-public class Field {
+public final class Field {
 
   private static final Field instance = new Field();
   private static final String SUFFIX = ".field";
@@ -54,7 +54,7 @@ public class Field {
   public File imageFile;
   public Image image;
   public Group obstacleGroup = new Group();
-  private FieldBorder fieldBorder = null;
+  private FieldBorder fieldBorder;
 
   private Field() {
     Path.setRobotWidth(robotWidth);
@@ -62,6 +62,16 @@ public class Field {
 
   public static Field getInstance() {
     return instance;
+  }
+
+  public static boolean isFieldFile(File file) {
+    if (file.getName().endsWith(SUFFIX)) {
+      Optional<ButtonType> buttonTypeOptional = useFieldValue.showAndWait();
+
+      return buttonTypeOptional.isPresent() && (buttonTypeOptional.get() == ButtonType.OK);
+    }
+
+    return false;
   }
 
   public FieldBorder getFieldBorder() {
@@ -72,11 +82,11 @@ public class Field {
     return fieldObstacles;
   }
 
-  public Image loadData(File loadFile) throws IOException, java.io.FileNotFoundException {
+  public Image loadData(File loadFile) throws IOException {
     Image image = getImage(loadFile);
 
     imageFile = loadFile;
-    Field.getInstance().image = image;
+    instance.image = image;
 
     try (BufferedReader bufferedReader = new BufferedReader(
         new InputStreamReader(new FileInputStream(loadFile), StandardCharsets.UTF_8))) {
@@ -119,16 +129,6 @@ public class Field {
         bufferedWriter.write(String.format("%f %s", SCALE.get(), UNIT.get()));
       }
     }
-  }
-
-  public boolean isFieldFile(File file) {
-    if (file.getName().endsWith(SUFFIX)) {
-      Optional<ButtonType> buttonTypeOptional = useFieldValue.showAndWait();
-
-      return buttonTypeOptional.isPresent() && (buttonTypeOptional.get() == ButtonType.OK);
-    }
-
-    return false;
   }
 
   public void addObstacle(Obstacle obstacle) {

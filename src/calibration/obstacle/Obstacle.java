@@ -9,9 +9,9 @@ public class Obstacle extends AbstractObstacle {
   public Obstacle(ThreatLevel threatLevel, Polygon definingShape) {
     super(threatLevel, new Polygon(definingShape.getPoints().stream().mapToDouble(value -> value).toArray()));
 
-    this.getDefiningShape().setFill(definingShape.getFill());
-    this.getDefiningShape().setStroke(definingShape.getStroke());
-    this.getDefiningShape().setStrokeWidth(definingShape.getStrokeWidth());
+    getDefiningShape().setFill(definingShape.getFill());
+    getDefiningShape().setStroke(definingShape.getStroke());
+    getDefiningShape().setStrokeWidth(definingShape.getStrokeWidth());
 
     getChildren().add(definingShape);
   }

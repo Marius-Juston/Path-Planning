@@ -3,9 +3,9 @@ package calibration.obstacle;
 import javafx.scene.paint.Color;
 
 public enum ThreatLevel {
-  WARNING(Color.rgb(0, 0, 255, .5), Color.ORANGE,
+  WARNING(Color.rgb(0, 0, 255, 0.5), Color.ORANGE,
       "Warning the robot is passing on a dangerous place"), ERROR(
-      Color.gray(.5, .6), Color.RED.darker(),
+      Color.gray(0.5, 0.6), Color.RED.darker(),
       "Error given the field constrains the robot would not be able to go here");
 
   private final Color displayColor;

@@ -12,7 +12,7 @@ import javafx.scene.text.TextAlignment;
 
 public class NotificationArrow extends Group {
 
-  private Group messageTextBox = new Group();
+  private final Group messageTextBox = new Group();
 
   public NotificationArrow(double x, double y, String message) {
     Polygon polygon = new Polygon();
@@ -22,19 +22,19 @@ public class NotificationArrow extends Group {
     // find tangents
     double dx = circle.getCenterX() - x;
     double dy = circle.getCenterY() - y;
-    double dd = Math.sqrt(dx * dx + dy * dy);
-    double a = Math.asin(circle.getRadius() / dd);
-    double b = Math.atan2(dy, dx);
+    double dd = Math.sqrt((dx * dx) + (dy * dy));
+    double a = StrictMath.asin(circle.getRadius() / dd);
+    double b = StrictMath.atan2(dy, dx);
 
     polygon.getPoints().addAll(
         x, y);
 
     double t = b - a;
-    polygon.getPoints().addAll(circle.getRadius() * Math.sin(t) + circle.getCenterX(),
-        circle.getRadius() * -Math.cos(t) + circle.getCenterY());
+    polygon.getPoints().addAll((circle.getRadius() * StrictMath.sin(t)) + circle.getCenterX(),
+        (circle.getRadius() * -StrictMath.cos(t)) + circle.getCenterY());
     t = b + a;
-    polygon.getPoints().addAll(circle.getRadius() * -Math.sin(t) + circle.getCenterX(),
-        circle.getRadius() * Math.cos(t) + circle.getCenterY());
+    polygon.getPoints().addAll((circle.getRadius() * -StrictMath.sin(t)) + circle.getCenterX(),
+        (circle.getRadius() * StrictMath.cos(t)) + circle.getCenterY());
 
     Shape shape = Shape.union(circle, polygon);
     Circle innerCircle = new Circle(x, y - 20, 3);
@@ -68,13 +68,13 @@ public class NotificationArrow extends Group {
         text.getX() + (text.getLayoutBounds().getWidth()),
         text.getY() + (text.getLayoutBounds().getHeight() / 2.0),
 
-        circle.getCenterX() + arrowWidth / 2.0,
+        circle.getCenterX() + (arrowWidth / 2.0),
         text.getY() + (text.getLayoutBounds().getHeight() / 2.0),
 
         circle.getCenterX(),
         circle.getCenterY() - circle.getRadius(),
 
-        circle.getCenterX() - arrowWidth / 2.0,
+        circle.getCenterX() - (arrowWidth / 2.0),
         text.getY() + (text.getLayoutBounds().getHeight() / 2.0),
 
         text.getX(),

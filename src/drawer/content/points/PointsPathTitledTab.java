@@ -13,7 +13,7 @@ public class PointsPathTitledTab extends PathTitledTab<PointsPathGroup> {
     setShowingVelocities(!getPointsPathGroup().getDrawer().isShowVelocities());
   }
 
-  public void setShowingVelocities(boolean showVelocity) {
+  private void setShowingVelocities(boolean showVelocity) {
     getPointsPathGroup().getDrawer().setShowVelocities(showVelocity);
   }
 }

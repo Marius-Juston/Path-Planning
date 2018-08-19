@@ -7,9 +7,9 @@ public class FieldBorder extends AbstractObstacle {
   public FieldBorder(Path definingShape) {
     super(ThreatLevel.ERROR, new Path(definingShape.getElements()));
 
-    this.getDefiningShape().setFill(definingShape.getFill());
-    this.getDefiningShape().setStroke(definingShape.getStroke());
-    this.getDefiningShape().setStrokeWidth(definingShape.getStrokeWidth());
+    getDefiningShape().setFill(definingShape.getFill());
+    getDefiningShape().setStroke(definingShape.getStroke());
+    getDefiningShape().setStrokeWidth(definingShape.getStrokeWidth());
 
     getChildren().add(definingShape);
   }

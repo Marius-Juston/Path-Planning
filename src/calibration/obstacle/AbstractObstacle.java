@@ -8,7 +8,7 @@ public abstract class AbstractObstacle extends Group {
   private final ThreatLevel threatLevel;
   private final Shape definingShape;
 
-  public AbstractObstacle(ThreatLevel threatLevel, Shape definingShape) {
+  AbstractObstacle(ThreatLevel threatLevel, Shape definingShape) {
     this.threatLevel = threatLevel;
     this.definingShape = definingShape;
   }

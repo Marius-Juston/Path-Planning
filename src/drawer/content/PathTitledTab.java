@@ -4,11 +4,11 @@ import javafx.scene.control.TitledPane;
 
 public abstract class PathTitledTab<K extends PathGroup> extends TitledPane {
 
-  private static int index = 0;
+  private static int index;
   private final K pointsPathGroup;
   private PointsAdded pointNumber = PointsAdded.FIRST_POINT;
 
-  public PathTitledTab(K pointsPathGroup) {
+  protected PathTitledTab(K pointsPathGroup) {
     this.pointsPathGroup = pointsPathGroup;
     setText(String.format("Path %d", index++));
   }

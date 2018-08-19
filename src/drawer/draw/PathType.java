@@ -83,8 +83,8 @@ public enum PathType {
                 return cubicCurve;
               }).collect(Collectors.toList());
 
-          List<Path> intersections = new ArrayList<>();
-          List<NotificationArrow> notificationArrows = new ArrayList<>();
+          Collection<Path> intersections = new ArrayList<>();
+          Collection<NotificationArrow> notificationArrows = new ArrayList<>();
 
           cubicCurves.forEach(cubicCurve ->
           {
@@ -188,7 +188,7 @@ public enum PathType {
   };
 
 
-  public void drawVelocityArrows(DrawnPath group) {
+  private static void drawVelocityArrows(DrawnPath group) {
     if (group.isShowVelocities()) {
       double maxLength = 20;
       double everyPercent = 0.05;

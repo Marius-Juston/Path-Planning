@@ -19,16 +19,16 @@ import javafx.scene.text.Text;
 public class PointGroup extends Group {
 
 
-  private Text name = new Text();
+  private final Text name = new Text();
   //	private final SimpleStringProperty name;
-  private SimpleBooleanProperty selected;
+  private final SimpleBooleanProperty selected;
+  private final ObservedDirectionalArrow observedDirectionalArrow;
+  private final Circle arrowRadius;
+  private final PositionPoint positionPoint;
+  private final SimpleDoubleProperty degrees = new SimpleDoubleProperty(1.0);
   private boolean beingDragged;
-  private ObservedDirectionalArrow observedDirectionalArrow;
-  private Circle arrowRadius;
-  private PositionPoint positionPoint;
-  private SimpleDoubleProperty degrees = new SimpleDoubleProperty(1.0);
 
-  public PointGroup(double centerX, double centerY) {
+  protected PointGroup(double centerX, double centerY) {
     positionPoint = new PositionPoint(centerX, centerY);
 
     name.textOriginProperty().setValue(VPos.CENTER);

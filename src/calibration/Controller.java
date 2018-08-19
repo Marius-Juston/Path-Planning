@@ -35,6 +35,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -73,34 +74,31 @@ public class Controller implements Initializable {
   private final Button rescale = new Button("Rescale");
   private final SelectionLine line = new SelectionLine();
   private final Button moveToPointPlacement = new Button("Place curves");
-  @FXML
-  public ImageView fieldImage;
-  @FXML
-  public AnchorPane pointPlacement;
-  @FXML
-  public TextField distanceViewer;
-  @FXML
-  public HBox infoPane;
-  private MenuItem confirmFieldBoarder = new MenuItem("Set as Field boarder");
-  private MenuItem confirmNormalObstacle = new MenuItem("Confirm Normal Obstacle");
-  private MenuItem confirmDangerousObstacle = new MenuItem("Confirm Dangerous Obstacle");
-  private MenuItem cancelObstacle = new MenuItem("Cancel Obstacle");
-  private ContextMenu confirmFishedObstacle = new ContextMenu(cancelObstacle, confirmFieldBoarder,
+  private final MenuItem confirmFieldBoarder = new MenuItem("Set as Field boarder");
+  private final MenuItem confirmNormalObstacle = new MenuItem("Confirm Normal Obstacle");
+  private final MenuItem confirmDangerousObstacle = new MenuItem("Confirm Dangerous Obstacle");
+  private final MenuItem cancelObstacle = new MenuItem("Cancel Obstacle");
+  private final ContextMenu confirmFishedObstacle = new ContextMenu(cancelObstacle, confirmFieldBoarder,
       confirmNormalObstacle, confirmDangerousObstacle);
-  private Polygon polygon = new Polygon();
+  private final Polygon polygon = new Polygon();
+  private final Button outlineToggleButton = new Button("Outline field");
+  @FXML
+  private ImageView fieldImage;
+  @FXML
+  private AnchorPane pointPlacement;
+  @FXML
+  private TextField distanceViewer;
+  @FXML
+  private HBox infoPane;
   private boolean firstConversion = true;
   private Selection scaleSelection = Selection.NO_SELECTION;
   private boolean calibrating = true;
-  private Button outlineToggleButton = new Button("Outline field");
 
-  {
+  public Controller() {
     confirmFieldBoarder.setOnAction(event -> createFieldBorder());
     confirmNormalObstacle.setOnAction(event -> createNormalObstacle());
     confirmDangerousObstacle.setOnAction(event -> createDangerousObstacle());
     cancelObstacle.setOnAction(event -> polygon.getPoints().clear());
-  }
-
-  public Controller() {
   }
 
   private static Unit askActualDistance(double pixelDistance) throws IOException {
@@ -154,7 +152,7 @@ public class Controller implements Initializable {
   }
 
   @FXML
-  public void handleMouseClicked(MouseEvent mouseEvent) throws IOException {
+  private void handleMouseClicked(MouseEvent mouseEvent) throws IOException {
     if (calibrating) {
       selectPoint(mouseEvent);
     } else {
@@ -162,9 +160,9 @@ public class Controller implements Initializable {
 
       if (mouseEvent.getButton() == MouseButton.SECONDARY) {
         if (polygon.getPoints().size() < 3) {
-          setDisableObstacleConfirmationMenueItems(true);
+          setDisableObstacleConfirmationMenuItems(true);
         } else {
-          setDisableObstacleConfirmationMenueItems(false);
+          setDisableObstacleConfirmationMenuItems(false);
         }
         confirmFishedObstacle.show(fieldImage, mouseEvent.getScreenX(), mouseEvent.getScreenY());
       } else {
@@ -174,7 +172,7 @@ public class Controller implements Initializable {
     }
   }
 
-  public void setDisableObstacleConfirmationMenueItems(boolean isDisabled) {
+  private void setDisableObstacleConfirmationMenuItems(boolean isDisabled) {
 
     confirmFieldBoarder.setDisable(isDisabled);
     confirmNormalObstacle.setDisable(isDisabled);
@@ -217,15 +215,15 @@ public class Controller implements Initializable {
 //		}
   }
 
-  public void createFieldBorder() {
+  private void createFieldBorder() {
     //			TODO fix this problem
     Rectangle rectangle = new Rectangle(Field.getInstance().image.getWidth(), Field.getInstance().image.getHeight());
-    rectangle.setFill(Color.color(1, 0, 0, .3));
+    rectangle.setFill(Color.color(1, 0, 0, 0.3));
 
     Polygon polygon = new Polygon(
         this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
 
-    Path subtract = (Path) Polygon.subtract(rectangle, polygon);
+    Path subtract = (Path) Shape.subtract(rectangle, polygon);
     subtract.setFill(ThreatLevel.ERROR.getDisplayColor());
     subtract.setStroke(ThreatLevel.ERROR.getDisplayColor());
     subtract.setStrokeWidth(1);
@@ -251,7 +249,7 @@ public class Controller implements Initializable {
     this.polygon.getPoints().clear();
   }
 
-  public void createObstacle(ThreatLevel threatLevel) {
+  private void createObstacle(ThreatLevel threatLevel) {
     Polygon polygon = new Polygon(
         this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
     polygon.setFill(threatLevel.getDisplayColor());
@@ -263,11 +261,11 @@ public class Controller implements Initializable {
     this.polygon.getPoints().clear();
   }
 
-  public void createNormalObstacle() {
+  private void createNormalObstacle() {
     createObstacle(ThreatLevel.WARNING);
   }
 
-  public void createDangerousObstacle() {
+  private void createDangerousObstacle() {
     createObstacle(ThreatLevel.ERROR);
   }
 
@@ -321,7 +319,7 @@ public class Controller implements Initializable {
 
       startOpenLocation = image.getParentFile();
 
-      if (Field.getInstance().isFieldFile(image)) {
+      if (Field.isFieldFile(image)) {
         load(image);
 
       } else {
@@ -445,7 +443,7 @@ public class Controller implements Initializable {
     NO_SELECTION, ONE_POINT, TWO_POINT
   }
 
-  public static class SelectionPoint extends Circle {
+  static class SelectionPoint extends Circle {
 
     final Point2D point2D;
 
@@ -460,7 +458,7 @@ public class Controller implements Initializable {
     }
   }
 
-  public class SelectionLine extends Line {
+  class SelectionLine extends Line {
 
     Point2D p1 = new Point2D(0, 0);
     Point2D p2 = new Point2D(0, 0);

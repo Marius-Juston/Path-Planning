@@ -8,16 +8,15 @@ import java.util.stream.Collectors;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.collections.ObservableList;
 import org.waltonrobotics.controller.Pose;
 
 public class PointAngleGroup extends PointGroup {
 
-  private static int index = 0;
+  private static int index;
+  private final SimpleDoubleProperty translatedX = new SimpleDoubleProperty(1.0);
+  private final SimpleDoubleProperty translatedY = new SimpleDoubleProperty(1.0);
+  private final SimpleDoubleProperty translatedAngle = new SimpleDoubleProperty(1.0);
   private OriginPoint originPoint;
-  private SimpleDoubleProperty translatedX = new SimpleDoubleProperty(1.0);
-  private SimpleDoubleProperty translatedY = new SimpleDoubleProperty(1.0);
-  private SimpleDoubleProperty translatedAngle = new SimpleDoubleProperty(1.0);
 
   public PointAngleGroup(double centerX, double centerY) {
     super(centerX, centerY);
@@ -36,7 +35,7 @@ public class PointAngleGroup extends PointGroup {
     return points.stream().map(PointAngleGroup::getPose).collect(Collectors.toList());
   }
 
-  public static List<Pose> mapToRealPoses(ObservableList<? extends PointAngleGroup> keyPoints) {
+  public static List<Pose> mapToRealPoses(Collection<? extends PointAngleGroup> keyPoints) {
     return keyPoints.stream().map(PointAngleGroup::getRealPose).collect(Collectors.toList());
   }
 
@@ -57,7 +56,7 @@ public class PointAngleGroup extends PointGroup {
     return translatedAngle;
   }
 
-  public Pose getRealPose() {
+  private Pose getRealPose() {
     return new Pose(translatedX.get(), translatedY.get(),
         -StrictMath.toRadians(translatedAngle.get()));
   }

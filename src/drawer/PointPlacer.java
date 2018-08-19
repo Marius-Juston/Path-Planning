@@ -79,8 +79,9 @@ public class PointPlacer implements Initializable {
 	*/
 
   private static final double originsDividerPosition = 0.15772870662460567;
-  private ChoiceDialog<PathNetworkTableKeyPathPair> stringChoiceDialog = new ChoiceDialog<>();
-  private Alert confirmPoint = new Alert(AlertType.CONFIRMATION);
+  private final ChoiceDialog<PathNetworkTableKeyPathPair> stringChoiceDialog = new ChoiceDialog<>();
+  private final Alert confirmPoint = new Alert(AlertType.CONFIRMATION);
+  private final Accordion originsPaneAccordion = new Accordion();
   @FXML
   private ImageView field;
   @FXML
@@ -88,9 +89,8 @@ public class PointPlacer implements Initializable {
   @FXML
   private SplitPane splitPane;
   private Accordion pointsTitledPaneAccordion;
-  private Accordion originsPaneAccordion = new Accordion();
 
-  {
+  public PointPlacer() {
     confirmPoint
         .setContentText(
             "There is an obstacle in this position are you sure you wish to place a point here?");
@@ -200,7 +200,7 @@ public class PointPlacer implements Initializable {
     if (isFieldObstacle) {
       Optional<ButtonType> buttonType = confirmPoint.showAndWait();
 
-      if (buttonType.isPresent() && buttonType.get() != ButtonType.OK) {
+      if (buttonType.isPresent() && (buttonType.get() != ButtonType.OK)) {
         isFieldObstacle = false;
       }
     }
@@ -374,7 +374,7 @@ public class PointPlacer implements Initializable {
     }
   }
 
-  public void sendCurrentPath(ActionEvent event) {
+  private void sendCurrentPath(ActionEvent event) {
     SplineSender.sendPath(getExpandedPane());
   }
 
@@ -431,10 +431,10 @@ public class PointPlacer implements Initializable {
 
   private static class PathNetworkTableKeyPathPair {
 
-    private String networkTableKey;
-    private Path path;
+    private final String networkTableKey;
+    private final Path path;
 
-    public PathNetworkTableKeyPathPair(String networkTableKey, Path path) {
+    PathNetworkTableKeyPathPair(String networkTableKey, Path path) {
       this.networkTableKey = networkTableKey;
       this.path = path;
     }

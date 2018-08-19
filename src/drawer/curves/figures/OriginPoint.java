@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 
 public class OriginPoint extends PointGroup {
 
-  private static int index = 0;
+  private static int index;
 
   public OriginPoint(double centerX, double centerY) {
     super(centerX, centerY);

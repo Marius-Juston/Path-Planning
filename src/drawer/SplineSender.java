@@ -4,7 +4,8 @@ import drawer.content.points.PointsPathTitledTab;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import org.waltonrobotics.motion.Path;
 
-public class SplineSender {
+enum SplineSender {
+  ;
 
   //	TODO make it so that you can change these and it will
 //	public static final String IP_ADDRESS = "10.0.0.24"; //IP address to connect to when in server mode
@@ -14,9 +15,9 @@ public class SplineSender {
           System.getProperty("user.name")); //network table to send the data to
   public static final String SMARTDASHBOARD_NETWORKTABLE_KEY = "SmartDashboard";
   private static final int TEAM_NUMBER = 2974; // team number
-  public static NetworkTable networkTable;
+  private static NetworkTable networkTable;
   private static boolean client; // if the program will send to robotRIO or not
-  private static boolean hasBeenStarted = false;
+  private static boolean hasBeenStarted;
 
   public static boolean isClient() {
     return client;
@@ -42,7 +43,7 @@ public class SplineSender {
   /**
    * Initializes the network table with ip address settings etc...
    */
-  public static void initNetworkTable() {
+  private static void initNetworkTable() {
 
     if (!hasBeenStarted) {
       hasBeenStarted = true;
@@ -62,7 +63,7 @@ public class SplineSender {
     sendPath(titledPane.getText(), titledPane.getPointsPathGroup().getDrawer().getActualPath());
   }
 
-  public static void sendPath(String key, Path path) {
+  private static void sendPath(String key, Path path) {
     networkTable.putString(key, path.convertToString());
   }
 

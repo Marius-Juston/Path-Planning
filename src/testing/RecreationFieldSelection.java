@@ -14,15 +14,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 public class RecreationFieldSelection implements Initializable {
 
-  public AnchorPane pointPlacement;
-  public ImageView fieldImage;
+  @FXML
+  private AnchorPane pointPlacement;
+  @FXML
+  private ImageView fieldImage;
 
   private Polygon polygon = new Polygon();
-  private Color gray = Color.gray(.5, .6);
-  private Color blue = Color.rgb(0, 0, 255, .5);
+  private Color gray = Color.gray(0.5, 0.6);
+  private Color blue = Color.rgb(0, 0, 255, 0.5);
   private boolean now = true;
 
   @Override
@@ -46,11 +49,11 @@ public class RecreationFieldSelection implements Initializable {
     pointPlacement.getChildren().add(observedDirectionalArrow);
 
     double offsetPerpendicular = 100;
-    double angle = observedDirectionalArrow.getAngle() + StrictMath.PI / 2.0;
+    double angle = observedDirectionalArrow.getAngle() + (StrictMath.PI / 2.0);
 
     PositionPoint positionPointOffset = new PositionPoint(
-        positionPoint.getCenterX() + StrictMath.cos(angle) * offsetPerpendicular,
-        positionPoint.getCenterY() + StrictMath.sin(angle) * -offsetPerpendicular);
+        positionPoint.getCenterX() + (StrictMath.cos(angle) * offsetPerpendicular),
+        positionPoint.getCenterY() + (StrictMath.sin(angle) * -offsetPerpendicular));
     ObservedDirectionalArrow observedDirectionalArrowOffset = new ObservedDirectionalArrow(
         positionPointOffset,
         observedDirectionalArrow.getAngle(),
@@ -77,13 +80,13 @@ public class RecreationFieldSelection implements Initializable {
     polygon.getPoints().addAll(mouseEvent.getX(), mouseEvent.getY());
 
 //		If the polygon has 8 defining points
-    if (polygon.getPoints().size() / 2 >= 8 && now) {
+    if (((polygon.getPoints().size() / 2) >= 8) && now) {
       now = false;
 
       Rectangle rectangle = new Rectangle(fieldImage.getFitWidth(), fieldImage.getFitHeight());
-      rectangle.setFill(Color.color(1, 0, 0, .3));
+      rectangle.setFill(Color.color(1, 0, 0, 0.3));
 
-      Path subtract = (Path) Polygon.subtract(rectangle, polygon);
+      Path subtract = (Path) Shape.subtract(rectangle, polygon);
       subtract.setFill(gray);
       subtract.setStroke(gray);
       subtract.setStrokeWidth(1);

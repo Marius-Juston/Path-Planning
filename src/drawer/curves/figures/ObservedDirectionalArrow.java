@@ -37,7 +37,7 @@ public class ObservedDirectionalArrow extends Polygon {
 
     double distance = StrictMath.hypot(dx, dy);
 
-    length = length_includes_head ? distance : distance + head_length;
+    length = length_includes_head ? distance : (distance + head_length);
 
     {
       x = new SimpleDoubleProperty(xy.getCenterX());
@@ -70,11 +70,11 @@ public class ObservedDirectionalArrow extends Polygon {
 
 //		double vertices[][];
 
-    double[][] coords;
+    double[][] coordinates;
 
     if (length == -1) {
 //			vertices = new double[0][0];  //display nothing if empty
-      coords = new double[0][0];
+      coordinates = new double[0][0];
     } else {
 //            #start by drawing horizontal arrow, point at(0, 0)
       double hw = head_width;
@@ -109,7 +109,7 @@ public class ObservedDirectionalArrow extends Polygon {
 
       //figure out the shape, and complete accordingly
       if ("left".equals(shape)) {
-        coords = left_half_arrow;
+        coordinates = left_half_arrow;
       } else {
         double[][] right_half_arrow = new double[left_half_arrow.length][];
 
@@ -119,7 +119,7 @@ public class ObservedDirectionalArrow extends Polygon {
 
         switch (shape) {
           case "right":
-            coords = right_half_arrow;
+            coordinates = right_half_arrow;
             break;
           case "full":
             //The half -arrows contain the midpoint of the stem,
@@ -127,14 +127,14 @@ public class ObservedDirectionalArrow extends Polygon {
             //twice caused a problem with xpdf.
             int size = ((left_half_arrow.length - 1) + right_half_arrow.length) - 1;
 
-            coords = new double[size][2];
+            coordinates = new double[size][2];
 
             int i = 0;
             for (; i < (left_half_arrow.length - 1); i++) {
-              coords[i] = left_half_arrow[i];
+              coordinates[i] = left_half_arrow[i];
             }
             for (int j = right_half_arrow.length - 2; j >= 0; j--, i++) {
-              coords[i] = right_half_arrow[j];
+              coordinates[i] = right_half_arrow[j];
             }
             break;
           default:
@@ -145,19 +145,19 @@ public class ObservedDirectionalArrow extends Polygon {
 
     double cx;
     double sx;
-    if (distance != 0) {
-      cx = dx / distance;
-      sx = dy / distance;
-    } else {
+    if (distance == 0) {
       //Account for division by zero
       cx = 0;
       sx = 1;
+    } else {
+      cx = dx / distance;
+      sx = dy / distance;
     }
     double[][] M = {{cx, sx}, {-sx, cx}};
 //		double[][] vertices = new double[coords.length][2];
 
 //		Does the dot product of coords and M
-    double[][] vertices = Helper.dotProduct(coords, M);
+    double[][] vertices = Helper.dotProduct(coordinates, M);
 
 //		for (int i = 0; i < coords.length; i++) {
 //			for (int z = 0; z < M[0].length; z++) {
@@ -205,11 +205,26 @@ public class ObservedDirectionalArrow extends Polygon {
         red);
   }
 
+  private static void translate(double[][] vertices, double x, double y, double dx, double dy) {
+    for (int i = 0; i < vertices.length; i++) {
+      vertices[i][0] += (x + dx);
+      vertices[i][1] += (y - dy)/*Due to graphics reason - instead of +*/;
+    }
+  }
+
   private void followPoint(Number oldValue, Number newValue, boolean isX) {
     for (int i = isX ? 0 : 1; i < getPoints().size(); i += 2) {
       getPoints().set(i, (getPoints().get(i) - oldValue.doubleValue()) + newValue.doubleValue());
     }
   }
+
+//	public ObservedArrow(double x, double y, double dx, double dy) {
+//		this(x, y, dx, dy, Color.RED);
+//	}
+
+//	public ObservedArrow(double x, double y, double dx, double dy, Color fill) {
+//		this(x, y, dx, dy, 4, true, -1, 6, "full", 0, false, fill);
+//	}
 
   private void rotateArrow(ObservableValue<? extends Number> observable, Number oldValue,
       Number newValue) {
@@ -255,21 +270,6 @@ public class ObservedDirectionalArrow extends Polygon {
 //					}
 
     setArrowPoints(rotatedVertices);
-  }
-
-//	public ObservedArrow(double x, double y, double dx, double dy) {
-//		this(x, y, dx, dy, Color.RED);
-//	}
-
-//	public ObservedArrow(double x, double y, double dx, double dy, Color fill) {
-//		this(x, y, dx, dy, 4, true, -1, 6, "full", 0, false, fill);
-//	}
-
-  private void translate(double[][] vertices, double x, double y, double dx, double dy) {
-    for (int i = 0; i < vertices.length; i++) {
-      vertices[i][0] += (x + dx);
-      vertices[i][1] += (y - dy)/*Due to graphics reason - instead of +*/;
-    }
   }
 
   private void setArrowPoints(double[][] vertices) {
