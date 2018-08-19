@@ -52,31 +52,30 @@ import org.waltonrobotics.motion.Path;
 
 public class PointPlacer implements Initializable {
 	/*
+	TODO make the robot move along the path
+	TODO make the program be able to calculate the shortest path between two point angle group all the while evading the obstacles
+
+	TODO make the TitledPane Content a VBOx with a HBOX (with two fields start and end scale) and then the table view
+	TODO add a measuring tool in the edit menu Ctrl+M as shortcut (generalize it so that the calibration code can also use it)
+	TODO make clipping so that when a point a close to another point it joins together to make a point turn
+	TODO make clipping so that when a point is close to being in the same line as another it joins or you can select two points of the table view and it will find the closest point (intersecting perpendicular lines) and reposition itself there
+	TODO do a save button
+
+  Partially finished:
+	TODO scale the points when displaying them to the screen otherwise the velocities will be incorrect
+	TODO when creating a new PathTitledTab be able to choose existing or create a new origin point
+	TODO make the send to SmartDashboard functionality work
+	TODO make a receive from SmartDashboard functionality
+
+	Finished
+	TODO make origin point
+	TODO show name of point when showing details
 	TODO be able to place shapes that define the field borders when a path intersects or the robot width intersects
 		- have two types of shapes:
 		    - WARNING - in orange (Ex: goes over bumpy thing)
 		    - ERROR - in red (Ex: goes through a wall)
 		- use Polygon.intersect()
 
-	TODO scale the points when displaying them to the screen otherwise the velocities will be incorrect
-
-	TODO make the robot move along the path
-	TODO make the program be able to calculate the shortest path between two point angle group all the while evading the obstacles
-
-	TODO when creating a new PathTitledTab be able to choose existing or create a new origin point
-
-	TODO make the TitledPane Content a VBOx with a HBOX (with two fields start and end scale) and then the table view
-	TODO add a measuring tool in the edit menu Ctrl+M as shortcut (generalize it so that the calibration code can also use it)
-	TODO make clipping so that when a point a close to another point it joins together to make a point turn
-	TODO make clipping so that when a point is close to being in the same line as another it joins or you can select two points of the table view and it will find the closest point (intersecting perpendicular lines) and reposition itself there
-	TODO make the send to SmartDashboard functionality work
-	TODO make a receive from SmartDashboard functionality
-	TODO do a save button
-
-	TODO make origin point - Partially finished nee
-	ds improvements
-
-	TODO show name of point when showing details - DONE
 	*/
 
   private static final double originsDividerPosition = 0.15772870662460567;
