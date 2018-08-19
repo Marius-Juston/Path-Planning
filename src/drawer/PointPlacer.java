@@ -79,7 +79,7 @@ public class PointPlacer implements Initializable {
 	*/
 
   private static final double originsDividerPosition = 0.15772870662460567;
-  ChoiceDialog<PathNetworkTableKeyPathPair> stringChoiceDialog = new ChoiceDialog<>();
+  private ChoiceDialog<PathNetworkTableKeyPathPair> stringChoiceDialog = new ChoiceDialog<>();
   private Alert confirmPoint = new Alert(AlertType.CONFIRMATION);
   @FXML
   private ImageView field;
@@ -121,8 +121,6 @@ public class PointPlacer implements Initializable {
       field.setImage(Field.getInstance().image);
 
       pointPlane.getChildren().add(Field.getInstance().obstacleGroup);
-
-//			Field.getInstance().obstacleGroup.setOnMousePressed(this::handlePointEvent);
     }
 
     pointsTitledPaneAccordion = new Accordion();
@@ -131,27 +129,12 @@ public class PointPlacer implements Initializable {
         oldPane.setCollapsible(true);
       }
       if (newPane != null) {
-//				newPane.setCollapsible(false);
-
         Platform.runLater(() -> newPane.setCollapsible(false));
       }
     });
 
     splitPane.widthProperty()
         .addListener((observable, oldValue, newValue) -> updateDividerPositions());
-
-//		TODO uncomment this to see Polygon.intersect example
-//		Rectangle rectangle = new Rectangle(200, 200, 50, 50);
-//		rectangle.setFill(Color.BLUE);
-//
-//		Line line = new Line(200, 190, 270, 260);
-//		line.setStrokeWidth(5);
-//		line.setStroke(Color.RED);
-//
-//		Path shape = (Path) Polygon.intersect(rectangle, line);
-//		shape.setFill(Color.GREEN);
-//
-//		pointPlane.getChildren().addAll(rectangle, line, shape);
 
     stringChoiceDialog.showingProperty()
         .addListener((observable, oldValue, newValue) -> {
@@ -190,36 +173,21 @@ public class PointPlacer implements Initializable {
   }
 
   public void saveData(ActionEvent actionEvent) {
-    stringChoiceDialog.showAndWait();
+    //TODO
   }
 
   public void loadData(ActionEvent actionEvent) {
-
+    //TODO
   }
 
   public void openData(ActionEvent actionEvent) {
-
+    //TODO
   }
 
   public void handlePointEvent(MouseEvent mouseEvent) {
     if (mouseEvent.getButton() == MouseButton.PRIMARY) {
       addPoint(mouseEvent);
-    } else if (mouseEvent.getButton() == MouseButton.MIDDLE) {
-      showPointInfo(mouseEvent);
-    } else {
-      removePoint(mouseEvent);
     }
-  }
-
-  private void removePoint(MouseEvent mouseEvent) {
-
-  }
-
-  /**
-   * Will show the angle of the point bold the point and allow you to change the angle direction
-   */
-  private void showPointInfo(MouseEvent mouseEvent) {
-
   }
 
   private void addPoint(MouseEvent mouseEvent) {
@@ -246,10 +214,7 @@ public class PointPlacer implements Initializable {
 
         pointsPathTitledTab = createAndSetupPathTitledTab();
 
-//				originsPathTitledTab.getPointsPathGroup().add(originPoint);
-
         originsPathTitledTab.setCollapsible(false);
-//				pointPlane.getChildren().add(originPoint);
         originsPathTitledTab.setText("Origin points");
 
         originsPaneAccordion.getPanes().add(originsPathTitledTab);
@@ -264,8 +229,6 @@ public class PointPlacer implements Initializable {
 
       if (pointsPathTitledTab.getPointNumber() == PointsAdded.FIRST_POINT) {
         pointsPathTitledTab.setPointNumber(PointsAdded.SECOND_POINT);
-
-//				PathTitledTab<PointsPathGroup> pointsPathTitledTab = createAndSetupPathTitledTab();
 
         OriginPoint originPoint = pointsPathTitledTab.getPointsPathGroup().getOriginPoint();
 

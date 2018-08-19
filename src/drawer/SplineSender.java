@@ -33,7 +33,6 @@ public class SplineSender {
     } else {
       System.out.println("SERVER MODE");
       NetworkTable.setServerMode();
-//				NetworkTable.setIPAddress(IP_ADDRESS);
       NetworkTable.setIPAddress("localhost");
     }
 
@@ -51,7 +50,6 @@ public class SplineSender {
       setClient(true);
 
       networkTable = NetworkTable.getTable(NETWORK_TABLE_TABLE_KEY);
-//			networkTable.putString("Hello", "Hello");
     }
   }
 
