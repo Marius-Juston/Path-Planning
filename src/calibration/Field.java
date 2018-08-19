@@ -6,6 +6,7 @@ import static calibration.Helper.getImage;
 import calibration.obstacle.AbstractObstacle;
 import calibration.obstacle.FieldBorder;
 import calibration.obstacle.Obstacle;
+import calibration.obstacle.ThreatLevel;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,6 +29,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.scene.shape.Polygon;
 import javax.imageio.ImageIO;
 import org.waltonrobotics.motion.Path;
 
@@ -36,7 +38,7 @@ public final class Field {
   private static final Field instance = new Field();
   private static final String SUFFIX = ".field";
   //	public static BufferedImage bufferedImage;
-  private static final String MATCH_PATTERN = "[0-9.]+ [a-zA-Z]+";
+  private static final String MATCH_PATTERN = "[0-9.]+\\s[a-zA-Z]+(?:\\d|\\.|\\s|ERROR|WARNING|M|L|C)*";
   private static final Alert useFieldValue = new Alert(AlertType.CONFIRMATION);
 
   static {
@@ -74,6 +76,16 @@ public final class Field {
     return false;
   }
 
+  public void clearField() {
+    SCALE.set(1.0);
+    UNIT.set(Helper.PIXELS);
+    fieldObstacles.clear();
+    imageFile = null;
+    image = null;
+    obstacleGroup.getChildren().clear();
+    fieldBorder = null;
+  }
+
   public FieldBorder getFieldBorder() {
     return fieldBorder;
   }
@@ -83,40 +95,67 @@ public final class Field {
   }
 
   public Image loadData(File loadFile) throws IOException {
-    Image image = getImage(loadFile);
-
-    imageFile = loadFile;
-    instance.image = image;
+    clearField();
 
     try (BufferedReader bufferedReader = new BufferedReader(
         new InputStreamReader(new FileInputStream(loadFile), StandardCharsets.UTF_8))) {
+
+      if (bufferedReader.readLine().equals("null")) {
+        imageFile = null;
+        instance.image = null;
+      } else {
+        Image image = getImage(loadFile);
+
+        imageFile = loadFile;
+        instance.image = image;
+      }
+
       AtomicReference<String> lastLine = new AtomicReference<>();
 
       bufferedReader.lines().forEach(lastLine::set);
       lastLine.set(lastLine.get().trim());
 
       if (Pattern.matches(MATCH_PATTERN, lastLine.get())) {
-        String[] data = lastLine.get().split("\\s");
+        System.out.println("Loading");
+
+        String[] data = lastLine.get().split("\\t");
 
         SCALE.set(Double.parseDouble(data[0]));
         UNIT.set(data[1]);
-      } else {
-        SCALE.set(1.0);
-        UNIT.set(PIXELS);
-      }
 
+        String fieldBorderDataPath = data[2];
+        if (!fieldBorderDataPath.isEmpty()) {
+          FieldBorder fieldBorder = new FieldBorder(Helper.convertStringToPath(fieldBorderDataPath));
+          addObstacle(fieldBorder);
+        }
+
+        for (int i = 3; i < data.length; i++) {
+          int index = data[i].indexOf(' ');
+
+          String threatLevelName = data[i].substring(0, index);
+          String pointData = data[i].substring(index + 1);
+
+          ThreatLevel threatLevel = ThreatLevel.valueOf(threatLevelName);
+          Polygon polygon = Helper.loadPolygonFromString(pointData);
+
+          Obstacle obstacle = new Obstacle(threatLevel, polygon);
+          addObstacle(obstacle);
+        }
+      }
     }
 
     return image;
   }
 
   public void saveData(File saveFile) throws IOException {
+    System.out.println(getFieldBorder().getDefiningShape());
+
     if (saveFile.exists()) {
-      System.out.println((saveFile.delete() ? "M" : "Did not m") + "anage to delete the file");
+      System.out.println((saveFile.delete() ? "M" : "Did not m") + "anaged to delete the file");
     }
     if (saveFile.createNewFile()) {
 
-      {
+      if (image != null) {
         String splits = imageFile.getAbsolutePath()
             .substring(imageFile.getAbsolutePath().lastIndexOf('.') + 1);
         ImageIO.write(ImageIO.read(imageFile), "jpg".equals(splits) ? "jpeg" : "png", saveFile);
@@ -124,9 +163,34 @@ public final class Field {
 
       try (BufferedWriter bufferedWriter = Files
           .newBufferedWriter(saveFile.toPath(), StandardOpenOption.APPEND)) {
-
+        if (image == null) {
+          bufferedWriter.write("null");
+        }
         bufferedWriter.newLine();
-        bufferedWriter.write(String.format("%f %s", SCALE.get(), UNIT.get()));
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(String.format("%f\t%s", SCALE.get(), UNIT.get()));
+        stringBuilder.append('\t');
+        if (getFieldBorder() != null) {
+          stringBuilder
+              .append(Helper.convertPathToString((javafx.scene.shape.Path) getFieldBorder().getDefiningShape()));
+        }
+        stringBuilder.append('\t');
+
+        fieldObstacles.remove(fieldBorder);
+        for (AbstractObstacle abstractObstacle : fieldObstacles) {
+          Obstacle obstacle = (Obstacle) abstractObstacle;
+
+          stringBuilder.append(obstacle.getThreatLevel());
+          stringBuilder.append(' ');
+          stringBuilder.append(Helper.convertPolygonToString((Polygon) obstacle.getDefiningShape()));
+          stringBuilder.append('\t');
+        }
+
+        fieldObstacles.add(fieldBorder);
+
+        bufferedWriter.write(stringBuilder.toString());
       }
     }
   }
@@ -140,6 +204,8 @@ public final class Field {
   public void addObstacle(FieldBorder obstacle) {
 
     if (fieldBorder != null) {
+      System.out.println(obstacle.getDefiningShape().getFill());
+
       fieldObstacles.remove(fieldBorder);
       obstacleGroup.getChildren().remove(fieldBorder);
     }

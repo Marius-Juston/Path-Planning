@@ -4,10 +4,19 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
+import javafx.scene.shape.ClosePath;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
+import javafx.scene.shape.Polygon;
 import javafx.stage.Window;
 
 public enum Helper {
@@ -60,6 +69,92 @@ public enum Helper {
     }
 
     return matrix;
+  }
+
+  public static String convertPolygonToString(Polygon polygon) {
+
+    StringBuilder stringBuilder = new StringBuilder();
+
+    for (double point : polygon.getPoints()) {
+      stringBuilder.append(point);
+      stringBuilder.append(' ');
+    }
+
+    return stringBuilder.toString();
+  }
+
+
+  public static Polygon loadPolygonFromString(String polygon) {
+    double[] doubles = convertStringDouble(polygon);
+    return new Polygon(doubles);
+  }
+
+  public static String convertPathToString(Path path) {
+    StringBuilder stringBuilder = new StringBuilder();
+
+    for (PathElement pathElement : path.getElements()) {
+      if (pathElement instanceof MoveTo) {
+        MoveTo moveTo = (MoveTo) pathElement;
+        stringBuilder.append('M');
+        stringBuilder.append(' ');
+
+        addXY(stringBuilder, moveTo.getX(), moveTo.getY());
+      } else if (pathElement instanceof LineTo) {
+        stringBuilder.append('L');
+        stringBuilder.append(' ');
+
+        LineTo lineTo = (LineTo) pathElement;
+
+        addXY(stringBuilder, lineTo.getX(), lineTo.getY());
+      } else {
+        stringBuilder.append('C');
+        stringBuilder.append(' ');
+
+      }
+    }
+
+    return stringBuilder.toString();
+  }
+
+  public static Path convertStringToPath(String path) {
+    List<PathElement> pathElements = new LinkedList<>();
+
+    String[] points = path.split("\\s");
+
+    for (int i = 0; i < points.length; i += 3) {
+
+      String type = points[i];
+
+      PathElement pathElement;
+      if (type.equals("C")) {
+        pathElement = new ClosePath();
+        i -= 2; //Because there is no extra information go back 2 cases to move just one
+
+      } else {
+        double x = Double.parseDouble(points[i + 1]);
+        double y = Double.parseDouble(points[i + 2]);
+        if (type.equals("M")) {
+          pathElement = new MoveTo(x, y);
+        } else /*if (type.equals("L")) */ {
+          pathElement = new LineTo(x, y);
+        }
+      }
+
+      pathElements.add(pathElement);
+    }
+
+    return new Path(pathElements);
+  }
+
+  public static void addXY(StringBuilder stringBuilder, double x, double y) {
+    stringBuilder.append(x);
+    stringBuilder.append(' ');
+    stringBuilder.append(y);
+    stringBuilder.append(' ');
+  }
+
+  public static double[] convertStringDouble(String doubles) {
+    return Arrays.stream(doubles.split("\\s")).mapToDouble(Double::parseDouble).toArray();
   }
 
   public static class Unit {
