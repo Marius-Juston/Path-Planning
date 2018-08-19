@@ -3,7 +3,7 @@ package calibration.obstacle;
 import javafx.scene.Group;
 import javafx.scene.shape.Shape;
 
-public class AbstractObstacle extends Group {
+public abstract class AbstractObstacle extends Group {
 
   private final ThreatLevel threatLevel;
   private final Shape definingShape;
