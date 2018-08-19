@@ -9,7 +9,7 @@
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
     <jar href="2974Splines.jar" size="73705" download="eager" />
-    <jar href="FieldCalibration.jar" size="542981" download="eager" />
+    <jar href="FieldCalibration.jar" size="545934" download="eager" />
     <jar href="SmartDashboard.jar" size="4381529" download="eager" />
     <jar href="fx-gson-3.1.0-sources.jar" size="21408" download="eager" />
     <jar href="fx-gson-3.1.0.jar" size="28383" download="eager" />
