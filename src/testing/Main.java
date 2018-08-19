@@ -1,11 +1,12 @@
 package testing;
 
-import calibration.Field;
-import com.google.gson.Gson;
+import calibration.obstacle.FieldBorder;
 import java.io.IOException;
 import javafx.application.Application;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.stage.Stage;
-import org.hildan.fxgson.FxGson;
 
 public class Main extends Application {
 
@@ -20,9 +21,7 @@ public class Main extends Application {
   @Override
   public final void start(Stage primaryStage) throws IOException {
 
-    Gson fxGsonWithExtras = FxGson.createWithExtras();
-    String s = fxGsonWithExtras.toJson(Field.getInstance());
-    System.out.println(s);
+    FieldBorder fieldBorder = new FieldBorder(new Path(new MoveTo(0, 0), new LineTo(3, 3)));
 
 //    Parent root = FXMLLoader
 //        .load(getClass().getResource("../testing/recreationFieldSelection.fxml"));
