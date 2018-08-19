@@ -12,5 +12,7 @@ public class Obstacle extends AbstractObstacle {
     this.getDefiningShape().setFill(definingShape.getFill());
     this.getDefiningShape().setStroke(definingShape.getStroke());
     this.getDefiningShape().setStrokeWidth(definingShape.getStrokeWidth());
+
+    getChildren().add(definingShape);
   }
 }

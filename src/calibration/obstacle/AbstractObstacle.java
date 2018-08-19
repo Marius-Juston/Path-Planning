@@ -11,10 +11,7 @@ public abstract class AbstractObstacle extends Group {
   public AbstractObstacle(ThreatLevel threatLevel, Shape definingShape) {
     this.threatLevel = threatLevel;
     this.definingShape = definingShape;
-
-    getChildren().add(definingShape);
   }
-
 
   public ThreatLevel getThreatLevel() {
     return threatLevel;
