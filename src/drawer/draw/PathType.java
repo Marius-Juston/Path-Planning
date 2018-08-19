@@ -2,7 +2,6 @@ package drawer.draw;
 
 import calibration.Field;
 import calibration.obstacle.AbstractObstacle;
-import calibration.obstacle.Obstacle;
 import drawer.curves.PointAngleGroup;
 import drawer.curves.figures.NotificationArrow;
 import drawer.curves.figures.ObservedDirectionalArrow;

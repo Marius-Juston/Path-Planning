@@ -488,7 +488,8 @@ public class Controller implements Initializable {
 
       if (!firstConversion) {
         convertedInfo
-            .setText(String.format("%.3f %s", Field.getInstance().SCALE.get() * distance, Field.getInstance().UNIT.get()));
+            .setText(
+                String.format("%.3f %s", Field.getInstance().SCALE.get() * distance, Field.getInstance().UNIT.get()));
       }
 
     }

@@ -2,6 +2,7 @@ package calibration.obstacle;
 
 import javafx.scene.shape.Polygon;
 
+
 public class Obstacle extends AbstractObstacle {
 
   //	TODO fix the problems hat the padding and all cause the shapes to be translated wrongly
