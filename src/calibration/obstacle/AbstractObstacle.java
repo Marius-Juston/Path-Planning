@@ -1,6 +1,7 @@
 package calibration.obstacle;
 
 import javafx.scene.Group;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 
 public abstract class AbstractObstacle extends Group {
@@ -12,9 +13,6 @@ public abstract class AbstractObstacle extends Group {
     this.threatLevel = threatLevel;
     this.definingShape = definingShape;
 
-    definingShape.setFill(threatLevel.getDisplayColor());
-    definingShape.setStroke(threatLevel.getDisplayColor());
-    definingShape.setStrokeWidth(1);
   }
 
   public ThreatLevel getThreatLevel() {

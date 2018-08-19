@@ -125,7 +125,14 @@ public final class Field {
 
         String fieldBorderDataPath = data[2];
         if (!fieldBorderDataPath.isEmpty()) {
-          FieldBorder fieldBorder = new FieldBorder(Helper.convertStringToPath(fieldBorderDataPath));
+          javafx.scene.shape.Path field = Helper.convertStringToPath(fieldBorderDataPath);
+
+          //FIXME makes no sense but since this works oh well
+          field.setFill(ThreatLevel.ERROR.getDisplayColor());
+          field.setStroke(ThreatLevel.ERROR.getDisplayColor());
+          field.setStrokeWidth(1);
+
+          FieldBorder fieldBorder = new FieldBorder(field);
           addObstacle(fieldBorder);
         }
 
@@ -137,6 +144,10 @@ public final class Field {
 
           ThreatLevel threatLevel = ThreatLevel.valueOf(threatLevelName);
           Polygon polygon = Helper.loadPolygonFromString(pointData);
+
+          polygon.setFill(threatLevel.getDisplayColor());
+          polygon.setStroke(threatLevel.getDisplayColor());
+          polygon.setStrokeWidth(1);
 
           Obstacle obstacle = new Obstacle(threatLevel, polygon);
           addObstacle(obstacle);
@@ -204,7 +215,6 @@ public final class Field {
   public void addObstacle(FieldBorder obstacle) {
 
     if (fieldBorder != null) {
-      System.out.println(obstacle.getDefiningShape().getFill());
 
       fieldObstacles.remove(fieldBorder);
       obstacleGroup.getChildren().remove(fieldBorder);
