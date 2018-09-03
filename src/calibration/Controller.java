@@ -9,6 +9,7 @@ import calibration.obstacle.FieldBorder;
 import calibration.obstacle.Obstacle;
 import calibration.obstacle.ThreatLevel;
 import drawer.PointPlacer;
+import drawer.optimizer.Mesher;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -25,6 +26,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -44,6 +48,9 @@ import javafx.stage.Window;
 
 public class Controller implements Initializable {
 
+  /**
+   * TODO add more precise scaling, make a zoom functionality, use arrow keys to move points of measurement
+   */
 
   private static final String defaultDistance = "Select 2 Points";
   private static final FileChooser fileChooser = new FileChooser();
@@ -393,6 +400,8 @@ public class Controller implements Initializable {
     if (Field.getInstance().imageFile != null) {
       load(Field.getInstance().image);
     }
+
+    pointPlacement.getChildren().add(Mesher.getGroup());
   }
 
   @FXML
@@ -437,6 +446,34 @@ public class Controller implements Initializable {
 
     addExtraData();
     cleanUp();
+  }
+
+  public void optimizeImage(ActionEvent event) {
+    Image image = Field.getInstance().image;
+    WritableImage writableImage = new WritableImage(image.getPixelReader(), (int) image.getWidth(),
+        (int) image.getHeight());
+    System.out.println(image.getWidth() + "\t" + image.getHeight());
+    System.out.println(writableImage.getWidth() + "\t" + writableImage.getHeight());
+
+    PixelWriter pixelWriter = writableImage.getPixelWriter();
+    PixelReader pixelReader = writableImage.getPixelReader();
+
+    for (int i = 0; i < writableImage.getHeight(); i++) {
+      for (int j = 0; j < writableImage.getWidth(); j++) {
+        Color c = pixelReader.getColor(j, i);
+
+        if (c.getOpacity() < 1) {
+          pixelWriter.setColor(j, i, Color.WHITE);
+        }
+        if (c.getRed() > .5|| c.getGreen() > .5|| c.getBlue() > .5) {
+          pixelWriter.setColor(j, i, Color.BLACK);
+        }
+      }
+    }
+
+    Field.getInstance().image = writableImage;
+    fieldImage.setImage(writableImage);
+
   }
 
   public enum Selection {

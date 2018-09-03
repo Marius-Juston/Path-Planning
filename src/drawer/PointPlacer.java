@@ -52,8 +52,10 @@ import org.waltonrobotics.motion.Path;
 
 public class PointPlacer implements Initializable {
 	/*
+	TODO make it so that you can right click on the titled path and you could change the parameters of the curve (start/end velocities, start/end scale)
 	TODO make the robot move along the path
 	TODO make the program be able to calculate the shortest path between two point angle group all the while evading the obstacles
+	TODO make a mesh a program
 
 	TODO make the TitledPane Content a VBOx with a HBOX (with two fields start and end scale) and then the table view
 	TODO add a measuring tool in the edit menu Ctrl+M as shortcut (generalize it so that the calibration code can also use it)

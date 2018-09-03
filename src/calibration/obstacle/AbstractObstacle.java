@@ -1,7 +1,6 @@
 package calibration.obstacle;
 
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 
 public abstract class AbstractObstacle extends Group {

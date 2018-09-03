@@ -109,7 +109,6 @@ public enum Helper {
       } else {
         stringBuilder.append('C');
         stringBuilder.append(' ');
-
       }
     }
 

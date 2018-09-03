@@ -7,6 +7,7 @@ import calibration.obstacle.AbstractObstacle;
 import calibration.obstacle.FieldBorder;
 import calibration.obstacle.Obstacle;
 import calibration.obstacle.ThreatLevel;
+import drawer.optimizer.Mesher;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,7 +29,9 @@ import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Polygon;
 import javax.imageio.ImageIO;
 import org.waltonrobotics.motion.Path;
@@ -60,6 +63,8 @@ public final class Field {
 
   private Field() {
     Path.setRobotWidth(robotWidth);
+
+//    fieldObstacles.addListener((ListChangeListener<? super AbstractObstacle>) c -> Mesher.createMesh());
   }
 
   public static Field getInstance() {
@@ -154,7 +159,6 @@ public final class Field {
         }
       }
     }
-
     return image;
   }
 
@@ -210,6 +214,7 @@ public final class Field {
     fieldObstacles.add(obstacle);
     obstacleGroup.getChildren().add(obstacle);
 
+    Mesher.createMesh();
   }
 
   public void addObstacle(FieldBorder obstacle) {
@@ -221,8 +226,10 @@ public final class Field {
     }
 
     fieldObstacles.add(obstacle);
+
     obstacleGroup.getChildren().add(obstacle);
     fieldBorder = obstacle;
+    Mesher.createMesh();
   }
 
   @Override
@@ -237,5 +244,9 @@ public final class Field {
         ", obstacleGroup=" + obstacleGroup +
         ", fieldBorder=" + fieldBorder +
         '}';
+  }
+
+  public void improveImageContrast() {
+    ColorAdjust colorAdjust = new ColorAdjust(0, 0, 0, 0);
   }
 }
