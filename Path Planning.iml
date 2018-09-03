@@ -10,5 +10,19 @@
     <orderEntry type="library" name="motionLibrary" level="project" />
     <orderEntry type="library" name="fx-gson-3.1.0-sources" level="project" />
     <orderEntry type="library" name="gson-2.8.5" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/opencv/build/java/opencv-343.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <NATIVE>
+          <root url="file://$USER_HOME$/Downloads/opencv/build/java/x64" />
+        </NATIVE>
+        <SOURCES>
+          <root url="jar://$USER_HOME$/Downloads/opencv/build/java/opencv-343.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
