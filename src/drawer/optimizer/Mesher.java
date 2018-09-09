@@ -3,16 +3,13 @@ package drawer.optimizer;
 import calibration.Field;
 import calibration.obstacle.AbstractObstacle;
 import calibration.obstacle.FieldBorder;
-import calibration.obstacle.ThreatLevel;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
+import io.github.jdiemke.triangulation.DelaunayTriangulator;
+import io.github.jdiemke.triangulation.NotEnoughPointsException;
+import io.github.jdiemke.triangulation.Vector2D;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
@@ -20,11 +17,9 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Shape;
 
 public class Mesher {
 
-  private static final HashMap<AbstractObstacle, List<Point2D>> nodes = new HashMap<>();
   private static final Group GROUP = new Group();
 
   public static Group getGroup() {
@@ -32,110 +27,70 @@ public class Mesher {
   }
 
   public static void createMesh() {
+    getGroup().getChildren().clear();
     FieldBorder fieldBorder = Field.getInstance().getFieldBorder();
-    List<AbstractObstacle> obstacles = Field.getInstance().getFieldObstacles();
+    List<AbstractObstacle> obstacles = new LinkedList<>(Field.getInstance().getFieldObstacles());
     obstacles.remove(fieldBorder);
 
-    HashMap<AbstractObstacle, List<Point2D>> nodes = new HashMap<>();
-    nodes.clear();
-    nodes.put(fieldBorder, getVertices(fieldBorder));
-    nodes.putAll(getVertices(obstacles));
-    obstacles.add(fieldBorder);
+    List<Vector2D> vector2DS = new LinkedList<>();
+    vector2DS.addAll(getVertices(fieldBorder));
+    vector2DS.addAll(getVertices(obstacles));
 
-    Collection<? extends Line> closestPoint = findClosestPoint(nodes);
+    DelaunayTriangulator delaunayTriangulator = new DelaunayTriangulator(vector2DS);
 
-//    Shape[] abstractObstacleStream = Field.getInstance().getFieldObstacles().stream()
-//        .filter(abstractObstacle -> abstractObstacle.getThreatLevel() == ThreatLevel.ERROR)
-//        .map(AbstractObstacle::getDefiningShape).toArray(Shape[]::new);
-//    closestPoint.stream().filter()
-//
-    GROUP.getChildren().addAll(closestPoint);
-
-    nodes.clear();
-    Mesher.nodes.putAll(nodes);
-  }
-
-  private static Collection<? extends Line> findClosestPoint(HashMap<AbstractObstacle, List<Point2D>> nodes) {
-    Set<Line> nodeList = new LinkedHashSet<>();
-
-    AbstractObstacle[] abstractObstacles = nodes.keySet().toArray(new AbstractObstacle[0]);
-    for (int i = 0; i < abstractObstacles.length; i++) {
-
-      for (Point2D point2D : nodes.get(abstractObstacles[i])) {
-
-        Point2D closest = null;
-        for (int y = 0; y < abstractObstacles.length; y++) {
-          if (i != y) {
-            for (Point2D otherPoint : nodes.get(abstractObstacles[y])) {
-              if (closest == null) {
-                closest = otherPoint;
-              } else if (point2D.distance(closest) > point2D.distance(otherPoint)) {
-                closest = otherPoint;
-              }
-            }
-          }
-        }
-
-        nodeList.add(new Line(point2D, closest == null ? point2D : closest));
-      }
+    try {
+      delaunayTriangulator.triangulate();
+    } catch (NotEnoughPointsException e) {
+      e.printStackTrace();
     }
-    return nodeList;
+
+    List<Polygon> collect = delaunayTriangulator.getTriangles().stream().map(triangle2D -> {
+      Polygon polygon = new Polygon(
+          triangle2D.a.x, triangle2D.a.y,
+          triangle2D.b.x, triangle2D.b.y,
+          triangle2D.c.x, triangle2D.c.y
+      );
+
+      polygon.setFill(Color.color(0, 0, 1, .1));
+      polygon.setStroke(Color.RED);
+
+      return polygon;
+    }).collect(Collectors.toList());
+
+    GROUP.getChildren().addAll(collect);
   }
 
-  private static Map<? extends AbstractObstacle, ? extends List<Point2D>> getVertices(
+
+  private static List<Vector2D> getVertices(
       List<AbstractObstacle> obstacles) {
 
-    HashMap<AbstractObstacle, List<Point2D>> obstacleListHashMap = new HashMap<>();
+    List<Vector2D> obstacleListHashMap = new LinkedList<>();
 
     for (AbstractObstacle obstacle : obstacles) {
-      List<Point2D> point2DS = new LinkedList<>();
+      List<Vector2D> point2DS = new LinkedList<>();
       ObservableList<Double> points = ((Polygon) obstacle.getDefiningShape()).getPoints();
       for (int i = 0; i < points.size(); i += 2) {
-        point2DS.add(new Point2D(points.get(i), points.get(i + 1)));
+        point2DS.add(new Vector2D(points.get(i), points.get(i + 1)));
       }
 
-      obstacleListHashMap.put(obstacle, point2DS);
+      obstacleListHashMap.addAll(point2DS);
     }
 
     return obstacleListHashMap;
   }
 
-  public static List<Point2D> getVertices(FieldBorder fieldBorder) {
-    List<Point2D> obstacles = new LinkedList<>();
+  public static List<Vector2D> getVertices(FieldBorder fieldBorder) {
+    List<Vector2D> obstacles = new LinkedList<>();
 
     for (PathElement pathElement : ((Path) fieldBorder.getDefiningShape()).getElements()) {
       if (pathElement instanceof MoveTo) {
-        obstacles.add(new Point2D(((MoveTo) pathElement).getX(), ((MoveTo) pathElement).getY()));
+        obstacles.add(new Vector2D(((MoveTo) pathElement).getX(), ((MoveTo) pathElement).getY()));
       } else if (pathElement instanceof LineTo) {
-        obstacles.add(new Point2D(((LineTo) pathElement).getX(), ((LineTo) pathElement).getY()));
+        obstacles.add(new Vector2D(((LineTo) pathElement).getX(), ((LineTo) pathElement).getY()));
       } else {
         break;
       }
     }
     return obstacles;
-  }
-
-
-  private static class Line extends javafx.scene.shape.Line {
-
-    private final Point2D startPoint;
-    private final Point2D endPoint;
-
-    public Line(Point2D startPoint, Point2D endPoint) {
-      super(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
-      this.startPoint = startPoint;
-      this.endPoint = endPoint;
-
-      setStrokeWidth(1);
-      setStroke(Color.RED);
-    }
-
-    @Override
-    public int hashCode() {
-      int result = 31 * endPoint.hashCode();
-      result += (31 * startPoint.hashCode());
-
-      return result;
-    }
   }
 }
