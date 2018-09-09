@@ -31,7 +31,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.shape.Polygon;
 import javax.imageio.ImageIO;
 import org.waltonrobotics.motion.Path;

@@ -465,7 +465,7 @@ public class Controller implements Initializable {
         if (c.getOpacity() < 1) {
           pixelWriter.setColor(j, i, Color.WHITE);
         }
-        if (c.getRed() > .5|| c.getGreen() > .5|| c.getBlue() > .5) {
+        if (c.getRed() > .5 || c.getGreen() > .5 || c.getBlue() > .5) {
           pixelWriter.setColor(j, i, Color.BLACK);
         }
       }
