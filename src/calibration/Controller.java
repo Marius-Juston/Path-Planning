@@ -108,20 +108,44 @@ public class Controller implements Initializable {
     cancelObstacle.setOnAction(event -> polygon.getPoints().clear());
   }
 
+  /**
+   * Gets the ratio between the pixel distance and the actual distance on the Field
+   *
+   * @param pixelDistance the field distance selected on the field image
+   * @return Returns the {@link Unit} with the ratio between pixel distance and its unit
+   */
   private static Unit askActualDistance(double pixelDistance) throws IOException {
     return DistanceConverter.display(pixelDistance);
   }
 
+  /**
+   * Returns the JavaFX instance of this Controller; loads the fieldSelection.fxml file.
+   */
   public static Parent getRoot() throws IOException {
     return FXMLLoader.load(Controller.class.getResource("fieldSelection.fxml"));
   }
 
+  /**
+   * Changes the Scene from the {@link Controller} to the {@link PointPlacer} so that you can place the curves.
+   */
   @FXML
   private void gotToCurvePointPlacement(ActionEvent actionEvent) throws IOException {
     Parent root = PointPlacer.getRoot();
     Helper.setRoot(actionEvent, root);
   }
 
+  /**
+   * Cleans up the {@link #pointPlacement} :
+   * <ul>
+   * <li>Sets {@link #rescale} to disabled</li>
+   * <li>Sets the {@link #line} between the points to invisible</li>
+   * <li>Removes all the {@link #scaleSelectionPoints} from the {@link #pointPlacement} </li>
+   * <li>Sets the {@link #distanceViewer} to its default value ({@link #defaultDistance})</li>
+   * <li>Sets the {@link #convertedInfo} to its default value ({@link #defaultDistance})</li>
+   * <li>Sets the {@link #scaleSelection} to its default value ({@link Selection#NO_SELECTION})</li>
+   * <li>Clears all the defining points of the obstacle polygon</li>
+   * </ul>
+   */
   private void cleanUp() {
     rescale.setDisable(true);
     line.setVisible(false);
@@ -135,50 +159,81 @@ public class Controller implements Initializable {
   @FXML
   private void selectPoint(MouseEvent mouseEvent) throws IOException {
 
+    //If there are no points that are selected reset the elements just in case
     if (scaleSelection == Selection.NO_SELECTION) {
       cleanUp();
     }
 
+    //Creates a point from the x, y coordinates of the mouse
     SelectionPoint selectionPoint = new SelectionPoint(mouseEvent.getX(), mouseEvent.getY());
+
+    //Adds it to the array of selection point given the current selection
     scaleSelectionPoints[scaleSelection.ordinal()] = selectionPoint;
+    // adds the point to the point placement anchor pane so that it can be seen by the user
     pointPlacement.getChildren().add(selectionPoint);
 
+    // updates the number points selected for scaling
     scaleSelection = Selection.values()[scaleSelection.ordinal() + 1];
 
+    // if there are two points
     if (scaleSelection == Selection.TWO_POINT) {
+      // make it so that you can press the rescale button
       rescale.setDisable(false);
 
+      // resets the scale selection number so that next time this method passes it cleans up the points
       scaleSelection = Selection.NO_SELECTION;
 
+      /*Shows the line between the selection points at the location between the two points all the while adding its
+      distance pixel to the TextField
+       */
       line.showLine(scaleSelectionPoints[0], scaleSelectionPoints[1], distanceViewer);
 
+      // If it is the first time the user has created the line and wants to show the scaling dialog
       if (firstConversion) {
         setConversion();
       }
     }
   }
 
+  /**
+   * Handles the mouse presses and when the user is calibrating or outlining the field for its obstacles.
+   */
   @FXML
   private void handleMouseClicked(MouseEvent mouseEvent) throws IOException {
+    // if the user is scaling the field
     if (calibrating) {
       selectPoint(mouseEvent);
     } else {
+      // if the user is outlining the field for its borders and its obstacles
       outlineField(mouseEvent);
 
+      // If the user right click
       if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+
+        // if the user has selected 3 points for the polygon to be defined
         if (polygon.getPoints().size() < 3) {
+          //disable some menu items because the polygon has less than 3 vertices
           setDisableObstacleConfirmationMenuItems(true);
         } else {
+          //enable the menu items because the polygon has more than 3 vertices
           setDisableObstacleConfirmationMenuItems(false);
         }
+
+        //shows the context menu
         confirmFishedObstacle.show(fieldImage, mouseEvent.getScreenX(), mouseEvent.getScreenY());
       } else {
+        //hides the context menu
         confirmFishedObstacle.hide();
       }
 
     }
   }
 
+  /**
+   * Disable or enable the menu items dependent on the number of vertices the defining polygon has.
+   *
+   * @param isDisabled if the menu items should be disabled or not
+   */
   private void setDisableObstacleConfirmationMenuItems(boolean isDisabled) {
 
     confirmFieldBoarder.setDisable(isDisabled);
@@ -186,16 +241,22 @@ public class Controller implements Initializable {
     confirmDangerousObstacle.setDisable(isDisabled);
   }
 
+  /**
+   * Adds the current mouse position to the defining polygon as vertices
+   */
   @FXML
   private void outlineField(MouseEvent mouseEvent) {
 
+    // if the polygon is not inside the pointPlacement anchor pane
     if (!pointPlacement.getChildren().contains(polygon)) {
+      //Adds it so that it can be visualised
       pointPlacement.getChildren().add(polygon);
     }
 
-//		PositionPoint positionPoint = new PositionPoint(mouseEvent.getX(), mouseEvent.getY());
-
+    //Adds the mouse position as a polygon vertices location
     polygon.getPoints().addAll(mouseEvent.getX(), mouseEvent.getY());
+
+//		PositionPoint positionPoint = new PositionPoint(mouseEvent.getX(), mouseEvent.getY());
 
     ////		Collections.addAll(array, mouseEvent.getX(), mouseEvent.getY());
 //
@@ -222,14 +283,28 @@ public class Controller implements Initializable {
 //		}
   }
 
+  /**
+   * Creates the {@link FieldBorder} that defines the field border given the selected polygon. Adds it to the {@link
+   * Field} using {@link Field#addObstacle(FieldBorder)}
+   */
   private void createFieldBorder() {
     //			TODO fix this problem
+    //Creates a rectangle the same size as the image of the field
     Rectangle rectangle = new Rectangle(Field.getInstance().image.getWidth(), Field.getInstance().image.getHeight());
-    rectangle.setFill(Color.color(1, 0, 0, 0.3));
+//    rectangle.setFill(Color.color(1, 0, 0, 0.3));
 
-    Polygon polygon = new Polygon(
-        this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
+    /*
+    Recreates the polygon with the obstacle defining point because of an offset problem with JavaFX that has
+    been unresolved
+     */
+    Polygon polygon = new Polygon(this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
+//    polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
 
+    /*
+      Creates the Field border shape by subtracting the rectangle by its polygon creating a shape with a hole
+      in its middle
+      Also setting its color to be the same as an error (a wall) because it is the field border
+     */
     Path subtract = (Path) Shape.subtract(rectangle, polygon);
     subtract.setFill(ThreatLevel.ERROR.getDisplayColor());
     subtract.setStroke(ThreatLevel.ERROR.getDisplayColor());
@@ -241,7 +316,6 @@ public class Controller implements Initializable {
 //		System.out.println(scrollPane.getLayoutX());
 //		System.out.println(scrollPane.getLayoutY());
 
-    polygon.setFill(ThreatLevel.WARNING.getDisplayColor());
 //
 //		subtract.setOnMouseClicked(event -> {
 //			try {
@@ -251,27 +325,47 @@ public class Controller implements Initializable {
 //			}
 //		});
 
+    //Adds the field Obstacle to Field
     Field.getInstance().addObstacle(new FieldBorder(subtract));
 
+    //Resets the polygon vertices
     this.polygon.getPoints().clear();
   }
 
+
+  /**
+   * Creates the {@link Obstacle} that defines an obstacle given the selected polygon and its {@link ThreatLevel}. Adds
+   * it to the {@link Field} using {@link Field#addObstacle(Obstacle)}
+   */
   private void createObstacle(ThreatLevel threatLevel) {
+    /*
+    Recreates the polygon with the obstacle defining point because of an offset problem with JavaFX that has
+    been unresolved
+    */
     Polygon polygon = new Polygon(
         this.polygon.getPoints().stream().mapToDouble(value -> value).toArray());
     polygon.setFill(threatLevel.getDisplayColor());
     polygon.setStroke(threatLevel.getDisplayColor());
     polygon.setStrokeWidth(1);
 
+    //Adds the Obstacle to Field
     Field.getInstance().addObstacle(new Obstacle(threatLevel, polygon));
 
+    //Resets the polygon vertices
     this.polygon.getPoints().clear();
   }
 
+  /**
+   * Creates an {@link Obstacle} with a {@link ThreatLevel} of {@link ThreatLevel#WARNING}
+   */
   private void createNormalObstacle() {
     createObstacle(ThreatLevel.WARNING);
   }
 
+
+  /**
+   * Creates an {@link Obstacle} with a {@link ThreatLevel} of {@link ThreatLevel#ERROR}
+   */
   private void createDangerousObstacle() {
     createObstacle(ThreatLevel.ERROR);
   }
