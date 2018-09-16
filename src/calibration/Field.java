@@ -213,7 +213,7 @@ public final class Field {
     fieldObstacles.add(obstacle);
     obstacleGroup.getChildren().add(obstacle);
 
-    Mesher.createMesh();
+//    Mesher.createMesh();
   }
 
   public void addObstacle(FieldBorder obstacle) {
@@ -228,7 +228,7 @@ public final class Field {
 
     obstacleGroup.getChildren().add(obstacle);
     fieldBorder = obstacle;
-    Mesher.createMesh();
+//    Mesher.createMesh();
   }
 
   @Override
