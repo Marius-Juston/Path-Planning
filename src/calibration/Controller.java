@@ -290,7 +290,8 @@ public class Controller implements Initializable {
   private void createFieldBorder() {
     //			TODO fix this problem
     //Creates a rectangle the same size as the image of the field
-    Rectangle rectangle = new Rectangle(Field.getInstance().image.getWidth(), Field.getInstance().image.getHeight());
+    Rectangle rectangle = new Rectangle(Field.getInstance().getImage().getWidth(),
+        Field.getInstance().getImage().getHeight());
 //    rectangle.setFill(Color.color(1, 0, 0, 0.3));
 
     /*
@@ -370,31 +371,48 @@ public class Controller implements Initializable {
     createObstacle(ThreatLevel.ERROR);
   }
 
-
+  /**
+   * Sets the scale and the units of the field by using the distance between the two selection points and asking the
+   * user the conversion between pixel distance to real units.
+   */
   private void setConversion() throws IOException {
+    //Gets the the length of the line
     double pixelDistance = line.getLineLength();
+
+//    Asks the user the actual length and the units of the pixel length/ the length selected
     Unit actualDistance = askActualDistance(pixelDistance);
 
+    // If the user selected something/ did not press cancel
     if (actualDistance != null) {
 
+      //Sets the scale to be real/pixel distance.
+      // To get the real distance from a pixel length it would be pixel * SCALE
+      // To get the pixel distance from the length it would be actual / SCALE
       Field.getInstance().SCALE.set(actualDistance.getValue() / pixelDistance);
       Field.getInstance().UNIT.set(actualDistance.getUnit());
 
+//      Adds the extra buttons
       addExtraData();
       convertedInfo.setText(String.format("%.3f %s", actualDistance.getValue(), Field.getInstance().UNIT.get()));
     }
   }
 
+  /**
+   * Adds the info of the pixel distance to actual distance, the rescaling button, the button that move to placing the
+   * curves
+   */
   private void addExtraData() {
+//    Adds the buttons and text if it was the first time
     if (firstConversion) {
       firstConversion = false;
 
       infoPane.getChildren().add(1, new Text("=>"));
       infoPane.getChildren().add(2, convertedInfo);
 
-      if (!infoPane.getChildren().contains(outlineToggleButton)) {
-        infoPane.getChildren().add(3, outlineToggleButton);
-      }
+      addOutlineToggleButton(3);
+//      if (!infoPane.getChildren().contains(outlineToggleButton)) {
+//        infoPane.getChildren().add(3, outlineToggleButton);
+//      }
 
       infoPane.getChildren().add(infoPane.getChildren().size() - 1, rescale);
       infoPane.getChildren().add(infoPane.getChildren().size() - 1, moveToPointPlacement);
@@ -402,10 +420,15 @@ public class Controller implements Initializable {
     }
   }
 
+  /**
+   * Selects te field image to use as background to place points on
+   */
   @FXML
   private void chooseImage(ActionEvent actionEvent) throws IOException {
+//    Sets the initial directory to open to to the location of the previous file
     fileChooser.setInitialDirectory(startOpenLocation);
 
+//    Gets the window of the event
     Window window;
 
     try {
@@ -414,32 +437,57 @@ public class Controller implements Initializable {
       window = ((MenuItem) actionEvent.getSource()).getParentPopup().getOwnerWindow();
     }
 
+//    Opens the file chooser dialog for the user to select a file
     File image = fileChooser.showOpenDialog(window);
 
+//    If the user has selected a file
     if (image != null) {
 
+//      Get the location of the file so that it could be used as a starting point for the next time you select a file
       startOpenLocation = image.getParentFile();
 
+//      If the file is a field file you could also load it
       if (Field.isFieldFile(image)) {
         load(image);
 
       } else {
-        Field.getInstance().imageFile = image;
-        fieldImage.setImage(Field.getInstance().image = getImage(image));
+//        Sets the image file to the new user selected file
+        Field.getInstance().setImageFile(image);
+        Field.getInstance().setImage(getImage(image));
+        fieldImage.setImage(Field.getInstance().getImage());
         distanceViewer.setText(defaultDistance);
 
-        if (!infoPane.getChildren().contains(outlineToggleButton)) {
-          infoPane.getChildren().add(1, outlineToggleButton);
-        }
+        addOutlineToggleButton(1);
+//        if (!infoPane.getChildren().contains(outlineToggleButton)) {
+//          infoPane.getChildren().add(1, outlineToggleButton);
+//        }
       }
+    }
+  }
+
+  /**
+   * Adds the outline toggle button to the HBox infoPane so that the user can toggle between calibrating the field by
+   * scaling it and outline the field for its borders and obstacles
+   *
+   * @param index the index you wish to add the outline toggle button on the info pane
+   */
+  private void addOutlineToggleButton(int index) {
+//    Since the toggle outline button could have been added some other time it is checked here
+    if (!infoPane.getChildren().contains(outlineToggleButton)) {
+      infoPane.getChildren().add(index, outlineToggleButton);
     }
   }
 
   @Override
   public final void initialize(URL location, ResourceBundle resources) {
+//    Sets the line between the two selection points to be invisible
     line.setVisible(false);
+//    Adds the selection in between line to the point placement pane
     pointPlacement.getChildren().add(line);
+//    Made it so that the information about the length of the line is not editable
     convertedInfo.setEditable(false);
+
+//    Sets the rescaling button scenario
     rescale.setOnAction((actionEvent) -> {
       try {
         setConversion();
@@ -448,6 +496,7 @@ public class Controller implements Initializable {
       }
     });
 
+//    Sets the changing scene scenario to the curve placement
     moveToPointPlacement.setOnAction(actionEvent -> {
       try {
         gotToCurvePointPlacement(actionEvent);
@@ -455,23 +504,23 @@ public class Controller implements Initializable {
         e.printStackTrace();
       }
     });
+//    Makes it so that if you press enter it will press this button
     moveToPointPlacement.setDefaultButton(true);
 
+//    Toggles between outlining and calibrating the field length
     outlineToggleButton.setOnAction(event -> {
+//      Toggles state
       calibrating = !calibrating;
+//      Changes the text of the button
       outlineToggleButton.setText(calibrating ? "Outline field" : "Calibrate Field");
       cleanUp();
     });
-
-    //		pointPlacement.setOnContextMenuRequested(
-//			event -> {
-//
-//			});
 
     polygon.setFill(Color.TRANSPARENT);
     polygon.setStroke(Color.RED);
     polygon.setStrokeWidth(1);
 
+//    Handles the case for when the user presses inside the polygon
     polygon.setOnMouseClicked(event -> {
       try {
         handleMouseClicked(event);
@@ -480,7 +529,8 @@ public class Controller implements Initializable {
       }
     });
 
-    Field.getInstance().obstacleGroup.setOnMouseClicked(event -> {
+//    Handles the case for when the user presses inside an obstacle
+    Field.getInstance().getObstacleGroup().setOnMouseClicked(event -> {
       try {
         handleMouseClicked(event);
       } catch (IOException e) {
@@ -488,62 +538,91 @@ public class Controller implements Initializable {
       }
     });
 
+//    Adds the Nodes to be viewed
     pointPlacement.getChildren().add(polygon);
-    pointPlacement.getChildren().add(Field.getInstance().obstacleGroup);
+    pointPlacement.getChildren().add(Field.getInstance().getObstacleGroup());
 
-    if (Field.getInstance().imageFile != null) {
-      load(Field.getInstance().image);
+    if (Field.getInstance().getImageFile() != null) {
+      load(Field.getInstance().getImage());
     }
 
     pointPlacement.getChildren().add(Mesher.getGroup());
   }
 
+  /**
+   * Svaes the data such as the field image used, the obstacles and the scale
+   */
   @FXML
   private void saveData(ActionEvent actionEvent) throws IOException {
+//    If there is a field image
     if (fieldImage != null) {
 
+//      Sets the initial directory of the saver dialog
       saver.setInitialDirectory(startSaveLocation);
 
+//      Asks the user where he/she wants to save their data
       File saveFile = saver
           .showSaveDialog(((MenuItem) actionEvent.getSource()).getParentPopup().getOwnerWindow());
 
+//      If they selected a save location
       if (saveFile != null) {
         startSaveLocation = saveFile.getParentFile();
 
+//        Save data to this file
         Field.getInstance().saveData(saveFile);
       }
     }
   }
 
+  /**
+   * Loads the data such as the field scale, the field image, the obstacles
+   */
   @FXML
   private void loadData(ActionEvent actionEvent) throws IOException {
+//    Sets the initial directory of the loader dialog
     loader.setInitialDirectory(startLoadLocation);
 
+//    Asks the user where he/she wants to load their data
     File loadFile = loader
         .showOpenDialog(((MenuItem) actionEvent.getSource()).getParentPopup().getOwnerWindow());
 
+//    If they selected a load location
     if (loadFile != null) {
       startLoadLocation = loadFile.getParentFile();
 
+//      Load the data from this file
       load(loadFile);
     }
   }
 
+  /**
+   * Load the data from this file (the field image, the field scale, the obstacles)
+   *
+   * @param loadFile the to load the data from
+   */
   private void load(File loadFile) throws IOException {
     load(Field.getInstance().loadData(loadFile));
   }
 
+  /**
+   * Loads the image by setting the field image, adding the extra buttons and text, resetting pane and elements
+   *
+   * @param fieldImage field image to use as background
+   */
   private void load(Image fieldImage) {
     this.fieldImage.setImage(fieldImage);
 
-//		TODO add here?
-
+//    Adds extra text and buttons
     addExtraData();
+//    Cleans up panes
     cleanUp();
   }
 
+  /**
+   * Method to optimize image so that selecting the corners in the image is easier. Is still being worked on
+   */
   public void optimizeImage(ActionEvent event) {
-    Image image = Field.getInstance().image;
+    Image image = Field.getInstance().getImage();
     WritableImage writableImage = new WritableImage(image.getPixelReader(), (int) image.getWidth(),
         (int) image.getHeight());
     System.out.println(image.getWidth() + "\t" + image.getHeight());
@@ -565,7 +644,7 @@ public class Controller implements Initializable {
       }
     }
 
-    Field.getInstance().image = writableImage;
+    Field.getInstance().setImage(writableImage);
     fieldImage.setImage(writableImage);
 
   }
@@ -574,16 +653,28 @@ public class Controller implements Initializable {
     NO_SELECTION, ONE_POINT, TWO_POINT
   }
 
+  /**
+   * Selection point
+   */
   static class SelectionPoint extends Circle {
 
     final Point2D point2D;
 
+    /**
+     * Creates a Selection Point using an x and y position
+     *
+     * @param centerX center X location
+     * @param centerY center Y location
+     */
     SelectionPoint(double centerX, double centerY) {
       super(centerX, centerY, 4, Color.BLUE);
 
       point2D = new Point2D(centerX, centerY);
     }
 
+    /**
+     * Gets the center location of the selection point as a Point2D
+     */
     final Point2D getPoint2D() {
       return point2D;
     }
@@ -591,8 +682,8 @@ public class Controller implements Initializable {
 
   class SelectionLine extends Line {
 
-    Point2D p1 = new Point2D(0, 0);
-    Point2D p2 = new Point2D(0, 0);
+    private Point2D p1 = new Point2D(0, 0);
+    private Point2D p2 = new Point2D(0, 0);
 
     SelectionLine() {
       setFill(Color.RED);
@@ -600,8 +691,10 @@ public class Controller implements Initializable {
     }
 
     final void showLine(SelectionPoint point, SelectionPoint point2, TextField distanceViewer) {
+//      Sets the line visible
       setVisible(true);
 
+//      Changes end position of the lien
       p1 = point.getPoint2D();
       p2 = point2.getPoint2D();
 
@@ -613,8 +706,10 @@ public class Controller implements Initializable {
 
       double distance = getLineLength();
 
+//      Displays the pixel length of the selection line
       distanceViewer.setText(String.format("%.4f %s", distance, PIXELS));
 
+//      If the user has already scaled their Field image display the line length as its scaled length
       if (!firstConversion) {
         convertedInfo
             .setText(
@@ -623,6 +718,9 @@ public class Controller implements Initializable {
 
     }
 
+    /**
+     * Gets the distance of the line. The distance between the first point and the second point
+     */
     final double getLineLength() {
       return p1.distance(p2);
     }
