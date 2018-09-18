@@ -1,13 +1,11 @@
 package calibration;
 
 import static calibration.Helper.PIXELS;
-import static calibration.Helper.getImage;
 
 import calibration.obstacle.AbstractObstacle;
 import calibration.obstacle.FieldBorder;
 import calibration.obstacle.Obstacle;
 import calibration.obstacle.ThreatLevel;
-import drawer.optimizer.Mesher;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -55,9 +53,9 @@ public final class Field {
   public final SimpleDoubleProperty SCALE = new SimpleDoubleProperty(1);
   public final WritableObjectValue<String> UNIT = new SimpleStringProperty(PIXELS);
   private final List<AbstractObstacle> fieldObstacles = new ArrayList<>();
-  public File imageFile;
-  public Image image;
-  public Group obstacleGroup = new Group();
+  private Group obstacleGroup = new Group();
+  private File imageFile;
+  private Image image;
   private FieldBorder fieldBorder;
 
   private Field() {
@@ -84,9 +82,9 @@ public final class Field {
     SCALE.set(1.0);
     UNIT.set(Helper.PIXELS);
     fieldObstacles.clear();
-    imageFile = null;
-    image = null;
-    obstacleGroup.getChildren().clear();
+    setImageFile(null);
+    setImage(null);
+    getObstacleGroup().getChildren().clear();
     fieldBorder = null;
   }
 
@@ -105,13 +103,13 @@ public final class Field {
         new InputStreamReader(new FileInputStream(loadFile), StandardCharsets.UTF_8))) {
 
       if (bufferedReader.readLine().equals("null")) {
-        imageFile = null;
-        instance.image = null;
+        setImageFile(null);
+        instance.setImage(null);
       } else {
-        Image image = getImage(loadFile);
+        Image image = Helper.getImage(loadFile);
 
-        imageFile = loadFile;
-        instance.image = image;
+        setImageFile(loadFile);
+        instance.setImage(image);
       }
 
       AtomicReference<String> lastLine = new AtomicReference<>();
@@ -158,7 +156,7 @@ public final class Field {
         }
       }
     }
-    return image;
+    return getImage();
   }
 
   public void saveData(File saveFile) throws IOException {
@@ -169,15 +167,15 @@ public final class Field {
     }
     if (saveFile.createNewFile()) {
 
-      if (image != null) {
-        String splits = imageFile.getAbsolutePath()
-            .substring(imageFile.getAbsolutePath().lastIndexOf('.') + 1);
-        ImageIO.write(ImageIO.read(imageFile), "jpg".equals(splits) ? "jpeg" : "png", saveFile);
+      if (getImage() != null) {
+        String splits = getImageFile().getAbsolutePath()
+            .substring(getImageFile().getAbsolutePath().lastIndexOf('.') + 1);
+        ImageIO.write(ImageIO.read(getImageFile()), "jpg".equals(splits) ? "jpeg" : "png", saveFile);
       }
 
       try (BufferedWriter bufferedWriter = Files
           .newBufferedWriter(saveFile.toPath(), StandardOpenOption.APPEND)) {
-        if (image == null) {
+        if (getImage() == null) {
           bufferedWriter.write("null");
         }
         bufferedWriter.newLine();
@@ -211,7 +209,7 @@ public final class Field {
 
   public void addObstacle(Obstacle obstacle) {
     fieldObstacles.add(obstacle);
-    obstacleGroup.getChildren().add(obstacle);
+    getObstacleGroup().getChildren().add(obstacle);
 
 //    Mesher.createMesh();
   }
@@ -221,12 +219,12 @@ public final class Field {
     if (fieldBorder != null) {
 
       fieldObstacles.remove(fieldBorder);
-      obstacleGroup.getChildren().remove(fieldBorder);
+      getObstacleGroup().getChildren().remove(fieldBorder);
     }
 
     fieldObstacles.add(obstacle);
 
-    obstacleGroup.getChildren().add(obstacle);
+    getObstacleGroup().getChildren().add(obstacle);
     fieldBorder = obstacle;
 //    Mesher.createMesh();
   }
@@ -238,14 +236,38 @@ public final class Field {
         ", SCALE=" + SCALE +
         ", UNIT=" + UNIT +
         ", fieldObstacles=" + fieldObstacles +
-        ", imageFile=" + imageFile +
-        ", image=" + image +
-        ", obstacleGroup=" + obstacleGroup +
+        ", imageFile=" + getImageFile() +
+        ", image=" + getImage() +
+        ", obstacleGroup=" + getObstacleGroup() +
         ", fieldBorder=" + fieldBorder +
         '}';
   }
 
   public void improveImageContrast() {
     ColorAdjust colorAdjust = new ColorAdjust(0, 0, 0, 0);
+  }
+
+  public File getImageFile() {
+    return imageFile;
+  }
+
+  public void setImageFile(File imageFile) {
+    this.imageFile = imageFile;
+  }
+
+  public Image getImage() {
+    return image;
+  }
+
+  public void setImage(Image image) {
+    this.image = image;
+  }
+
+  public Group getObstacleGroup() {
+    return obstacleGroup;
+  }
+
+  public void setObstacleGroup(Group obstacleGroup) {
+    this.obstacleGroup = obstacleGroup;
   }
 }

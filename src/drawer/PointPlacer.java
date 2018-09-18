@@ -109,20 +109,20 @@ public class PointPlacer implements Initializable {
   public void initialize(URL location, ResourceBundle resources) {
     SplineSender.initNetworkTableParallel();
 
-    if (Field.getInstance().image == null) {
+    if (Field.getInstance().getImage() == null) {
       try {
         File imageFile = new File("./src/FRC 2018 Field Drawings.png");
         Image defaultImage = Helper.getImage(imageFile);
         field.setImage(defaultImage);
-        Field.getInstance().image = field.getImage();
-        Field.getInstance().imageFile = imageFile;
+        Field.getInstance().setImage(field.getImage());
+        Field.getInstance().setImageFile(imageFile);
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
     } else {
-      field.setImage(Field.getInstance().image);
+      field.setImage(Field.getInstance().getImage());
 
-      pointPlane.getChildren().add(Field.getInstance().obstacleGroup);
+      pointPlane.getChildren().add(Field.getInstance().getObstacleGroup());
     }
 
     pointsTitledPaneAccordion = new Accordion();

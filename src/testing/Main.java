@@ -30,8 +30,8 @@ public class Main extends Application {
 
     try {
       File file = new File("./src/FRC 2018 Field Drawings.png");
-      Field.getInstance().imageFile = file;
-      Field.getInstance().image = Helper.getImage(file);
+      Field.getInstance().setImageFile(file);
+      Field.getInstance().setImage(Helper.getImage(file));
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
