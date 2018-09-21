@@ -40,6 +40,7 @@ public final class Field {
   //	public static BufferedImage bufferedImage;
   private static final String MATCH_PATTERN = "[0-9.]+\\s[a-zA-Z]+(?:\\d|\\.|\\s|ERROR|WARNING|M|L|C)*";
   private static final Alert useFieldValue = new Alert(AlertType.CONFIRMATION);
+  private static final Alert saveErrors = new Alert(AlertType.ERROR);
 
   static {
     useFieldValue
@@ -159,11 +160,24 @@ public final class Field {
     return getImage();
   }
 
+
+  private void setUnableToDeleteFile(String name) {
+    saveErrors.setContentText(String.format("We were unable to delete %s", name));
+  }
+
+  private void setUnableToCreateFile(String name) {
+    saveErrors.setContentText(String.format("We were unable to create %s", name));
+  }
+
   public void saveData(File saveFile) throws IOException {
     System.out.println(getFieldBorder().getDefiningShape());
 
     if (saveFile.exists()) {
-      System.out.println((saveFile.delete() ? "M" : "Did not m") + "anaged to delete the file");
+      if (saveFile.delete()) {
+        setUnableToDeleteFile(saveFile.getName());
+        saveErrors.showAndWait();
+      }
+
     }
     if (saveFile.createNewFile()) {
 
@@ -204,6 +218,9 @@ public final class Field {
 
         bufferedWriter.write(stringBuilder.toString());
       }
+    } else {
+      setUnableToCreateFile(saveFile.getName());
+      saveErrors.showAndWait();
     }
   }
 
