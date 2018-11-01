@@ -690,6 +690,15 @@ public class Controller implements Initializable {
       setStrokeWidth(2);
     }
 
+    /**
+     * Displays the Selection line. Makes the line visible and moves it the have the endpoints of point and point2. It
+     * also gets the length of the line and sets it to the bottom left TextField. It also converts that distance when
+     * the scale has been defined.
+     *
+     * @param point the start point of the line
+     * @param point2 the end point of the line
+     * @param distanceViewer the textfield to change the distance
+     */
     final void showLine(SelectionPoint point, SelectionPoint point2, TextField distanceViewer) {
 //      Sets the line visible
       setVisible(true);

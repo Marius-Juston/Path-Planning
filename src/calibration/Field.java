@@ -33,6 +33,9 @@ import javafx.scene.shape.Polygon;
 import javax.imageio.ImageIO;
 import org.waltonrobotics.motion.Path;
 
+/**
+ * Singleton of the Field
+ */
 public final class Field {
 
   private static final Field instance = new Field();
@@ -50,7 +53,7 @@ public final class Field {
 
   }
 
-  public final double robotWidth = 0.8171; //TODO make it be set manually
+  public final double robotWidth = 0.8171; //TODO make it be set dynamically
   public final SimpleDoubleProperty SCALE = new SimpleDoubleProperty(1);
   public final WritableObjectValue<String> UNIT = new SimpleStringProperty(PIXELS);
   private final List<AbstractObstacle> fieldObstacles = new ArrayList<>();
@@ -65,12 +68,23 @@ public final class Field {
 //    fieldObstacles.addListener((ListChangeListener<? super AbstractObstacle>) c -> Mesher.createMesh());
   }
 
+  /**
+   * Gets the instance of the object
+   */
   public static Field getInstance() {
     return instance;
   }
 
+  /**
+   * Returns true of the File name ends with .field and if the user wants to use this file as field file
+   *
+   * @param file the file to check and ask the user
+   * @return true if the file ends with *.field and that the user wants to use the filed as such
+   */
   public static boolean isFieldFile(File file) {
+//    Checks if the filename ends with the specific suffix
     if (file.getName().endsWith(SUFFIX)) {
+//      Opens an Alert dialog box to ask if the user if they want to use the file as a usable data
       Optional<ButtonType> buttonTypeOptional = useFieldValue.showAndWait();
 
       return buttonTypeOptional.isPresent() && (buttonTypeOptional.get() == ButtonType.OK);
@@ -79,6 +93,10 @@ public final class Field {
     return false;
   }
 
+  /**
+   * Resets the field values. Sets scale to 1, unit to pixel, clears the field obstacles, sets the image to null and
+   * clears the obstacle group, removes the field border
+   */
   public void clearField() {
     SCALE.set(1.0);
     UNIT.set(Helper.PIXELS);
@@ -97,61 +115,88 @@ public final class Field {
     return fieldObstacles;
   }
 
+  /**
+   * Loads the data from a *.field ands sets the values, loads the scale, unit, obstacles and image
+   *
+   * @param loadFile the field to load the data from
+   * @return the image loaded from the file
+   */
   public Image loadData(File loadFile) throws IOException {
+//    Clears the current settings
     clearField();
 
+//    Reads the data from the file
     try (BufferedReader bufferedReader = new BufferedReader(
         new InputStreamReader(new FileInputStream(loadFile), StandardCharsets.UTF_8))) {
 
+//      If there is nothing inside the file
       if (bufferedReader.readLine().equals("null")) {
         setImageFile(null);
-        instance.setImage(null);
+        setImage(null);
       } else {
+//        Read the image data (it is the first thing saved)
         Image image = Helper.getImage(loadFile);
 
+//        Sets the image
         setImageFile(loadFile);
-        instance.setImage(image);
+        setImage(image);
       }
 
       AtomicReference<String> lastLine = new AtomicReference<>();
 
+//      Only the last line contains the scale, unit, obstacle information
       bufferedReader.lines().forEach(lastLine::set);
       lastLine.set(lastLine.get().trim());
 
+//      If the last line is in the correct format
       if (Pattern.matches(MATCH_PATTERN, lastLine.get())) {
         System.out.println("Loading");
 
+//        Splits the last line by tbas because the different fields are seperated by tabs
         String[] data = lastLine.get().split("\\t");
 
+//        The Scale is the first value and the unit second
         SCALE.set(Double.parseDouble(data[0]));
         UNIT.set(data[1]);
 
+//        The second element is the field Border
         String fieldBorderDataPath = data[2];
+//        If the string is not empty then there is a field border
         if (!fieldBorderDataPath.isEmpty()) {
+
+//          Converts the string to a path which is then used to recreate the border
           javafx.scene.shape.Path field = Helper.convertStringToPath(fieldBorderDataPath);
 
-          //FIXME makes no sense but since this works oh well
+          //FIXME makes no sense because when creating the border the colors are set then but since this works oh well
           field.setFill(ThreatLevel.ERROR.getDisplayColor());
           field.setStroke(ThreatLevel.ERROR.getDisplayColor());
           field.setStrokeWidth(1);
 
           FieldBorder fieldBorder = new FieldBorder(field);
+
+//          Adds the field border
           addObstacle(fieldBorder);
         }
 
         for (int i = 3; i < data.length; i++) {
           int index = data[i].indexOf(' ');
 
+//          Separates each obstacle string into its threat level identifier and its vertices positions
           String threatLevelName = data[i].substring(0, index);
           String pointData = data[i].substring(index + 1);
 
+//          converts the string into a ThreatLevel object
           ThreatLevel threatLevel = ThreatLevel.valueOf(threatLevelName);
+
+//          Converts the vertices data into an actual polygon
           Polygon polygon = Helper.loadPolygonFromString(pointData);
 
+//          Sets the color of the polygon
           polygon.setFill(threatLevel.getDisplayColor());
           polygon.setStroke(threatLevel.getDisplayColor());
           polygon.setStrokeWidth(1);
 
+//          Creates and adds the obstacle to the field
           Obstacle obstacle = new Obstacle(threatLevel, polygon);
           addObstacle(obstacle);
         }
