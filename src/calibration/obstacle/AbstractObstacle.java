@@ -29,6 +29,10 @@ public abstract class AbstractObstacle extends Group {
     this.threatLevel = threatLevel;
     this.definingShape = definingShape;
 
+    definingShape.setFill(threatLevel.getDisplayColor());
+    definingShape.setStroke(threatLevel.getDisplayColor());
+    definingShape.setStrokeWidth(1.0);
+
   }
 
   public ThreatLevel getThreatLevel() {
