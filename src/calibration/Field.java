@@ -291,20 +291,6 @@ public final class Field {
 //    Mesher.createMesh();
   }
 
-  @Override
-  public String toString() {
-    return "Field{" +
-        "robotWidth=" + robotWidth +
-        ", SCALE=" + SCALE +
-        ", UNIT=" + UNIT +
-        ", fieldObstacles=" + fieldObstacles +
-        ", imageFile=" + getImageFile() +
-        ", image=" + getImage() +
-        ", obstacleGroup=" + getObstacleGroup() +
-        ", fieldBorder=" + fieldBorder +
-        '}';
-  }
-
   public void improveImageContrast() {
     ColorAdjust colorAdjust = new ColorAdjust(0, 0, 0, 0);
   }
@@ -331,5 +317,19 @@ public final class Field {
 
   public void setObstacleGroup(Group obstacleGroup) {
     this.obstacleGroup = obstacleGroup;
+  }
+
+  @Override
+  public String toString() {
+    return "Field{" +
+        "robotWidth=" + robotWidth +
+        ", SCALE=" + SCALE +
+        ", UNIT=" + UNIT +
+        ", fieldObstacles=" + fieldObstacles +
+        ", imageFile=" + getImageFile() +
+        ", image=" + getImage() +
+        ", obstacleGroup=" + getObstacleGroup() +
+        ", fieldBorder=" + fieldBorder +
+        '}';
   }
 }
