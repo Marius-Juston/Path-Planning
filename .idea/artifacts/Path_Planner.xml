@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="Path Planner">
+    <output-path>$PROJECT_DIR$/out/artifacts/Path_Planner</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="calibration.Main" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="Walton Robotics Path Planner" />
+        <option name="vendor" value="Marius Juston" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="Path_Planner.jar">
+        <element id="module-output" name="Path Planning" />
+      </element>
+      <element id="library" level="project" name="motionLibrary" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="Path_Planner.jnlp">
+  <information>
+    <title>Walton Robotics Path Planner</title>
+    <vendor>Marius Juston</vendor>
+    <description>Path Planner</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="2974Splines.jar" size="113036" download="eager" />
+    <jar href="Actually-Simple-Splines.jar" size="897973" download="eager" />
+    <jar href="Path_Planner.jar" size="563627" download="eager" />
+    <jar href="SmartDashboard.jar" size="4381529" download="eager" />
+    <jar href="fx-gson-3.1.0-sources.jar" size="21408" download="eager" />
+    <jar href="fx-gson-3.1.0.jar" size="28383" download="eager" />
+    <jar href="gson-2.8.5.jar" size="241622" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="600" height="400" main-class="calibration.Main"  name="Path Planner" />
+  <update check="background"/>
+</jnlp>
